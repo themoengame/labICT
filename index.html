@@ -4,8 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LAB ICT SMAN 1 Malang</title>
-    <!-- Font Awesome 6 (versi terbaru yang stabil) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" rel="stylesheet" />
     <style>
         /* ===== RESET & BASE ===== */
@@ -532,7 +531,6 @@
         <!-- PANEL 1: PEMINJAMAN RUANG -->
         <!-- ============================================================ -->
         <div id="ruang" class="panel active">
-            <!-- Form Pengajuan -->
             <div class="card">
                 <div class="card-header">
                     <h2><i class="fas fa-pen"></i> Ajukan Peminjaman Ruang</h2>
@@ -1348,12 +1346,21 @@
             });
 
             // ============================================================
-            // LOGIN / LOGOUT
+            // LOGIN - MENGAMBIL DARI SHEET USERS
             // ============================================================
             async function handleLogin(username, password) {
+                const user = username.trim();
+                const pass = password.trim();
+
+                if (!user || !pass) {
+                    showToast('⚠️ Username dan password harus diisi!', 'error');
+                    return;
+                }
+
                 try {
-                    const url = GOOGLE_SHEETS_URL + '?action=login&username=' + encodeURIComponent(username) + '&password=' +
-                        encodeURIComponent(password);
+                    showLoading(true);
+                    const url = GOOGLE_SHEETS_URL + '?action=login&username=' + encodeURIComponent(user) + '&password=' +
+                        encodeURIComponent(pass);
                     const response = await fetch(url);
 
                     if (!response.ok) {
@@ -1363,8 +1370,8 @@
                     const data = await response.json();
 
                     if (data.status === 'success') {
-                        authToken = data.data.token || 'dummy-token';
                         currentUser = data.data;
+                        authToken = data.data.token || 'token-' + Date.now();
                         setAdminMode(true);
                         showToast('✅ Login berhasil sebagai ' + (data.data.nama || data.data.role || 'Admin'), 'success');
                         loginModal.classList.remove('show');
@@ -1373,15 +1380,9 @@
                     }
                 } catch (error) {
                     console.error('Login error:', error);
-                    if (username === 'admin' && password === 'admin123') {
-                        currentUser = { username: 'admin', role: 'admin', nama: 'Administrator' };
-                        authToken = 'fallback-token';
-                        setAdminMode(true);
-                        showToast('⚠️ Login menggunakan fallback (server tidak merespon)', 'warning');
-                        loginModal.classList.remove('show');
-                    } else {
-                        showToast('❌ Gagal login: ' + error.message, 'error');
-                    }
+                    showToast('❌ Gagal login: ' + error.message, 'error');
+                } finally {
+                    showLoading(false);
                 }
             }
 
@@ -1429,25 +1430,13 @@
             });
 
             modalLoginBtn.addEventListener('click', function() {
-                const user = usernameInput.value.trim();
-                const pass = passwordInput.value.trim();
-                if (!user || !pass) {
-                    showToast('⚠️ Username dan password harus diisi!', 'error');
-                    return;
-                }
-                handleLogin(user, pass);
+                handleLogin(usernameInput.value, passwordInput.value);
             });
 
             passwordInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    const user = usernameInput.value.trim();
-                    const pass = passwordInput.value.trim();
-                    if (!user || !pass) {
-                        showToast('⚠️ Username dan password harus diisi!', 'error');
-                        return;
-                    }
-                    handleLogin(user, pass);
+                    handleLogin(usernameInput.value, passwordInput.value);
                 }
             });
 
@@ -1511,7 +1500,7 @@
             });
 
             // ============================================================
-            // INIT - HANYA DIJALANKAN SEKALI
+            // INIT
             // ============================================================
             async function init() {
                 if (isInitialized) {
@@ -1531,6 +1520,7 @@
                 activateTab('ruang');
 
                 console.log('✅ Sistem siap.');
+                console.log('🔑 Login menggunakan data dari sheet "users"');
             }
 
             if (document.readyState === 'complete') {
@@ -1539,21 +1529,12 @@
                 document.addEventListener('DOMContentLoaded', init);
             }
 
-            // ============================================================
-            // KEYBOARD SHORTCUTS
-            // ============================================================
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     if (loginModal.classList.contains('show')) loginModal.classList.remove('show');
                     if (crudModal.classList.contains('show')) crudModal.classList.remove('show');
                 }
             });
-
-            console.log('💻 LAB ICT SMAN 1 Malang');
-            console.log('🔑 Login menggunakan data dari sheet "users" di Google Sheets');
-            console.log('📊 Data tersimpan di Google Sheets');
-            console.log('✅ Fallback: admin/admin123 jika server tidak merespon');
-            console.log('🎨 Font Awesome menggunakan versi 6.5.1 (stabil)');
 
         })();
     </script>
