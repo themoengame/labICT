@@ -490,6 +490,21 @@
             .form-row { grid-template-columns: 1fr; }
             .item-grid { grid-template-columns: 1fr; }
         }
+
+        /* ===== CUSTOM ===== */
+        .loading-text {
+            text-align: center;
+            color: #6b7f97;
+            padding: 2rem;
+        }
+        .master-badge {
+            font-size: 0.7rem;
+            background: #e9edf2;
+            padding: 0.1rem 0.6rem;
+            border-radius: 40px;
+            color: #4d627a;
+            margin-left: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -514,7 +529,7 @@
 
         <!-- STATS -->
         <div class="stats-grid">
-            <div class="stat-card"><i class="fas fa-door-open"></i><div class="stat-info"><h4>Ruang Lab</h4><div class="number" id="statRuang">3</div></div></div>
+            <div class="stat-card"><i class="fas fa-door-open"></i><div class="stat-info"><h4>Ruang Lab</h4><div class="number" id="statRuang">0</div></div></div>
             <div class="stat-card"><i class="fas fa-laptop"></i><div class="stat-info"><h4>Komputer</h4><div class="number" id="statKomputer">0</div></div></div>
             <div class="stat-card"><i class="fas fa-boxes"></i><div class="stat-info"><h4>Inventaris</h4><div class="number" id="statInventaris">0</div></div></div>
             <div class="stat-card"><i class="fas fa-calendar-check"></i><div class="stat-info"><h4>Peminjaman Aktif</h4><div class="number" id="activeCount">0</div></div></div>
@@ -525,6 +540,7 @@
             <button class="tab-btn active" data-tab="ruang"><i class="fas fa-door-open"></i> Peminjaman Ruang</button>
             <button class="tab-btn" data-tab="komputer"><i class="fas fa-laptop"></i> Komputer</button>
             <button class="tab-btn" data-tab="inventaris"><i class="fas fa-boxes"></i> Inventaris</button>
+            <button class="tab-btn" data-tab="master"><i class="fas fa-database"></i> Master Data</button>
         </div>
 
         <!-- ============================================================ -->
@@ -544,10 +560,8 @@
                         </div>
                         <div class="form-group">
                             <label for="ruangSelect">Ruang Lab <span style="color:red;">*</span></label>
-                            <select id="ruangSelect">
-                                <option value="Lab A (Utama)">Lab A (Utama)</option>
-                                <option value="Lab B (Multimedia)">Lab B (Multimedia)</option>
-                                <option value="Lab C (Server)">Lab C (Server)</option>
+                            <select id="ruangSelect" required>
+                                <option value="">-- Pilih Ruang --</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -641,6 +655,41 @@
             </div>
         </div>
 
+        <!-- ============================================================ -->
+        <!-- PANEL 4: MASTER DATA -->
+        <!-- ============================================================ -->
+        <div id="master" class="panel">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-database"></i> Master Data</h2>
+                    <span style="font-size:0.85rem; color:#4d627a;">Data referensi dari Google Sheets</span>
+                </div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:1.5rem;">
+                    <!-- Master Ruang -->
+                    <div style="background:#f9fcff; border-radius:16px; padding:1rem; border:1px solid #e4ecf5;">
+                        <h3 style="color:#0b2b4a; margin-bottom:0.5rem;"><i class="fas fa-door-open" style="color:#2a7de1;"></i> Ruang Lab</h3>
+                        <div id="masterRuangList" style="font-size:0.9rem; color:#4d627a;">
+                            <p class="loading-text">Memuat...</p>
+                        </div>
+                    </div>
+                    <!-- Master Alat -->
+                    <div style="background:#f9fcff; border-radius:16px; padding:1rem; border:1px solid #e4ecf5;">
+                        <h3 style="color:#0b2b4a; margin-bottom:0.5rem;"><i class="fas fa-laptop" style="color:#2a7de1;"></i> Alat Komputer</h3>
+                        <div id="masterAlatList" style="font-size:0.9rem; color:#4d627a;">
+                            <p class="loading-text">Memuat...</p>
+                        </div>
+                    </div>
+                    <!-- Master Inventaris -->
+                    <div style="background:#f9fcff; border-radius:16px; padding:1rem; border:1px solid #e4ecf5;">
+                        <h3 style="color:#0b2b4a; margin-bottom:0.5rem;"><i class="fas fa-boxes" style="color:#2a7de1;"></i> Inventaris</h3>
+                        <div id="masterInventarisList" style="font-size:0.9rem; color:#4d627a;">
+                            <p class="loading-text">Memuat...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="footer-note">
             <i class="fas fa-database"></i> Data tersimpan di Google Sheets · 
             <i class="fas fa-github"></i> Hosted on GitHub Pages
@@ -717,6 +766,7 @@
             let peminjaman = [];
             let komputer = [];
             let inventaris = [];
+            let masterData = { ruang: [], alat: [], inventaris: [] };
             let isAdmin = false;
             let authToken = '';
             let currentUser = null;
@@ -748,10 +798,17 @@
             const inventarisGrid = $('inventarisGrid');
             const statKomputer = $('statKomputer');
             const statInventaris = $('statInventaris');
+            const statRuang = $('statRuang');
             const crudSubmitBtn = $('crudSubmitBtn');
             const crudCancelBtn = $('crudCancelBtn');
             const btnTambahKomputer = $('btnTambahKomputer');
             const btnTambahInventaris = $('btnTambahInventaris');
+            const ruangSelect = $('ruangSelect');
+
+            // Master data DOM
+            const masterRuangList = $('masterRuangList');
+            const masterAlatList = $('masterAlatList');
+            const masterInventarisList = $('masterInventarisList');
 
             // ============================================================
             // TOAST & LOADING
@@ -810,15 +867,104 @@
             }
 
             // ============================================================
+            // LOAD MASTER DATA
+            // ============================================================
+            async function loadMasterData() {
+                try {
+                    const response = await fetch(GOOGLE_SHEETS_URL + '?action=get_masters');
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        masterData = data.data;
+
+                        // Update dropdown ruang
+                        updateRuangDropdown();
+
+                        // Update master display
+                        renderMasterData();
+
+                        // Update stat ruang
+                        statRuang.textContent = masterData.ruang.length || 0;
+                    }
+                } catch (error) {
+                    console.error('Error loading master data:', error);
+                }
+            }
+
+            function updateRuangDropdown() {
+                ruangSelect.innerHTML = '<option value="">-- Pilih Ruang --</option>';
+                if (masterData.ruang && masterData.ruang.length) {
+                    masterData.ruang.forEach(r => {
+                        const option = document.createElement('option');
+                        option.value = r.nama_ruang || r.nama || r;
+                        option.textContent = r.nama_ruang || r.nama || r;
+                        ruangSelect.appendChild(option);
+                    });
+                } else {
+                    // Fallback jika belum ada data
+                    const fallback = ['Lab ICT A (Utama)', 'Lab ICT B (Multimedia)', 'Lab ICT C (Server)'];
+                    fallback.forEach(r => {
+                        const option = document.createElement('option');
+                        option.value = r;
+                        option.textContent = r;
+                        ruangSelect.appendChild(option);
+                    });
+                }
+            }
+
+            function renderMasterData() {
+                // Render Ruang
+                if (masterData.ruang && masterData.ruang.length) {
+                    masterRuangList.innerHTML = masterData.ruang.map(r =>
+                        `<div style="padding:4px 0; border-bottom:1px solid #eef4f8;">
+                            <strong>${r.nama_ruang || r.nama || r}</strong>
+                            <span class="master-badge">${r.kode || ''}</span>
+                            <span style="font-size:0.8rem; color:#6b7f97;">Kapasitas: ${r.kapasitas || '-'}</span>
+                        </div>`
+                    ).join('');
+                } else {
+                    masterRuangList.innerHTML = '<p style="color:#6b7f97;">Belum ada data ruang</p>';
+                }
+
+                // Render Alat
+                if (masterData.alat && masterData.alat.length) {
+                    masterAlatList.innerHTML = masterData.alat.map(a =>
+                        `<div style="padding:4px 0; border-bottom:1px solid #eef4f8;">
+                            <strong>${a.nama_alat || a.nama || a}</strong>
+                            <span class="master-badge">${a.kategori || ''}</span>
+                            <span style="font-size:0.8rem; color:#6b7f97;">${a.spesifikasi || ''}</span>
+                        </div>`
+                    ).join('');
+                } else {
+                    masterAlatList.innerHTML = '<p style="color:#6b7f97;">Belum ada data alat</p>';
+                }
+
+                // Render Inventaris
+                if (masterData.inventaris && masterData.inventaris.length) {
+                    masterInventarisList.innerHTML = masterData.inventaris.map(i =>
+                        `<div style="padding:4px 0; border-bottom:1px solid #eef4f8;">
+                            <strong>${i.nama_item || i.nama || i}</strong>
+                            <span class="master-badge">${i.kategori || ''}</span>
+                            <span style="font-size:0.8rem; color:#6b7f97;">${i.satuan || ''}</span>
+                        </div>`
+                    ).join('');
+                } else {
+                    masterInventarisList.innerHTML = '<p style="color:#6b7f97;">Belum ada data inventaris</p>';
+                }
+            }
+
+            // ============================================================
             // LOAD DATA
             // ============================================================
             async function loadData() {
                 try {
+                    // Load peminjaman
                     const data1 = await apiCall('read', null, 'peminjaman_ruang', 'GET');
                     if (data1 && data1.status === 'success') {
                         peminjaman = data1.data || [];
                     }
 
+                    // Load komputer
                     const data2 = await apiCall('read', null, 'komputer', 'GET');
                     if (data2 && data2.status === 'success') {
                         komputer = data2.data || [];
@@ -826,6 +972,7 @@
                         statKomputer.textContent = komputer.length;
                     }
 
+                    // Load inventaris
                     const data3 = await apiCall('read', null, 'inventaris', 'GET');
                     if (data3 && data3.status === 'success') {
                         inventaris = data3.data || [];
@@ -1048,8 +1195,8 @@
                         const start = p.tanggal + 'T' + p.jamMulai + ':00';
                         const end = p.tanggal + 'T' + p.jamSelesai + ':00';
                         let color = '#3788d8';
-                        if (p.ruang.includes('Lab B')) color = '#e67e22';
-                        if (p.ruang.includes('Lab C')) color = '#27ae60';
+                        if (p.ruang && p.ruang.includes('Lab ICT B')) color = '#e67e22';
+                        if (p.ruang && p.ruang.includes('Lab ICT C')) color = '#27ae60';
                         return {
                             title: p.ruang + ' - ' + p.peminjam,
                             start: start,
@@ -1212,9 +1359,9 @@
                         <div class="form-group">
                             <label for="f_lokasi">Lokasi</label>
                             <select id="f_lokasi">
-                                <option value="Lab A" ${data?.lokasi === 'Lab A' ? 'selected' : ''}>Lab A</option>
-                                <option value="Lab B" ${data?.lokasi === 'Lab B' ? 'selected' : ''}>Lab B</option>
-                                <option value="Lab C" ${data?.lokasi === 'Lab C' ? 'selected' : ''}>Lab C</option>
+                                <option value="Lab ICT A" ${data?.lokasi === 'Lab ICT A' ? 'selected' : ''}>Lab ICT A</option>
+                                <option value="Lab ICT B" ${data?.lokasi === 'Lab ICT B' ? 'selected' : ''}>Lab ICT B</option>
+                                <option value="Lab ICT C" ${data?.lokasi === 'Lab ICT C' ? 'selected' : ''}>Lab ICT C</option>
                             </select>
                         </div>
                     `;
@@ -1248,9 +1395,9 @@
                         <div class="form-group">
                             <label for="f_lokasi">Lokasi</label>
                             <select id="f_lokasi">
-                                <option value="Lab A" ${data?.lokasi === 'Lab A' ? 'selected' : ''}>Lab A</option>
-                                <option value="Lab B" ${data?.lokasi === 'Lab B' ? 'selected' : ''}>Lab B</option>
-                                <option value="Lab C" ${data?.lokasi === 'Lab C' ? 'selected' : ''}>Lab C</option>
+                                <option value="Lab ICT A" ${data?.lokasi === 'Lab ICT A' ? 'selected' : ''}>Lab ICT A</option>
+                                <option value="Lab ICT B" ${data?.lokasi === 'Lab ICT B' ? 'selected' : ''}>Lab ICT B</option>
+                                <option value="Lab ICT C" ${data?.lokasi === 'Lab ICT C' ? 'selected' : ''}>Lab ICT C</option>
                             </select>
                         </div>
                     `;
@@ -1313,7 +1460,7 @@
                 const jamSelesai = document.getElementById('jamSelesai').value;
                 const keperluan = document.getElementById('keperluan').value.trim() || '-';
 
-                if (!nama || !tanggal || !jamMulai || !jamSelesai) {
+                if (!nama || !ruang || !tanggal || !jamMulai || !jamSelesai) {
                     showToast('⚠️ Semua field wajib diisi!', 'error');
                     return;
                 }
@@ -1346,7 +1493,7 @@
             });
 
             // ============================================================
-            // LOGIN - MENGAMBIL DARI SHEET USERS
+            // LOGIN
             // ============================================================
             async function handleLogin(username, password) {
                 const user = username.trim();
@@ -1478,7 +1625,8 @@
             const panels = {
                 ruang: document.getElementById('ruang'),
                 komputer: document.getElementById('komputer'),
-                inventaris: document.getElementById('inventaris')
+                inventaris: document.getElementById('inventaris'),
+                master: document.getElementById('master')
             };
 
             function activateTab(tabId) {
@@ -1509,18 +1657,27 @@
                 }
                 isInitialized = true;
 
-                console.log('🚀 Inisialisasi sistem...');
+                console.log('🚀 Inisialisasi sistem LAB ICT...');
 
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('tanggalPinjam').value = today;
 
+                // Load master data dulu
+                await loadMasterData();
+
+                // Load transaksi data
                 await loadData();
+
+                // Init calendar
                 initCalendar();
+
+                // Set default mode
                 setAdminMode(false);
                 activateTab('ruang');
 
                 console.log('✅ Sistem siap.');
                 console.log('🔑 Login menggunakan data dari sheet "users"');
+                console.log('📊 Data master dari: master_ruang, master_alat, master_inventaris');
             }
 
             if (document.readyState === 'complete') {
