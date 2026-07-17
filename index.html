@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LAB ICT SMAN 1 Malang</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Font Awesome 6 (versi terbaru yang stabil) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" rel="stylesheet" />
     <style>
         /* ===== RESET & BASE ===== */
@@ -799,7 +800,6 @@
                         await fetch(GOOGLE_SHEETS_URL, options);
                         return { status: 'success' };
                     } else {
-                        // GET request - bisa dibaca
                         const response = await fetch(url);
                         const result = await response.json();
                         return result;
@@ -816,32 +816,23 @@
             // ============================================================
             async function loadData() {
                 try {
-                    // Load peminjaman (GET bisa dibaca)
                     const data1 = await apiCall('read', null, 'peminjaman_ruang', 'GET');
                     if (data1 && data1.status === 'success') {
                         peminjaman = data1.data || [];
-                    } else {
-                        console.warn('Gagal load peminjaman:', data1?.message);
                     }
 
-                    // Load komputer
                     const data2 = await apiCall('read', null, 'komputer', 'GET');
                     if (data2 && data2.status === 'success') {
                         komputer = data2.data || [];
                         renderKomputer();
                         statKomputer.textContent = komputer.length;
-                    } else {
-                        console.warn('Gagal load komputer:', data2?.message);
                     }
 
-                    // Load inventaris
                     const data3 = await apiCall('read', null, 'inventaris', 'GET');
                     if (data3 && data3.status === 'success') {
                         inventaris = data3.data || [];
                         renderInventaris();
                         statInventaris.textContent = inventaris.length;
-                    } else {
-                        console.warn('Gagal load inventaris:', data3?.message);
                     }
 
                     renderTable();
@@ -935,7 +926,6 @@
                 totalPinjam.textContent = 'Total: ' + peminjaman.length;
                 activeCount.textContent = active;
 
-                // Event delegation untuk aksi di tabel
                 if (isAdmin) {
                     tableBody.querySelectorAll('[data-action]').forEach(el => {
                         el.addEventListener('click', function(e) {
@@ -1358,16 +1348,14 @@
             });
 
             // ============================================================
-            // LOGIN / LOGOUT - MEMBACA DARI SHEET USERS
+            // LOGIN / LOGOUT
             // ============================================================
             async function handleLogin(username, password) {
                 try {
-                    // Panggil endpoint login dengan parameter username & password
                     const url = GOOGLE_SHEETS_URL + '?action=login&username=' + encodeURIComponent(username) + '&password=' +
                         encodeURIComponent(password);
                     const response = await fetch(url);
 
-                    // Cek apakah response OK
                     if (!response.ok) {
                         throw new Error('Gagal terhubung ke server (HTTP ' + response.status + ')');
                     }
@@ -1385,9 +1373,7 @@
                     }
                 } catch (error) {
                     console.error('Login error:', error);
-                    // Fallback: jika gagal koneksi, coba hardcoded admin
                     if (username === 'admin' && password === 'admin123') {
-                        // Hardcoded fallback jika server tidak merespon
                         currentUser = { username: 'admin', role: 'admin', nama: 'Administrator' };
                         authToken = 'fallback-token';
                         setAdminMode(true);
@@ -1472,7 +1458,6 @@
                 }
             });
 
-            // Close modal when clicking overlay
             loginModal.addEventListener('click', function(e) {
                 if (e.target === loginModal) {
                     loginModal.classList.remove('show');
@@ -1548,7 +1533,6 @@
                 console.log('✅ Sistem siap.');
             }
 
-            // Jalankan init setelah DOM siap
             if (document.readyState === 'complete') {
                 init();
             } else {
@@ -1569,6 +1553,7 @@
             console.log('🔑 Login menggunakan data dari sheet "users" di Google Sheets');
             console.log('📊 Data tersimpan di Google Sheets');
             console.log('✅ Fallback: admin/admin123 jika server tidak merespon');
+            console.log('🎨 Font Awesome menggunakan versi 6.5.1 (stabil)');
 
         })();
     </script>
