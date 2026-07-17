@@ -6,7 +6,6 @@
     <title>LAB ICT SMAN 1 Malang</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -837,12 +836,12 @@
     <!-- ============================================================ -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box">
-            <h2><i class="fas fa-lock" style="color:#2a7de1;"></i> Login</h2>
-            <p>Masukkan kredensial untuk mengakses panel admin/petugas.</p>
+            <h2><i class="fas fa-lock" style="color:#2a7de1;"></i> Login Admin / Petugas</h2>
+            <p>Masukkan kredensial untuk mengakses panel admin.</p>
             <label>Username</label>
-            <input type="text" id="usernameInput" value="admin" />
+            <input type="text" id="usernameInput" placeholder="Masukkan username" />
             <label>Password</label>
-            <input type="password" id="passwordInput" value="admin123" />
+            <input type="password" id="passwordInput" placeholder="Masukkan password" />
             <div class="modal-actions">
                 <button class="btn-outline" id="modalCancelBtn">Batal</button>
                 <button class="btn-primary" id="modalLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
@@ -873,8 +872,9 @@
     <div id="toast" class="toast"></div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT -->
+    <!-- JAVASCRIPT - Load FullCalendar dari CDN dengan defer -->
     <!-- ============================================================ -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.js" defer></script>
     <script>
         // ============================================================
         // KONFIGURASI - URL Apps Script yang sudah di-deploy
@@ -965,9 +965,6 @@
                 }
 
                 const response = await fetch(url, options);
-
-                // Karena mode no-cors, response tidak bisa dibaca
-                // Kita akan reload data setelah operasi
                 return { status: 'success' };
 
             } catch (error) {
@@ -981,14 +978,12 @@
         // ============================================================
         async function loadData() {
             try {
-                // Load peminjaman
                 const response1 = await fetch(GOOGLE_SHEETS_URL + '?action=read&sheet=peminjaman_ruang');
                 const data1 = await response1.json();
                 if (data1.status === 'success') {
                     peminjaman = data1.data || [];
                 }
 
-                // Load komputer
                 const response2 = await fetch(GOOGLE_SHEETS_URL + '?action=read&sheet=komputer');
                 const data2 = await response2.json();
                 if (data2.status === 'success') {
@@ -997,7 +992,6 @@
                     statKomputer.textContent = komputer.length;
                 }
 
-                // Load inventaris
                 const response3 = await fetch(GOOGLE_SHEETS_URL + '?action=read&sheet=inventaris');
                 const data3 = await response3.json();
                 if (data3.status === 'success') {
@@ -1043,7 +1037,6 @@
             let html = '';
             let active = 0;
 
-            // Sort by tanggal descending
             const sorted = [...peminjaman].sort((a, b) => {
                 if (a.tanggal !== b.tanggal) return a.tanggal.localeCompare(b.tanggal);
                 return a.jamMulai.localeCompare(b.jamMulai);
@@ -1174,7 +1167,7 @@
         }
 
         // ============================================================
-        // KALENDER
+        // KALENDER - inisialisasi setelah FullCalendar siap
         // ============================================================
         function updateCalendarEvents() {
             if (!calendarInstance) return;
@@ -1201,6 +1194,13 @@
         function initCalendar() {
             const calendarEl = document.getElementById('calendar');
             if (!calendarEl) return;
+
+            // Tunggu FullCalendar siap
+            if (typeof FullCalendar === 'undefined') {
+                setTimeout(initCalendar, 500);
+                return;
+            }
+
             calendarInstance = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
@@ -1277,9 +1277,6 @@
             await loadData();
         }
 
-        // ============================================================
-        // CRUD KOMPUTER & INVENTARIS
-        // ============================================================
         async function deleteItem(sheet, id) {
             if (!confirm('Hapus data ini?')) return;
             await apiCall('delete', { id: id }, sheet, 'POST');
@@ -1291,7 +1288,6 @@
             const data = sheet === 'komputer' ?
                 komputer.find(x => x.id === id) :
                 inventaris.find(x => x.id === id);
-
             if (!data) return;
             showModal(sheet, data);
         }
@@ -1350,7 +1346,7 @@
                         </select>
                     </div>
                 `;
-            } else { // inventaris
+            } else {
                 fields.innerHTML = `
                     <div class="form-group">
                         <label>Nama Item</label>
@@ -1409,7 +1405,7 @@
                     lokasi: document.getElementById('f_lokasi').value
                 };
                 if (crudData) data.id = crudData.id;
-            } else { // inventaris
+            } else {
                 data = {
                     nama_item: document.getElementById('f_nama').value,
                     kategori: document.getElementById('f_kategori').value,
@@ -1523,8 +1519,8 @@
                 showToast('👋 Logout berhasil', '');
             } else {
                 loginModal.classList.add('show');
-                usernameInput.value = 'admin';
-                passwordInput.value = 'admin123';
+                usernameInput.value = '';
+                passwordInput.value = '';
                 usernameInput.focus();
             }
         });
@@ -1540,7 +1536,6 @@
             if (e.target === loginModal) loginModal.classList.remove('show');
         });
 
-        // Close CRUD modal on outside click
         crudModal.addEventListener('click', e => {
             if (e.target === crudModal) crudModal.classList.remove('show');
         });
@@ -1576,7 +1571,7 @@
         // ============================================================
         // INIT
         // ============================================================
-        document.addEventListener('DOMContentLoaded', async function() {
+        async function init() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tanggalPinjam').value = today;
 
@@ -1584,18 +1579,22 @@
             initCalendar();
             setAdminMode(false);
             activateTab('ruang');
-        });
-
-        if (document.readyState === 'complete' || document.readyState === 'interactive') {
-            (async () => {
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('tanggalPinjam').value = today;
-                await loadData();
-                initCalendar();
-                setAdminMode(false);
-                activateTab('ruang');
-            })();
         }
+
+        // Jalankan init setelah DOM dan FullCalendar siap
+        if (document.readyState === 'complete') {
+            init();
+        } else {
+            document.addEventListener('DOMContentLoaded', init);
+        }
+
+        // Fallback: jika FullCalendar belum siap, retry
+        setTimeout(function() {
+            if (typeof FullCalendar === 'undefined') {
+                console.warn('FullCalendar belum siap, reloading...');
+                location.reload();
+            }
+        }, 3000);
 
         // ============================================================
         // KEYBOARD SHORTCUTS
@@ -1608,8 +1607,9 @@
         });
 
         console.log('💻 LAB ICT SMAN 1 Malang');
-        console.log('🔑 Login: admin / admin123');
+        console.log('🔑 Login: admin / admin123  atau  petugas / petugas123');
         console.log('📊 Data tersimpan di Google Sheets');
+        console.log('ℹ️  Login form sekarang kosong (isi manual)');
     </script>
 </body>
 </html>
