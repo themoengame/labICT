@@ -724,7 +724,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Nama Peminjam <span style="color:red;">*</span></label>
-                            <input type="text" id="peminjamName" placeholder="Nama lengkap" required />
+                            <input type="text" id="peminjamName" placeholder="Nama lengkap" autocomplete="name" required />
                         </div>
                         <div class="form-group">
                             <label>Ruang Lab <span style="color:red;">*</span></label>
@@ -736,21 +736,21 @@
                         </div>
                         <div class="form-group">
                             <label>Tanggal <span style="color:red;">*</span></label>
-                            <input type="date" id="tanggalPinjam" required />
+                            <input type="date" id="tanggalPinjam" required autocomplete="off" />
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label>Jam Mulai <span style="color:red;">*</span></label>
-                            <input type="time" id="jamMulai" required />
+                            <input type="time" id="jamMulai" required autocomplete="off" />
                         </div>
                         <div class="form-group">
                             <label>Jam Selesai <span style="color:red;">*</span></label>
-                            <input type="time" id="jamSelesai" required />
+                            <input type="time" id="jamSelesai" required autocomplete="off" />
                         </div>
                         <div class="form-group">
                             <label>Keperluan</label>
-                            <input type="text" id="keperluan" placeholder="Contoh: Praktikum" />
+                            <input type="text" id="keperluan" placeholder="Contoh: Praktikum" autocomplete="off" />
                         </div>
                     </div>
                     <div class="form-actions">
@@ -832,17 +832,17 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- MODAL LOGIN (dengan form) -->
+    <!-- MODAL LOGIN -->
     <!-- ============================================================ -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box">
             <form id="loginForm" onsubmit="return false;">
                 <h2><i class="fas fa-lock" style="color:#2a7de1;"></i> Login Admin / Petugas</h2>
                 <p>Masukkan kredensial untuk mengakses panel admin.</p>
-                <label>Username</label>
-                <input type="text" id="usernameInput" placeholder="Masukkan username" />
-                <label>Password</label>
-                <input type="password" id="passwordInput" placeholder="Masukkan password" />
+                <label for="usernameInput">Username</label>
+                <input type="text" id="usernameInput" placeholder="Masukkan username" autocomplete="username" />
+                <label for="passwordInput">Password</label>
+                <input type="password" id="passwordInput" placeholder="Masukkan password" autocomplete="current-password" />
                 <div class="modal-actions">
                     <button type="button" class="btn-outline" id="modalCancelBtn">Batal</button>
                     <button type="button" class="btn-primary" id="modalLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
@@ -852,7 +852,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- MODAL CRUD (dengan form) -->
+    <!-- MODAL CRUD -->
     <!-- ============================================================ -->
     <div class="modal-overlay" id="crudModal">
         <div class="modal-box">
@@ -879,6 +879,11 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.js" defer></script>
     <script>
         // ============================================================
+        // FLAG untuk mencegah init berulang
+        // ============================================================
+        let isInitialized = false;
+
+        // ============================================================
         // KONFIGURASI
         // ============================================================
         const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec';
@@ -893,7 +898,6 @@
         let authToken = '';
         let currentUser = null;
         let calendarInstance = null;
-        let nextId = 1;
 
         // ============================================================
         // DOM REFS
@@ -986,6 +990,8 @@
                 const data1 = await response1.json();
                 if (data1.status === 'success') {
                     peminjaman = data1.data || [];
+                } else {
+                    console.warn('Gagal load peminjaman:', data1.message);
                 }
 
                 const response2 = await fetch(GOOGLE_SHEETS_URL + '?action=read&sheet=komputer');
@@ -1200,8 +1206,15 @@
             if (!calendarEl) return;
 
             if (typeof FullCalendar === 'undefined') {
+                // Tunggu 500ms lalu coba lagi
                 setTimeout(initCalendar, 500);
                 return;
+            }
+
+            // Hanya buat sekali
+            if (calendarInstance) {
+                calendarInstance.destroy();
+                calendarInstance = null;
             }
 
             calendarInstance = new FullCalendar.Calendar(calendarEl, {
@@ -1321,15 +1334,15 @@
                 fields.innerHTML = `
                     <div class="form-group">
                         <label>Nama Komputer</label>
-                        <input type="text" id="f_nama" value="${data?.nama_komputer || ''}" required />
+                        <input type="text" id="f_nama" value="${data?.nama_komputer || ''}" autocomplete="off" required />
                     </div>
                     <div class="form-group">
                         <label>Spesifikasi</label>
-                        <input type="text" id="f_spesifikasi" value="${data?.spesifikasi || ''}" />
+                        <input type="text" id="f_spesifikasi" value="${data?.spesifikasi || ''}" autocomplete="off" />
                     </div>
                     <div class="form-group">
                         <label>IP Address</label>
-                        <input type="text" id="f_ip" value="${data?.ip_address || ''}" />
+                        <input type="text" id="f_ip" value="${data?.ip_address || ''}" autocomplete="off" />
                     </div>
                     <div class="form-group">
                         <label>Status</label>
@@ -1353,7 +1366,7 @@
                 fields.innerHTML = `
                     <div class="form-group">
                         <label>Nama Item</label>
-                        <input type="text" id="f_nama" value="${data?.nama_item || ''}" required />
+                        <input type="text" id="f_nama" value="${data?.nama_item || ''}" autocomplete="off" required />
                     </div>
                     <div class="form-group">
                         <label>Kategori</label>
@@ -1366,7 +1379,7 @@
                     </div>
                     <div class="form-group">
                         <label>Jumlah</label>
-                        <input type="number" id="f_jumlah" value="${data?.jumlah || 1}" required />
+                        <input type="number" id="f_jumlah" value="${data?.jumlah || 1}" autocomplete="off" required />
                     </div>
                     <div class="form-group">
                         <label>Kondisi</label>
@@ -1394,7 +1407,9 @@
             document.getElementById(id).classList.remove('show');
         }
 
-        // Event listener untuk CRUD form - menggunakan event listener bukan inline onsubmit
+        // ============================================================
+        // EVENT LISTENER CRUD FORM
+        // ============================================================
         document.getElementById('crudForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -1521,7 +1536,9 @@
             renderInventaris();
         }
 
-        // Event login
+        // ============================================================
+        // EVENT LISTENER LOGIN
+        // ============================================================
         loginToggleBtn.addEventListener('click', function() {
             if (isAdmin) {
                 setAdminMode(false);
@@ -1598,9 +1615,18 @@
         });
 
         // ============================================================
-        // INIT
+        // INIT - HANYA DIJALANKAN SEKALI
         // ============================================================
         async function init() {
+            // Cegah init berulang
+            if (isInitialized) {
+                console.log('Init sudah dijalankan, skip.');
+                return;
+            }
+            isInitialized = true;
+
+            console.log('🚀 Inisialisasi sistem...');
+
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tanggalPinjam').value = today;
 
@@ -1608,22 +1634,16 @@
             initCalendar();
             setAdminMode(false);
             activateTab('ruang');
+
+            console.log('✅ Sistem siap.');
         }
 
-        // Jalankan init setelah DOM dan FullCalendar siap
+        // Jalankan init setelah DOM siap, tapi hanya sekali
         if (document.readyState === 'complete') {
             init();
         } else {
             document.addEventListener('DOMContentLoaded', init);
         }
-
-        // Fallback reload jika FullCalendar belum siap
-        setTimeout(function() {
-            if (typeof FullCalendar === 'undefined') {
-                console.warn('FullCalendar belum siap, reloading...');
-                location.reload();
-            }
-        }, 3000);
 
         // ============================================================
         // KEYBOARD SHORTCUTS
@@ -1638,8 +1658,8 @@
         console.log('💻 LAB ICT SMAN 1 Malang');
         console.log('🔑 Login: admin / admin123  atau  petugas / petugas123');
         console.log('📊 Data tersimpan di Google Sheets');
-        console.log('ℹ️  Login form sekarang kosong (isi manual)');
-        console.log('✅ Modal sudah diperbaiki, tidak ada error DOM');
+        console.log('✅ Tidak ada refresh otomatis berlebih');
+        console.log('🔒 Password field sudah memiliki autocomplete="current-password"');
     </script>
 </body>
 </html>
