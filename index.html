@@ -660,4 +660,957 @@
             }
             .card {
                 padding: 1rem;
-           
+            }
+            .modal-box {
+                padding: 1.8rem 1.5rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .item-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOADING -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p style="color:#1f3b5c; font-weight:500;">Memproses...</p>
+    </div>
+
+    <div class="container">
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="logo">
+                <i class="fas fa-microchip"></i>
+                LAB <span>ICT</span> · SMAN 1 Malang
+            </div>
+            <div class="user-role">
+                <span class="role-badge" id="roleDisplay"><i class="fas fa-user"></i> Pengguna</span>
+                <button class="btn-login outline" id="loginToggleBtn"><i class="fas fa-sign-in-alt"></i> <span id="loginBtnText">Login</span></button>
+            </div>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+            <div class="stat-card"><i class="fas fa-door-open"></i><div class="stat-info"><h4>Ruang Lab</h4><div class="number" id="statRuang">3</div></div></div>
+            <div class="stat-card"><i class="fas fa-laptop"></i><div class="stat-info"><h4>Komputer</h4><div class="number" id="statKomputer">0</div></div></div>
+            <div class="stat-card"><i class="fas fa-boxes"></i><div class="stat-info"><h4>Inventaris</h4><div class="number" id="statInventaris">0</div></div></div>
+            <div class="stat-card"><i class="fas fa-calendar-check"></i><div class="stat-info"><h4>Peminjaman Aktif</h4><div class="number" id="activeCount">0</div></div></div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="ruang"><i class="fas fa-door-open"></i> Peminjaman Ruang</button>
+            <button class="tab-btn" data-tab="komputer"><i class="fas fa-laptop"></i> Komputer</button>
+            <button class="tab-btn" data-tab="inventaris"><i class="fas fa-boxes"></i> Inventaris</button>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PANEL 1: PEMINJAMAN RUANG -->
+        <!-- ============================================================ -->
+        <div id="ruang" class="panel active">
+            <!-- Form Pengajuan -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-pen"></i> Ajukan Peminjaman Ruang</h2>
+                    <span style="font-size:0.85rem; color:#4d627a;"><i class="fas fa-info-circle"></i> Isi form untuk mengajukan</span>
+                </div>
+                <form id="pinjamForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nama Peminjam <span style="color:red;">*</span></label>
+                            <input type="text" id="peminjamName" placeholder="Nama lengkap" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Ruang Lab <span style="color:red;">*</span></label>
+                            <select id="ruangSelect">
+                                <option value="Lab A (Utama)">Lab A (Utama)</option>
+                                <option value="Lab B (Multimedia)">Lab B (Multimedia)</option>
+                                <option value="Lab C (Server)">Lab C (Server)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal <span style="color:red;">*</span></label>
+                            <input type="date" id="tanggalPinjam" required />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Jam Mulai <span style="color:red;">*</span></label>
+                            <input type="time" id="jamMulai" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Jam Selesai <span style="color:red;">*</span></label>
+                            <input type="time" id="jamSelesai" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Keperluan</label>
+                            <input type="text" id="keperluan" placeholder="Contoh: Praktikum" />
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary" id="submitBtn"><i class="fas fa-paper-plane"></i> Ajukan Peminjaman</button>
+                        <button type="reset" class="btn-primary gray"><i class="fas fa-undo"></i> Reset</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Kalender -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-calendar-alt"></i> Kalender Pemakaian Ruang</h2>
+                    <span style="font-size:0.85rem; color:#4d627a;">Event berwarna = sudah di-<strong>approve</strong></span>
+                </div>
+                <div id="calendar"></div>
+            </div>
+
+            <!-- Daftar Peminjaman -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-list-ul"></i> Daftar Peminjaman Ruang</h2>
+                    <span style="font-size:0.85rem; color:#4d627a;" id="totalPinjam">Total: 0</span>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ruang</th>
+                                <th>Peminjam</th>
+                                <th>Tanggal</th>
+                                <th>Jam</th>
+                                <th>Status</th>
+                                <th class="admin-only">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pinjamTableBody">
+                            <tr><td colspan="6" style="text-align:center; color:#6b7f97;">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PANEL 2: KOMPUTER -->
+        <!-- ============================================================ -->
+        <div id="komputer" class="panel">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-laptop"></i> Data Komputer Lab</h2>
+                    <button class="btn-primary admin-only" onclick="showModal('komputer')"><i class="fas fa-plus-circle"></i> Tambah Komputer</button>
+                </div>
+                <div class="item-grid" id="komputerGrid">
+                    <p style="color:#6b7f97; grid-column:1/-1; text-align:center;">Memuat data komputer...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- PANEL 3: INVENTARIS -->
+        <!-- ============================================================ -->
+        <div id="inventaris" class="panel">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-boxes"></i> Inventaris Ruangan</h2>
+                    <button class="btn-primary admin-only" onclick="showModal('inventaris')"><i class="fas fa-plus-circle"></i> Tambah Inventaris</button>
+                </div>
+                <div class="item-grid" id="inventarisGrid">
+                    <p style="color:#6b7f97; grid-column:1/-1; text-align:center;">Memuat data inventaris...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            <i class="fas fa-database"></i> Data tersimpan di Google Sheets · 
+            <i class="fas fa-github"></i> Hosted on GitHub Pages
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODAL LOGIN -->
+    <!-- ============================================================ -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal-box">
+            <h2><i class="fas fa-lock" style="color:#2a7de1;"></i> Login</h2>
+            <p>Masukkan kredensial untuk mengakses panel admin/petugas.</p>
+            <label>Username</label>
+            <input type="text" id="usernameInput" value="admin" />
+            <label>Password</label>
+            <input type="password" id="passwordInput" value="admin123" />
+            <div class="modal-actions">
+                <button class="btn-outline" id="modalCancelBtn">Batal</button>
+                <button class="btn-primary" id="modalLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODAL CRUD -->
+    <!-- ============================================================ -->
+    <div class="modal-overlay" id="crudModal">
+        <div class="modal-box">
+            <h2 id="crudTitle">Tambah Data</h2>
+            <p id="crudSubtitle">Isi data di bawah ini</p>
+            <form id="crudForm">
+                <div id="crudFields">
+                    <!-- Dynamic fields -->
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-outline" onclick="closeModal('crudModal')">Batal</button>
+                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT -->
+    <!-- ============================================================ -->
+    <script>
+        // ============================================================
+        // KONFIGURASI
+        // ============================================================
+        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec';
+        // GANTI dengan URL Apps Script Anda
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        let peminjaman = [];
+        let komputer = [];
+        let inventaris = [];
+        let isAdmin = false;
+        let authToken = '';
+        let currentUser = null;
+        let calendarInstance = null;
+        let nextId = 1;
+
+        // ============================================================
+        // DOM REFS
+        // ============================================================
+        const $ = id => document.getElementById(id);
+        const loginModal = $('loginModal');
+        const crudModal = $('crudModal');
+        const loginToggleBtn = $('loginToggleBtn');
+        const loginBtnText = $('loginBtnText');
+        const roleDisplay = $('roleDisplay');
+        const modalCancelBtn = $('modalCancelBtn');
+        const modalLoginBtn = $('modalLoginBtn');
+        const usernameInput = $('usernameInput');
+        const passwordInput = $('passwordInput');
+        const pinjamForm = $('pinjamForm');
+        const tableBody = $('pinjamTableBody');
+        const totalPinjam = $('totalPinjam');
+        const activeCount = $('activeCount');
+        const toast = $('toast');
+        const loadingOverlay = $('loadingOverlay');
+        const submitBtn = $('submitBtn');
+        const komputerGrid = $('komputerGrid');
+        const inventarisGrid = $('inventarisGrid');
+        const statKomputer = $('statKomputer');
+        const statInventaris = $('statInventaris');
+
+        // ============================================================
+        // TOAST & LOADING
+        // ============================================================
+        function showToast(message, type = '') {
+            toast.textContent = message;
+            toast.className = 'toast show ' + type;
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        function showLoading(show) {
+            loadingOverlay.classList.toggle('show', show);
+            if (submitBtn) submitBtn.disabled = show;
+        }
+
+        // ============================================================
+        // API CALLS
+        // ============================================================
+        async function apiCall(action, data = null, sheet = 'peminjaman_ruang', method = 'GET') {
+            try {
+                const params = new URLSearchParams();
+                params.append('action', action);
+                if (sheet) params.append('sheet', sheet);
+                if (authToken) params.append('auth', authToken);
+
+                let url = GOOGLE_SHEETS_URL + '?' + params.toString();
+
+                const options = {
+                    method: method,
+                    mode: 'no-cors'
+                };
+
+                if (method === 'POST' && data) {
+                    url = GOOGLE_SHEETS_URL;
+                    options.method = 'POST';
+                    options.headers = {
+                        'Content-Type': 'application/json'
+                    };
+                    options.body = JSON.stringify({
+                        action: action,
+                        sheet: sheet,
+                        data: data,
+                        auth: authToken
+                    });
+                }
+
+                const response = await fetch(url, options);
+
+                // Karena mode no-cors, response tidak bisa dibaca
+                // Kita akan reload data setelah operasi
+                return { status: 'success' };
+
+            } catch (error) {
+                console.error('API Error:', error);
+                return { status: 'error', message: error.toString() };
+            }
+        }
+
+        // ============================================================
+        // LOAD DATA
+        // ============================================================
+        async function loadData() {
+            try {
+                // Load peminjaman
+                const response1 = await fetch(GOOGLE_SHEETS_URL + '?action=read&sheet=peminjaman_ruang');
+                const data1 = await response1.json();
+                if (data1.status === 'success') {
+                    peminjaman = data1.data || [];
+                }
+
+                // Load komputer
+                const response2 = await fetch(GOOGLE_SHEETS_URL + '?action=read&sheet=komputer');
+                const data2 = await response2.json();
+                if (data2.status === 'success') {
+                    komputer = data2.data || [];
+                    renderKomputer();
+                    statKomputer.textContent = komputer.length;
+                }
+
+                // Load inventaris
+                const response3 = await fetch(GOOGLE_SHEETS_URL + '?action=read&sheet=inventaris');
+                const data3 = await response3.json();
+                if (data3.status === 'success') {
+                    inventaris = data3.data || [];
+                    renderInventaris();
+                    statInventaris.textContent = inventaris.length;
+                }
+
+                renderTable();
+                updateCalendarEvents();
+
+            } catch (error) {
+                showToast('Error loading data: ' + error.message, 'error');
+                console.error(error);
+            }
+        }
+
+        // ============================================================
+        // CEK KONFLIK
+        // ============================================================
+        function checkConflict(ruang, tanggal, jamMulai, jamSelesai, excludeId = null) {
+            return peminjaman.some(p => {
+                if (excludeId !== null && p.id === excludeId) return false;
+                if (p.ruang !== ruang) return false;
+                if (p.tanggal !== tanggal) return false;
+                if (p.status !== 'approved' && p.status !== 'pending') return false;
+                return (jamMulai < p.jamSelesai && jamSelesai > p.jamMulai);
+            });
+        }
+
+        // ============================================================
+        // RENDER TABEL PEMINJAMAN
+        // ============================================================
+        function renderTable() {
+            if (!peminjaman || !peminjaman.length) {
+                tableBody.innerHTML =
+                    `<tr><td colspan="6" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman</td></tr>`;
+                totalPinjam.textContent = 'Total: 0';
+                activeCount.textContent = '0';
+                return;
+            }
+
+            let html = '';
+            let active = 0;
+
+            // Sort by tanggal descending
+            const sorted = [...peminjaman].sort((a, b) => {
+                if (a.tanggal !== b.tanggal) return a.tanggal.localeCompare(b.tanggal);
+                return a.jamMulai.localeCompare(b.jamMulai);
+            });
+
+            sorted.forEach(p => {
+                let statusClass = 'pending';
+                let statusText = 'Menunggu';
+                if (p.status === 'approved') { statusClass = 'approved';
+                    statusText = 'Disetujui';
+                    active++; }
+                if (p.status === 'rejected') { statusClass = 'rejected';
+                    statusText = 'Ditolak'; }
+                if (p.status === 'done') { statusClass = 'done';
+                    statusText = 'Selesai'; }
+
+                const jam = p.jamMulai + ' – ' + p.jamSelesai;
+
+                let aksiHtml = '';
+                if (isAdmin) {
+                    if (p.status === 'pending') {
+                        aksiHtml = `
+                            <i class="fas fa-check-circle" title="Approve" onclick="approvePinjam(${p.id})"></i>
+                            <i class="fas fa-times-circle" title="Tolak" onclick="rejectPinjam(${p.id})"></i>
+                        `;
+                    } else if (p.status === 'approved') {
+                        aksiHtml = `
+                            <i class="fas fa-check-double" title="Selesaikan" onclick="donePinjam(${p.id})"></i>
+                            <i class="fas fa-times-circle" title="Batalkan" onclick="rejectPinjam(${p.id})"></i>
+                        `;
+                    } else {
+                        aksiHtml = `
+                            <i class="fas fa-undo" title="Kembalikan ke pending" onclick="undoPinjam(${p.id})"></i>
+                            <i class="fas fa-trash-alt" title="Hapus" onclick="deletePinjam(${p.id})"></i>
+                        `;
+                    }
+                }
+
+                html += `
+                    <tr>
+                        <td>${p.ruang}</td>
+                        <td>${p.peminjam}</td>
+                        <td>${p.tanggal}</td>
+                        <td>${jam}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td class="admin-only">${aksiHtml}</td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = html;
+            totalPinjam.textContent = 'Total: ' + peminjaman.length;
+            activeCount.textContent = active;
+        }
+
+        // ============================================================
+        // RENDER KOMPUTER
+        // ============================================================
+        function renderKomputer() {
+            if (!komputer || !komputer.length) {
+                komputerGrid.innerHTML =
+                    `<p style="color:#6b7f97; grid-column:1/-1; text-align:center;">Belum ada data komputer</p>`;
+                return;
+            }
+
+            let html = '';
+            komputer.forEach(k => {
+                const statusColor = k.status === 'Available' ? '#1f8b4d' : k.status === 'Dipinjam' ? '#d48c1a' :
+                    '#b13a3a';
+                html += `
+                    <div class="item-card">
+                        <i class="fas fa-desktop"></i>
+                        <div class="info">
+                            <div class="nama">${k.nama_komputer || 'Komputer'}</div>
+                            <div class="detail">${k.spesifikasi || '-'}</div>
+                            <div class="detail">IP: ${k.ip_address || '-'} · <span style="color:${statusColor};">${k.status || '-'}</span></div>
+                            <div class="detail">Lokasi: ${k.lokasi || '-'}</div>
+                        </div>
+                        <div class="item-actions admin-only">
+                            <i class="fas fa-edit" onclick="editItem('komputer', ${k.id})" title="Edit"></i>
+                            <i class="fas fa-trash-alt" onclick="deleteItem('komputer', ${k.id})" title="Hapus"></i>
+                        </div>
+                    </div>
+                `;
+            });
+
+            komputerGrid.innerHTML = html;
+        }
+
+        // ============================================================
+        // RENDER INVENTARIS
+        // ============================================================
+        function renderInventaris() {
+            if (!inventaris || !inventaris.length) {
+                inventarisGrid.innerHTML =
+                    `<p style="color:#6b7f97; grid-column:1/-1; text-align:center;">Belum ada data inventaris</p>`;
+                return;
+            }
+
+            let html = '';
+            const icons = {
+                'Komputer': 'fa-desktop',
+                'Furniture': 'fa-chair',
+                'Elektronik': 'fa-plug',
+                'Aksesoris': 'fa-keyboard'
+            };
+
+            inventaris.forEach(item => {
+                const icon = icons[item.kategori] || 'fa-cube';
+                html += `
+                    <div class="item-card">
+                        <i class="fas ${icon}"></i>
+                        <div class="info">
+                            <div class="nama">${item.nama_item || 'Item'}</div>
+                            <div class="detail">Kategori: ${item.kategori || '-'}</div>
+                            <div class="detail">Jumlah: ${item.jumlah || '0'} · ${item.kondisi || '-'}</div>
+                            <div class="detail">Lokasi: ${item.lokasi || '-'}</div>
+                        </div>
+                        <div class="item-actions admin-only">
+                            <i class="fas fa-edit" onclick="editItem('inventaris', ${item.id})" title="Edit"></i>
+                            <i class="fas fa-trash-alt" onclick="deleteItem('inventaris', ${item.id})" title="Hapus"></i>
+                        </div>
+                    </div>
+                `;
+            });
+
+            inventarisGrid.innerHTML = html;
+        }
+
+        // ============================================================
+        // KALENDER
+        // ============================================================
+        function updateCalendarEvents() {
+            if (!calendarInstance) return;
+            const events = peminjaman
+                .filter(p => p.status === 'approved')
+                .map(p => {
+                    const start = p.tanggal + 'T' + p.jamMulai + ':00';
+                    const end = p.tanggal + 'T' + p.jamSelesai + ':00';
+                    let color = '#3788d8';
+                    if (p.ruang.includes('Lab B')) color = '#e67e22';
+                    if (p.ruang.includes('Lab C')) color = '#27ae60';
+                    return {
+                        title: p.ruang + ' - ' + p.peminjam,
+                        start: start,
+                        end: end,
+                        color: color,
+                        extendedProps: { id: p.id }
+                    };
+                });
+            calendarInstance.removeAllEvents();
+            calendarInstance.addEventSource(events);
+        }
+
+        function initCalendar() {
+            const calendarEl = document.getElementById('calendar');
+            if (!calendarEl) return;
+            calendarInstance = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek'
+                },
+                eventClick: function(info) {
+                    const p = peminjaman.find(x => x.id === info.event.extendedProps.id);
+                    if (p) {
+                        alert('📋 Detail Peminjaman:\n' +
+                            'Ruang: ' + p.ruang + '\n' +
+                            'Peminjam: ' + p.peminjam + '\n' +
+                            'Tanggal: ' + p.tanggal + '\n' +
+                            'Jam: ' + p.jamMulai + ' – ' + p.jamSelesai + '\n' +
+                            'Status: ' + p.status + '\n' +
+                            'Keperluan: ' + (p.keperluan || '-'));
+                    }
+                },
+                height: 'auto',
+                contentHeight: 400
+            });
+            calendarInstance.render();
+            updateCalendarEvents();
+        }
+
+        // ============================================================
+        // CRUD OPERATIONS
+        // ============================================================
+        async function approvePinjam(id) {
+            const p = peminjaman.find(x => x.id === id);
+            if (!p) return;
+            if (checkConflict(p.ruang, p.tanggal, p.jamMulai, p.jamSelesai, id)) {
+                showToast('❌ Konflik jadwal! Ruang sudah dipakai.', 'error');
+                return;
+            }
+            p.status = 'approved';
+            await apiCall('update', p, 'peminjaman_ruang', 'POST');
+            showToast('✅ Peminjaman ' + p.peminjam + ' disetujui', 'success');
+            await loadData();
+        }
+
+        async function rejectPinjam(id) {
+            const p = peminjaman.find(x => x.id === id);
+            if (!p) return;
+            p.status = 'rejected';
+            await apiCall('update', p, 'peminjaman_ruang', 'POST');
+            showToast('⛔ Peminjaman ' + p.peminjam + ' ditolak', 'error');
+            await loadData();
+        }
+
+        async function donePinjam(id) {
+            const p = peminjaman.find(x => x.id === id);
+            if (!p) return;
+            p.status = 'done';
+            await apiCall('update', p, 'peminjaman_ruang', 'POST');
+            showToast('✅ Peminjaman selesai', 'success');
+            await loadData();
+        }
+
+        async function undoPinjam(id) {
+            const p = peminjaman.find(x => x.id === id);
+            if (!p) return;
+            p.status = 'pending';
+            await apiCall('update', p, 'peminjaman_ruang', 'POST');
+            showToast('↩️ Dikembalikan ke pending', 'warning');
+            await loadData();
+        }
+
+        async function deletePinjam(id) {
+            if (!confirm('Hapus peminjaman ini?')) return;
+            await apiCall('delete', { id: id }, 'peminjaman_ruang', 'POST');
+            showToast('🗑️ Peminjaman dihapus', '');
+            await loadData();
+        }
+
+        // ============================================================
+        // CRUD KOMPUTER & INVENTARIS
+        // ============================================================
+        async function deleteItem(sheet, id) {
+            if (!confirm('Hapus data ini?')) return;
+            await apiCall('delete', { id: id }, sheet, 'POST');
+            showToast('🗑️ Data dihapus', '');
+            await loadData();
+        }
+
+        function editItem(sheet, id) {
+            const data = sheet === 'komputer' ?
+                komputer.find(x => x.id === id) :
+                inventaris.find(x => x.id === id);
+
+            if (!data) return;
+            showModal(sheet, data);
+        }
+
+        // ============================================================
+        // MODAL CRUD
+        // ============================================================
+        let crudSheet = '';
+        let crudData = null;
+
+        function showModal(sheet, data = null) {
+            crudSheet = sheet;
+            crudData = data;
+
+            const title = document.getElementById('crudTitle');
+            const subtitle = document.getElementById('crudSubtitle');
+            const fields = document.getElementById('crudFields');
+
+            if (data) {
+                title.textContent = 'Edit ' + (sheet === 'komputer' ? 'Komputer' : 'Inventaris');
+                subtitle.textContent = 'Edit data yang sudah ada';
+            } else {
+                title.textContent = 'Tambah ' + (sheet === 'komputer' ? 'Komputer' : 'Inventaris');
+                subtitle.textContent = 'Isi data di bawah ini';
+            }
+
+            if (sheet === 'komputer') {
+                fields.innerHTML = `
+                    <div class="form-group">
+                        <label>Nama Komputer</label>
+                        <input type="text" id="f_nama" value="${data?.nama_komputer || ''}" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Spesifikasi</label>
+                        <input type="text" id="f_spesifikasi" value="${data?.spesifikasi || ''}" />
+                    </div>
+                    <div class="form-group">
+                        <label>IP Address</label>
+                        <input type="text" id="f_ip" value="${data?.ip_address || ''}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="f_status">
+                            <option value="Available" ${data?.status === 'Available' ? 'selected' : ''}>Available</option>
+                            <option value="Dipinjam" ${data?.status === 'Dipinjam' ? 'selected' : ''}>Dipinjam</option>
+                            <option value="Rusak" ${data?.status === 'Rusak' ? 'selected' : ''}>Rusak</option>
+                            <option value="Perbaikan" ${data?.status === 'Perbaikan' ? 'selected' : ''}>Perbaikan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Lokasi</label>
+                        <select id="f_lokasi">
+                            <option value="Lab A" ${data?.lokasi === 'Lab A' ? 'selected' : ''}>Lab A</option>
+                            <option value="Lab B" ${data?.lokasi === 'Lab B' ? 'selected' : ''}>Lab B</option>
+                            <option value="Lab C" ${data?.lokasi === 'Lab C' ? 'selected' : ''}>Lab C</option>
+                        </select>
+                    </div>
+                `;
+            } else { // inventaris
+                fields.innerHTML = `
+                    <div class="form-group">
+                        <label>Nama Item</label>
+                        <input type="text" id="f_nama" value="${data?.nama_item || ''}" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select id="f_kategori">
+                            <option value="Komputer" ${data?.kategori === 'Komputer' ? 'selected' : ''}>Komputer</option>
+                            <option value="Furniture" ${data?.kategori === 'Furniture' ? 'selected' : ''}>Furniture</option>
+                            <option value="Elektronik" ${data?.kategori === 'Elektronik' ? 'selected' : ''}>Elektronik</option>
+                            <option value="Aksesoris" ${data?.kategori === 'Aksesoris' ? 'selected' : ''}>Aksesoris</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Jumlah</label>
+                        <input type="number" id="f_jumlah" value="${data?.jumlah || 1}" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Kondisi</label>
+                        <select id="f_kondisi">
+                            <option value="Baik" ${data?.kondisi === 'Baik' ? 'selected' : ''}>Baik</option>
+                            <option value="Rusak" ${data?.kondisi === 'Rusak' ? 'selected' : ''}>Rusak</option>
+                            <option value="Perbaikan" ${data?.kondisi === 'Perbaikan' ? 'selected' : ''}>Perbaikan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Lokasi</label>
+                        <select id="f_lokasi">
+                            <option value="Lab A" ${data?.lokasi === 'Lab A' ? 'selected' : ''}>Lab A</option>
+                            <option value="Lab B" ${data?.lokasi === 'Lab B' ? 'selected' : ''}>Lab B</option>
+                            <option value="Lab C" ${data?.lokasi === 'Lab C' ? 'selected' : ''}>Lab C</option>
+                        </select>
+                    </div>
+                `;
+            }
+
+            crudModal.classList.add('show');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        document.getElementById('crudForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            let data = {};
+
+            if (crudSheet === 'komputer') {
+                data = {
+                    nama_komputer: document.getElementById('f_nama').value,
+                    spesifikasi: document.getElementById('f_spesifikasi').value,
+                    ip_address: document.getElementById('f_ip').value,
+                    status: document.getElementById('f_status').value,
+                    lokasi: document.getElementById('f_lokasi').value
+                };
+                if (crudData) data.id = crudData.id;
+            } else { // inventaris
+                data = {
+                    nama_item: document.getElementById('f_nama').value,
+                    kategori: document.getElementById('f_kategori').value,
+                    jumlah: parseInt(document.getElementById('f_jumlah').value),
+                    kondisi: document.getElementById('f_kondisi').value,
+                    lokasi: document.getElementById('f_lokasi').value
+                };
+                if (crudData) data.id = crudData.id;
+            }
+
+            const action = crudData ? 'update' : 'add';
+            await apiCall(action, data, crudSheet, 'POST');
+            showToast('✅ Data berhasil disimpan', 'success');
+            closeModal('crudModal');
+            await loadData();
+        });
+
+        // ============================================================
+        // FORM PENGAJUAN
+        // ============================================================
+        pinjamForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const nama = document.getElementById('peminjamName').value.trim();
+            const ruang = document.getElementById('ruangSelect').value;
+            const tanggal = document.getElementById('tanggalPinjam').value;
+            const jamMulai = document.getElementById('jamMulai').value;
+            const jamSelesai = document.getElementById('jamSelesai').value;
+            const keperluan = document.getElementById('keperluan').value.trim() || '-';
+
+            if (!nama || !tanggal || !jamMulai || !jamSelesai) {
+                showToast('⚠️ Semua field wajib diisi!', 'error');
+                return;
+            }
+            if (jamMulai >= jamSelesai) {
+                showToast('⚠️ Jam mulai harus lebih awal dari jam selesai!', 'error');
+                return;
+            }
+            if (checkConflict(ruang, tanggal, jamMulai, jamSelesai)) {
+                showToast('❌ Ruang sudah dipakai pada jam tersebut!', 'error');
+                return;
+            }
+
+            const newPinjam = {
+                ruang: ruang,
+                peminjam: nama,
+                tanggal: tanggal,
+                jamMulai: jamMulai,
+                jamSelesai: jamSelesai,
+                status: 'pending',
+                keperluan: keperluan
+            };
+
+            await apiCall('add', newPinjam, 'peminjaman_ruang', 'POST');
+            showToast('📩 Pengajuan berhasil dikirim!', 'success');
+            pinjamForm.reset();
+            document.getElementById('tanggalPinjam').value = new Date().toISOString().split('T')[0];
+            await loadData();
+        });
+
+        // ============================================================
+        // LOGIN / LOGOUT
+        // ============================================================
+        async function handleLogin(username, password) {
+            try {
+                const url = GOOGLE_SHEETS_URL + '?action=login&username=' + encodeURIComponent(username) + '&password=' +
+                    encodeURIComponent(password);
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    authToken = data.data.token;
+                    currentUser = data.data;
+                    setAdminMode(true);
+                    showToast('✅ Login berhasil sebagai ' + data.data.role, 'success');
+                    loginModal.classList.remove('show');
+                } else {
+                    showToast('❌ ' + data.message, 'error');
+                }
+            } catch (error) {
+                showToast('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        function setAdminMode(admin) {
+            isAdmin = admin;
+            document.body.classList.toggle('admin-mode', admin);
+            if (admin && currentUser) {
+                roleDisplay.innerHTML = '<i class="fas fa-user-shield"></i> ' + (currentUser.nama || currentUser.username);
+                roleDisplay.classList.add('admin');
+                loginBtnText.textContent = 'Logout';
+                loginToggleBtn.classList.add('logout');
+                loginToggleBtn.classList.remove('outline');
+            } else {
+                roleDisplay.innerHTML = '<i class="fas fa-user"></i> Pengguna';
+                roleDisplay.classList.remove('admin');
+                loginBtnText.textContent = 'Login';
+                loginToggleBtn.classList.remove('logout');
+                loginToggleBtn.classList.add('outline');
+                authToken = '';
+                currentUser = null;
+            }
+            renderTable();
+            renderKomputer();
+            renderInventaris();
+        }
+
+        loginToggleBtn.addEventListener('click', function() {
+            if (isAdmin) {
+                setAdminMode(false);
+                showToast('👋 Logout berhasil', '');
+            } else {
+                loginModal.classList.add('show');
+                usernameInput.value = 'admin';
+                passwordInput.value = 'admin123';
+                usernameInput.focus();
+            }
+        });
+
+        modalCancelBtn.addEventListener('click', () => loginModal.classList.remove('show'));
+        modalLoginBtn.addEventListener('click', () => {
+            handleLogin(usernameInput.value, passwordInput.value);
+        });
+        passwordInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') handleLogin(usernameInput.value, passwordInput.value);
+        });
+        loginModal.addEventListener('click', e => {
+            if (e.target === loginModal) loginModal.classList.remove('show');
+        });
+
+        // Close CRUD modal on outside click
+        crudModal.addEventListener('click', e => {
+            if (e.target === crudModal) crudModal.classList.remove('show');
+        });
+
+        // ============================================================
+        // TAB
+        // ============================================================
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const panels = {
+            ruang: document.getElementById('ruang'),
+            komputer: document.getElementById('komputer'),
+            inventaris: document.getElementById('inventaris')
+        };
+
+        function activateTab(tabId) {
+            Object.keys(panels).forEach(key => panels[key].classList.remove('active'));
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            if (panels[tabId]) panels[tabId].classList.add('active');
+            tabButtons.forEach(btn => {
+                if (btn.dataset.tab === tabId) btn.classList.add('active');
+            });
+            if (tabId === 'ruang' && calendarInstance) {
+                setTimeout(() => calendarInstance.updateSize(), 100);
+            }
+        }
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                activateTab(this.dataset.tab);
+            });
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tanggalPinjam').value = today;
+
+            await loadData();
+            initCalendar();
+            setAdminMode(false);
+            activateTab('ruang');
+        });
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            (async () => {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('tanggalPinjam').value = today;
+                await loadData();
+                initCalendar();
+                setAdminMode(false);
+                activateTab('ruang');
+            })();
+        }
+
+        // ============================================================
+        // KEYBOARD SHORTCUTS
+        // ============================================================
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (loginModal.classList.contains('show')) loginModal.classList.remove('show');
+                if (crudModal.classList.contains('show')) crudModal.classList.remove('show');
+            }
+        });
+
+        console.log('💻 LAB ICT SMAN 1 Malang');
+        console.log('🔑 Login: admin / admin123');
+        console.log('📊 Data tersimpan di Google Sheets');
+    </script>
+</body>
+</html>
