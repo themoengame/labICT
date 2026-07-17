@@ -832,37 +832,39 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- MODAL LOGIN -->
+    <!-- MODAL LOGIN (dengan form) -->
     <!-- ============================================================ -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box">
-            <h2><i class="fas fa-lock" style="color:#2a7de1;"></i> Login Admin / Petugas</h2>
-            <p>Masukkan kredensial untuk mengakses panel admin.</p>
-            <label>Username</label>
-            <input type="text" id="usernameInput" placeholder="Masukkan username" />
-            <label>Password</label>
-            <input type="password" id="passwordInput" placeholder="Masukkan password" />
-            <div class="modal-actions">
-                <button class="btn-outline" id="modalCancelBtn">Batal</button>
-                <button class="btn-primary" id="modalLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
-            </div>
+            <form id="loginForm" onsubmit="return false;">
+                <h2><i class="fas fa-lock" style="color:#2a7de1;"></i> Login Admin / Petugas</h2>
+                <p>Masukkan kredensial untuk mengakses panel admin.</p>
+                <label>Username</label>
+                <input type="text" id="usernameInput" placeholder="Masukkan username" />
+                <label>Password</label>
+                <input type="password" id="passwordInput" placeholder="Masukkan password" />
+                <div class="modal-actions">
+                    <button type="button" class="btn-outline" id="modalCancelBtn">Batal</button>
+                    <button type="button" class="btn-primary" id="modalLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- ============================================================ -->
-    <!-- MODAL CRUD -->
+    <!-- MODAL CRUD (dengan form) -->
     <!-- ============================================================ -->
     <div class="modal-overlay" id="crudModal">
         <div class="modal-box">
-            <h2 id="crudTitle">Tambah Data</h2>
-            <p id="crudSubtitle">Isi data di bawah ini</p>
-            <form id="crudForm">
+            <form id="crudForm" onsubmit="return false;">
+                <h2 id="crudTitle">Tambah Data</h2>
+                <p id="crudSubtitle">Isi data di bawah ini</p>
                 <div id="crudFields">
                     <!-- Dynamic fields -->
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn-outline" onclick="closeModal('crudModal')">Batal</button>
-                    <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Simpan</button>
+                    <button type="submit" class="btn-primary" id="crudSubmitBtn"><i class="fas fa-save"></i> Simpan</button>
                 </div>
             </form>
         </div>
@@ -872,12 +874,12 @@
     <div id="toast" class="toast"></div>
 
     <!-- ============================================================ -->
-    <!-- JAVASCRIPT - Load FullCalendar dari CDN dengan defer -->
+    <!-- JAVASCRIPT -->
     <!-- ============================================================ -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.js" defer></script>
     <script>
         // ============================================================
-        // KONFIGURASI - URL Apps Script yang sudah di-deploy
+        // KONFIGURASI
         // ============================================================
         const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec';
 
@@ -917,6 +919,7 @@
         const inventarisGrid = $('inventarisGrid');
         const statKomputer = $('statKomputer');
         const statInventaris = $('statInventaris');
+        const crudSubmitBtn = $('crudSubmitBtn');
 
         // ============================================================
         // TOAST & LOADING
@@ -931,6 +934,7 @@
         function showLoading(show) {
             loadingOverlay.classList.toggle('show', show);
             if (submitBtn) submitBtn.disabled = show;
+            if (crudSubmitBtn) crudSubmitBtn.disabled = show;
         }
 
         // ============================================================
@@ -964,7 +968,7 @@
                     });
                 }
 
-                const response = await fetch(url, options);
+                await fetch(url, options);
                 return { status: 'success' };
 
             } catch (error) {
@@ -1167,7 +1171,7 @@
         }
 
         // ============================================================
-        // KALENDER - inisialisasi setelah FullCalendar siap
+        // KALENDER
         // ============================================================
         function updateCalendarEvents() {
             if (!calendarInstance) return;
@@ -1195,7 +1199,6 @@
             const calendarEl = document.getElementById('calendar');
             if (!calendarEl) return;
 
-            // Tunggu FullCalendar siap
             if (typeof FullCalendar === 'undefined') {
                 setTimeout(initCalendar, 500);
                 return;
@@ -1391,6 +1394,7 @@
             document.getElementById(id).classList.remove('show');
         }
 
+        // Event listener untuk CRUD form - menggunakan event listener bukan inline onsubmit
         document.getElementById('crudForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -1417,7 +1421,9 @@
             }
 
             const action = crudData ? 'update' : 'add';
+            showLoading(true);
             await apiCall(action, data, crudSheet, 'POST');
+            showLoading(false);
             showToast('✅ Data berhasil disimpan', 'success');
             closeModal('crudModal');
             await loadData();
@@ -1459,7 +1465,9 @@
                 keperluan: keperluan
             };
 
+            showLoading(true);
             await apiCall('add', newPinjam, 'peminjaman_ruang', 'POST');
+            showLoading(false);
             showToast('📩 Pengajuan berhasil dikirim!', 'success');
             pinjamForm.reset();
             document.getElementById('tanggalPinjam').value = new Date().toISOString().split('T')[0];
@@ -1513,6 +1521,7 @@
             renderInventaris();
         }
 
+        // Event login
         loginToggleBtn.addEventListener('click', function() {
             if (isAdmin) {
                 setAdminMode(false);
@@ -1521,23 +1530,43 @@
                 loginModal.classList.add('show');
                 usernameInput.value = '';
                 passwordInput.value = '';
-                usernameInput.focus();
+                setTimeout(() => usernameInput.focus(), 100);
             }
         });
 
-        modalCancelBtn.addEventListener('click', () => loginModal.classList.remove('show'));
-        modalLoginBtn.addEventListener('click', () => {
-            handleLogin(usernameInput.value, passwordInput.value);
-        });
-        passwordInput.addEventListener('keydown', e => {
-            if (e.key === 'Enter') handleLogin(usernameInput.value, passwordInput.value);
-        });
-        loginModal.addEventListener('click', e => {
-            if (e.target === loginModal) loginModal.classList.remove('show');
+        modalCancelBtn.addEventListener('click', function() {
+            loginModal.classList.remove('show');
         });
 
-        crudModal.addEventListener('click', e => {
-            if (e.target === crudModal) crudModal.classList.remove('show');
+        modalLoginBtn.addEventListener('click', function() {
+            handleLogin(usernameInput.value, passwordInput.value);
+        });
+
+        passwordInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleLogin(usernameInput.value, passwordInput.value);
+            }
+        });
+
+        usernameInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                passwordInput.focus();
+            }
+        });
+
+        // Close modal when clicking overlay
+        loginModal.addEventListener('click', function(e) {
+            if (e.target === loginModal) {
+                loginModal.classList.remove('show');
+            }
+        });
+
+        crudModal.addEventListener('click', function(e) {
+            if (e.target === crudModal) {
+                crudModal.classList.remove('show');
+            }
         });
 
         // ============================================================
@@ -1588,7 +1617,7 @@
             document.addEventListener('DOMContentLoaded', init);
         }
 
-        // Fallback: jika FullCalendar belum siap, retry
+        // Fallback reload jika FullCalendar belum siap
         setTimeout(function() {
             if (typeof FullCalendar === 'undefined') {
                 console.warn('FullCalendar belum siap, reloading...');
@@ -1610,6 +1639,7 @@
         console.log('🔑 Login: admin / admin123  atau  petugas / petugas123');
         console.log('📊 Data tersimpan di Google Sheets');
         console.log('ℹ️  Login form sekarang kosong (isi manual)');
+        console.log('✅ Modal sudah diperbaiki, tidak ada error DOM');
     </script>
 </body>
 </html>
