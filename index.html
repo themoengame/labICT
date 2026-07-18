@@ -1,1446 +1,699 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LAB ICT SMAN 1 Malang</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
-    <script src="jsonp.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB ICT · SMAN 1 Malang</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background: #f0f4fa; min-height: 100vh; padding: 1.2rem; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        .topbar {
-            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
-            background: white; padding: 0.8rem 1.8rem; border-radius: 40px;
-            box-shadow: 0 4px 12px rgba(0,20,40,0.06); margin-bottom: 2rem;
-            border: 1px solid #e4ecf5;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, 'Segoe UI', sans-serif; }
+        body { background: #eef2f5; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 24px;
+            padding: 20px 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
         }
-        .logo { font-size: 1.3rem; font-weight: 700; color: #0b2b4a; display: flex; align-items: center; gap: 0.6rem; }
-        .logo i { color: #2a7de1; }
-        .logo span { color: #1f6d3b; }
-        .user-role { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
-        .role-badge {
-            background: #e9eff6; padding: 0.4rem 1.2rem; border-radius: 40px;
-            font-weight: 500; color: #1f4e7a; font-size: 0.9rem;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .role-badge.admin { background: #dff0d8; color: #1f6d3b; }
-        .btn-login {
-            background: #1a5bb5; border: none; color: white; padding: 0.5rem 1.6rem;
-            border-radius: 40px; font-weight: 600; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;
-        }
-        .btn-login:hover { background: #134a94; transform: scale(0.97); }
-        .btn-login.outline { background: transparent; border: 1px solid #bccfe0; color: #1f4e7a; }
-        .btn-login.outline:hover { background: #eef4fb; }
-        .btn-login.logout { background: #b13a3a; }
-        .btn-login.logout:hover { background: #8f2e2e; }
-        .btn-laporan {
-            background: #1f8b4d; border: none; color: white; padding: 0.5rem 1.6rem;
-            border-radius: 40px; font-weight: 600; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem;
-            text-decoration: none;
-        }
-        .btn-laporan:hover { background: #16703d; transform: scale(0.97); }
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem; margin-bottom: 1.8rem;
-        }
-        .stat-card {
-            background: white; padding: 1rem 1.2rem; border-radius: 20px;
-            border: 1px solid #eaf0f6; display: flex; align-items: center; gap: 0.8rem;
-        }
-        .stat-card i { font-size: 1.8rem; color: #2a7de1; width: 2.4rem; text-align: center; }
-        .stat-info h4 { font-size: 0.75rem; color: #4d627a; font-weight: 500; }
-        .stat-info .number { font-size: 1.4rem; font-weight: 700; color: #0b2b4a; }
-        .tabs {
-            display: flex; flex-wrap: wrap; gap: 0.2rem;
-            margin-bottom: 1.8rem; border-bottom: 2px solid #dce5ef; padding-bottom: 0.2rem;
-        }
-        .tab-btn {
-            background: transparent; border: none; padding: 0.6rem 1.6rem;
-            font-weight: 600; font-size: 0.95rem; color: #4d627a;
-            border-radius: 40px 40px 0 0; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .tab-btn:hover { background: #eaf1fb; color: #1a4d7a; }
-        .tab-btn.active { background: white; color: #1a5bb5; box-shadow: 0 -2px 0 #1a5bb5; }
-        .panel { display: none; animation: fade 0.25s ease; }
-        .panel.active { display: block; }
-        @keyframes fade { 0% { opacity: 0.4; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(0); } }
+        .header h1 { font-size: 1.4rem; color: #1a2a3a; }
+        .header h1 span { color: #2c7da0; }
+        .header .right { display: flex; align-items: center; gap: 16px; }
+        .btn-login { background: #1a2a3a; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: 600; }
+        .btn-login:hover { background: #2a3a4a; }
+        .btn-logout { background: #e74c3c; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: 600; display: none; }
+        .btn-logout:hover { background: #c0392b; }
+        .user-badge { background: #e8f0fe; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; color: #1a2a3a; display: none; }
+        .user-badge.show { display: inline-block; }
+        
+        /* Card */
         .card {
-            background: white; border-radius: 28px; padding: 1.5rem 1.8rem 1.8rem;
-            box-shadow: 0 6px 20px rgba(0,20,40,0.04); border: 1px solid #e4ecf5;
-            margin-bottom: 2rem;
+            background: white;
+            border-radius: 24px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         }
-        .card-header {
-            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        .card-header h2 { font-size: 1.3rem; font-weight: 600; color: #0b2b4a; display: flex; align-items: center; gap: 0.6rem; }
-        .card-header h2 i { color: #2a7de1; }
-        .card-header .badge-sheet { font-size: 0.7rem; background: #e9edf2; padding: 0.2rem 0.8rem; border-radius: 40px; color: #4d627a; }
-        .btn-primary {
-            background: #1a5bb5; border: none; color: white; padding: 0.5rem 1.4rem;
-            border-radius: 40px; font-weight: 500; font-size: 0.85rem; cursor: pointer;
-            transition: 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
-            border: 1px solid transparent;
-        }
-        .btn-primary:hover { background: #134a94; transform: scale(0.97); }
-        .btn-primary.green { background: #1f8b4d; }
-        .btn-primary.green:hover { background: #16703d; }
-        .btn-primary.red { background: #b13a3a; }
-        .btn-primary.red:hover { background: #8f2e2e; }
-        .btn-primary.gray { background: #6b7f97; }
-        .btn-primary.gray:hover { background: #55677d; }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-        .table-wrap { overflow-x: auto; border-radius: 16px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        th {
-            text-align: left; padding: 0.7rem 0.8rem; background: #f2f7fd;
-            color: #1f3b5c; font-weight: 600; border-bottom: 2px solid #d7e2f0;
-        }
-        td { padding: 0.7rem 0.8rem; border-bottom: 1px solid #e6eef8; vertical-align: middle; }
-        tr:last-child td { border-bottom: none; }
-        .status-badge {
-            padding: 0.15rem 1rem; border-radius: 40px; font-size: 0.75rem;
-            font-weight: 500; display: inline-block;
-        }
-        .status-badge.approved { background: #dff0d8; color: #1f6d3b; }
-        .status-badge.pending { background: #fff3d6; color: #a46b1a; }
-        .status-badge.rejected { background: #fde8e8; color: #b13a3a; }
-        .status-badge.done { background: #e9edf2; color: #4d5c6e; }
-        .action-icons i {
-            margin: 0 3px; cursor: pointer; transition: 0.15s;
-            font-size: 0.95rem; padding: 4px; border-radius: 50%;
-        }
-        .action-icons i:hover { transform: scale(1.15); }
-        .action-icons i.fa-check-circle { color: #1f8b4d; }
-        .action-icons i.fa-check-circle:hover { background: #dff0d8; }
-        .action-icons i.fa-times-circle { color: #b13a3a; }
-        .action-icons i.fa-times-circle:hover { background: #fde8e8; }
-        .action-icons i.fa-check-double { color: #6b7f97; }
-        .action-icons i.fa-check-double:hover { background: #e9edf2; }
-        .action-icons i.fa-undo { color: #f39c12; }
-        .action-icons i.fa-undo:hover { background: #fff3d6; }
-        .action-icons i.fa-trash-alt { color: #b13a3a; }
-        .action-icons i.fa-trash-alt:hover { background: #fde8e8; }
-        .action-icons i.fa-edit { color: #2a7de1; }
-        .action-icons i.fa-edit:hover { background: #eaf1fb; }
-        .form-row {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem; margin-bottom: 1rem;
-        }
-        .form-group { display: flex; flex-direction: column; }
-        .form-group label { font-weight: 500; color: #1f3b5c; font-size: 0.85rem; margin-bottom: 0.2rem; }
+        .card h2 { font-size: 1.2rem; color: #1a2a3a; margin-bottom: 16px; }
+        .card h2 .badge { font-size: 0.7rem; background: #e74c3c; color: white; padding: 2px 10px; border-radius: 12px; margin-left: 8px; }
+        
+        /* Form */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-weight: 600; color: #4a5a6a; font-size: 0.85rem; }
         .form-group input, .form-group select, .form-group textarea {
-            padding: 0.6rem 1rem; border-radius: 40px; border: 1px solid #d0ddee;
-            font-size: 0.9rem; outline: none; transition: 0.2s;
+            padding: 10px 14px;
+            border: 1.5px solid #dde4ec;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            width: 100%;
         }
-        .form-group textarea { border-radius: 16px; resize: vertical; min-height: 60px; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            border-color: #2a7de1; box-shadow: 0 0 0 3px rgba(42,125,225,0.15);
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #2c7da0; }
+        .form-group textarea { resize: vertical; min-height: 60px; }
+        .form-full { grid-column: 1 / -1; }
+        
+        .btn { padding: 10px 28px; border: none; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: #2c7da0; color: white; }
+        .btn-primary:hover { background: #1a6a8a; transform: translateY(-1px); }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-success:hover { background: #1e8449; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-warning:hover { background: #d68910; }
+        .btn-sm { padding: 4px 14px; font-size: 0.75rem; }
+        .btn-outline { background: transparent; border: 1.5px solid #dde4ec; color: #4a5a6a; }
+        .btn-outline:hover { background: #f0f2f5; }
+        
+        .form-actions { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+        
+        /* Table */
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #eef2f5; }
+        th { background: #f8fafc; font-weight: 600; color: #4a5a6a; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { font-size: 0.9rem; }
+        .text-center { text-align: center; }
+        .text-muted { color: #8a9aa8; }
+        
+        .status-badge { padding: 3px 12px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
+        .status-pending { background: #fff3e0; color: #e65100; }
+        .status-approved { background: #e8f5e9; color: #2e7d32; }
+        .status-rejected { background: #ffebee; color: #c62828; }
+        .status-returned { background: #e3f2fd; color: #0d47a1; }
+        
+        .notification { padding: 12px 18px; border-radius: 12px; margin-bottom: 16px; display: none; }
+        .notification.success { background: #e8f5e9; color: #2e7d32; display: block; }
+        .notification.error { background: #ffebee; color: #c62828; display: block; }
+        .notification.info { background: #e3f2fd; color: #0d47a1; display: block; }
+        
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 16px; }
+        .stat-item { background: #f8fafc; padding: 16px; border-radius: 16px; text-align: center; }
+        .stat-item .number { font-size: 1.8rem; font-weight: 700; color: #1a2a3a; }
+        .stat-item .label { font-size: 0.75rem; color: #6b7a8a; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; align-items: stretch; text-align: center; }
+            .header .right { justify-content: center; flex-wrap: wrap; }
         }
-        .form-actions { display: flex; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap; }
-        #calendar { max-width: 100%; margin: 0 auto; background: white; border-radius: 20px; padding: 0.5rem; }
-        .fc .fc-button-primary { background: #1a5bb5; border-color: #1a5bb5; }
-        .fc .fc-button-primary:hover { background: #134a94; border-color: #134a94; }
-        .fc .fc-daygrid-day.fc-day-today { background: #f0f7ff; }
-        .fc-event { cursor: pointer; }
-        .fc-event .fc-event-title { font-size: 0.8rem; }
-        .fc-daygrid-event { white-space: normal !important; }
+        
+        /* Modal */
         .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
-            align-items: center; justify-content: center; z-index: 999;
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
         }
-        .modal-overlay.show { display: flex; }
+        .modal-overlay.active { display: flex; }
         .modal-box {
-            background: white; border-radius: 32px; padding: 2.2rem 2.5rem;
-            max-width: 550px; width: 90%; max-height: 90vh; overflow-y: auto;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: fade 0.25s ease;
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
-        .modal-box h2 { font-size: 1.5rem; color: #0b2b4a; margin-bottom: 0.5rem; }
-        .modal-box p { color: #4d627a; margin-bottom: 1.5rem; font-size: 0.9rem; }
-        .modal-box .form-group { margin-bottom: 1rem; }
-        .modal-box .form-group label { display: block; margin-bottom: 0.2rem; }
-        .modal-box .form-group input, .modal-box .form-group select, .modal-box .form-group textarea { width: 100%; }
-        .modal-actions {
-            display: flex; gap: 0.8rem; margin-top: 1.5rem; justify-content: flex-end;
-        }
-        .modal-actions .btn-primary { padding: 0.6rem 2rem; }
-        .modal-actions .btn-outline {
-            background: transparent; border: 1px solid #bccfe0; color: #1f4e7a;
-            padding: 0.6rem 1.8rem; border-radius: 40px; font-weight: 500; cursor: pointer;
-            transition: 0.2s;
-        }
-        .modal-actions .btn-outline:hover { background: #eef4fb; }
-        .admin-only { display: none !important; }
-        body.admin-mode .admin-only { display: inline-flex !important; }
-        body.admin-mode td.admin-only { display: table-cell !important; }
-        body.admin-mode th.admin-only { display: table-cell !important; }
-        .toast {
-            position: fixed; bottom: 30px; right: 30px; background: #1a5bb5;
-            color: white; padding: 1rem 1.8rem; border-radius: 40px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2); font-weight: 500; z-index: 1000;
-            display: none; animation: fade 0.3s ease; max-width: 400px;
-        }
-        .toast.error { background: #b13a3a; }
-        .toast.success { background: #1f8b4d; }
-        .toast.warning { background: #d48c1a; }
-        .toast.show { display: block; }
-        .loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95); display: none;
-            align-items: center; justify-content: center; z-index: 9999;
-            flex-direction: column; gap: 1.5rem;
-        }
-        .loading-overlay.show { display: flex; }
-        .spinner {
-            width: 60px; height: 60px; border: 6px solid #e4ecf5;
-            border-top-color: #1a5bb5; border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { color: #1f3b5c; font-weight: 600; font-size: 1.1rem; }
-        .loading-sub { color: #6b7f97; font-size: 0.9rem; }
-        .loading-progress {
-            width: 300px; max-width: 80%; height: 6px;
-            background: #e4ecf5; border-radius: 40px; overflow: hidden;
-        }
-        .loading-progress-bar {
-            height: 100%; width: 0%;
-            background: linear-gradient(90deg, #2a7de1, #1a5bb5);
-            border-radius: 40px; transition: width 0.5s ease;
-        }
-        .footer-note {
-            text-align: center; color: #6b7f97; font-size: 0.85rem;
-            border-top: 1px solid #dce5ef; padding-top: 1.5rem; margin-top: 1rem;
-        }
-        .master-badge { font-size: 0.7rem; background: #e9edf2; padding: 0.1rem 0.6rem; border-radius: 40px; color: #4d627a; margin-left: 0.5rem; }
-        .master-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
-        .master-box { background: #f9fcff; border-radius: 16px; padding: 1rem; border: 1px solid #e4ecf5; }
-        .master-box h3 { color: #0b2b4a; margin-bottom: 0.5rem; font-size: 1rem; }
-        .master-box h3 i { color: #2a7de1; margin-right: 0.5rem; }
-        .master-item { padding: 6px 0; border-bottom: 1px solid #eef4f8; font-size: 0.85rem; color: #4d627a; }
-        .master-item strong { color: #0b2b4a; }
-        .master-item .badge { font-size: 0.65rem; background: #e9edf2; padding: 0.05rem 0.5rem; border-radius: 40px; color: #4d627a; }
-        .kategori-badge { font-size: 0.65rem; padding: 0.05rem 0.6rem; border-radius: 40px; display: inline-block; }
-        .kategori-badge.komputer { background: #dff0d8; color: #1f6d3b; }
-        .kategori-badge.furniture { background: #fff3d6; color: #a46b1a; }
-        .kategori-badge.elektronik { background: #fde8e8; color: #b13a3a; }
-        .kategori-badge.aksesoris { background: #e9edf2; color: #4d5c6e; }
-        @media (max-width: 680px) {
-            body { padding: 0.8rem; }
-            .topbar { padding: 0.6rem 1rem; border-radius: 28px; }
-            .logo { font-size: 1rem; }
-            .tab-btn { padding: 0.4rem 1rem; font-size: 0.8rem; }
-            .card { padding: 1rem; }
-            .modal-box { padding: 1.8rem 1.5rem; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .form-row { grid-template-columns: 1fr; }
-            .master-grid { grid-template-columns: 1fr; }
-        }
+        .modal-box h2 { margin-bottom: 16px; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
     </style>
 </head>
 <body>
-    <div class="loading-overlay show" id="loadingOverlay">
-        <div class="spinner"></div>
-        <div class="loading-text">⏳ Memuat LAB ICT SMAN 1 Malang</div>
-        <div class="loading-sub" id="loadingStatus">Menghubungi Google Sheets...</div>
-        <div class="loading-progress">
-            <div class="loading-progress-bar" id="loadingProgressBar"></div>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🏫 LAB <span>ICT</span> · SMAN 1 Malang</h1>
+        <div class="right">
+            <span class="user-badge" id="userBadge">👤 Admin</span>
+            <button class="btn-login" id="loginBtn" onclick="window.location.href='login.html'">🔐 Login Admin</button>
+            <button class="btn-logout" id="logoutBtn" onclick="logout()">🚪 Logout</button>
         </div>
     </div>
 
-    <div class="container">
-        <div class="topbar">
-            <div class="logo"><i class="fas fa-microchip"></i> LAB <span>ICT</span> · SMAN 1 Malang</div>
-            <div class="user-role">
-                <a href="laporan.html" class="btn-laporan"><i class="fas fa-file-alt"></i> Laporan</a>
-                <span class="role-badge" id="roleDisplay"><i class="fas fa-user"></i> Pengguna</span>
-                <button class="btn-login outline" id="loginToggleBtn"><i class="fas fa-sign-in-alt"></i> <span id="loginBtnText">Login</span></button>
-            </div>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card"><i class="fas fa-door-open"></i><div class="stat-info"><h4>Ruang Lab</h4><div class="number" id="statRuang">0</div></div></div>
-            <div class="stat-card"><i class="fas fa-boxes"></i><div class="stat-info"><h4>Item Inventaris</h4><div class="number" id="statInventaris">0</div></div></div>
-            <div class="stat-card"><i class="fas fa-calendar-check"></i><div class="stat-info"><h4>Peminjaman Aktif</h4><div class="number" id="activeCount">0</div></div></div>
-            <div class="stat-card"><i class="fas fa-clock"></i><div class="stat-info"><h4>Menunggu Approve</h4><div class="number" id="pendingCount">0</div></div></div>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="ruang"><i class="fas fa-door-open"></i> Peminjaman Ruang</button>
-            <button class="tab-btn" data-tab="pinjam_inventaris"><i class="fas fa-box"></i> Peminjaman Inventaris</button>
-            <button class="tab-btn" data-tab="kalender"><i class="fas fa-calendar-alt"></i> Kalender</button>
-            <button class="tab-btn" data-tab="master"><i class="fas fa-database"></i> Master Data</button>
-            <button class="tab-btn admin-only" data-tab="users"><i class="fas fa-users-cog"></i> Users</button>
-        </div>
-
-        <div id="ruang" class="panel active">
-            <div class="card">
-                <div class="card-header">
-                    <h2><i class="fas fa-pen"></i> Ajukan Peminjaman Ruang</h2>
-                    <span class="badge-sheet">Sheet: peminjaman_ruang</span>
-                </div>
-                <form id="pinjamRuangForm" novalidate>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="peminjamName">Nama Peminjam <span style="color:red;">*</span></label>
-                            <input type="text" id="peminjamName" placeholder="Nama lengkap" autocomplete="name" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="ruangSelect">Ruang Lab <span style="color:red;">*</span></label>
-                            <select id="ruangSelect" required><option value="">-- Pilih Ruang --</option></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="tanggalPinjam">Tanggal <span style="color:red;">*</span></label>
-                            <input type="date" id="tanggalPinjam" required autocomplete="off" />
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="jamMulai">Jam Mulai <span style="color:red;">*</span></label>
-                            <input type="time" id="jamMulai" required autocomplete="off" />
-                        </div>
-                        <div class="form-group">
-                            <label for="jamSelesai">Jam Selesai <span style="color:red;">*</span></label>
-                            <input type="time" id="jamSelesai" required autocomplete="off" />
-                        </div>
-                        <div class="form-group">
-                            <label for="keperluanRuang">Keperluan</label>
-                            <input type="text" id="keperluanRuang" placeholder="Contoh: Praktikum" autocomplete="off" />
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary" id="submitRuangBtn"><i class="fas fa-paper-plane"></i> Ajukan Peminjaman</button>
-                        <button type="reset" class="btn-primary gray"><i class="fas fa-undo"></i> Reset</button>
-                    </div>
-                </form>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h2><i class="fas fa-list-ul"></i> Daftar Peminjaman Ruang (20 Terakhir)</h2>
-                    <span style="font-size:0.85rem; color:#4d627a;" id="totalPinjamRuang">Total: 0</span>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Ruang</th><th>Peminjam</th><th>Tanggal</th><th>Jam</th><th>Status</th><th class="admin-only">Aksi</th></tr></thead>
-                        <tbody id="pinjamRuangTableBody"><tr><td colspan="6" style="text-align:center; color:#6b7f97;">Memuat data...</td></tr></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="pinjam_inventaris" class="panel">
-            <div class="card">
-                <div class="card-header">
-                    <h2><i class="fas fa-box"></i> Ajukan Peminjaman Inventaris</h2>
-                    <span class="badge-sheet">Sheet: peminjaman_inventaris</span>
-                </div>
-                <form id="pinjamInventarisForm" novalidate>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="pinjamInvNama">Nama Peminjam <span style="color:red;">*</span></label>
-                            <input type="text" id="pinjamInvNama" placeholder="Nama lengkap" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="pinjamInvItem">Nama Item <span style="color:red;">*</span></label>
-                            <select id="pinjamInvItem" required><option value="">-- Pilih Item --</option></select>
-                        </div>
-                        <div class="form-group">
-                            <label for="pinjamInvJumlah">Jumlah <span style="color:red;">*</span></label>
-                            <input type="number" id="pinjamInvJumlah" value="1" min="1" required />
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="pinjamInvTanggal">Tanggal Pinjam <span style="color:red;">*</span></label>
-                            <input type="date" id="pinjamInvTanggal" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="pinjamInvKembali">Tanggal Kembali <span style="color:red;">*</span></label>
-                            <input type="date" id="pinjamInvKembali" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="pinjamInvKeperluan">Keperluan</label>
-                            <input type="text" id="pinjamInvKeperluan" placeholder="Contoh: Praktikum" />
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn-primary" id="submitInvBtn"><i class="fas fa-paper-plane"></i> Ajukan Peminjaman</button>
-                        <button type="reset" class="btn-primary gray"><i class="fas fa-undo"></i> Reset</button>
-                    </div>
-                </form>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h2><i class="fas fa-list-ul"></i> Daftar Peminjaman Inventaris (20 Terakhir)</h2>
-                    <span style="font-size:0.85rem; color:#4d627a;" id="totalPinjamInv">Total: 0</span>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Item</th><th>Peminjam</th><th>Jumlah</th><th>Tgl Pinjam</th><th>Tgl Kembali</th><th>Status</th><th class="admin-only">Aksi</th></tr></thead>
-                        <tbody id="pinjamInvTableBody"><tr><td colspan="7" style="text-align:center; color:#6b7f97;">Memuat data...</td></tr></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div id="kalender" class="panel">
-            <div class="card">
-                <div class="card-header">
-                    <h2><i class="fas fa-calendar-alt"></i> Kalender Peminjaman</h2>
-                    <span style="font-size:0.85rem; color:#4d627a;">
-                        <span style="background:#3788d8; color:white; padding:0 8px; border-radius:4px;">🔵 Ruang</span>
-                        <span style="background:#27ae60; color:white; padding:0 8px; border-radius:4px;">🟢 Inventaris</span>
-                        <span style="background:#f39c12; color:white; padding:0 8px; border-radius:4px;">🟡 Menunggu</span>
-                    </span>
-                </div>
-                <div id="calendar"></div>
-            </div>
-        </div>
-
-        <div id="master" class="panel">
-            <div class="card">
-                <div class="card-header">
-                    <h2><i class="fas fa-database"></i> Master Data</h2>
-                    <span style="font-size:0.85rem; color:#4d627a;">Satu tempat untuk semua data master</span>
-                </div>
-                <div style="margin-bottom:1.5rem;">
-                    <button class="btn-primary admin-only" id="btnTambahInventarisMaster" style="margin-right:0.5rem;"><i class="fas fa-plus-circle"></i> Tambah Item Inventaris</button>
-                    <button class="btn-primary admin-only" id="btnTambahRuangMaster"><i class="fas fa-plus-circle"></i> Tambah Ruang</button>
-                </div>
-                <div class="master-grid">
-                    <div class="master-box">
-                        <h3><i class="fas fa-door-open"></i> Ruang Lab <span class="master-badge">master_ruang</span></h3>
-                        <div id="masterRuangList"><p style="color:#6b7f97;">Memuat...</p></div>
-                    </div>
-                    <div class="master-box">
-                        <h3><i class="fas fa-boxes"></i> Inventaris & Aset Lab <span class="master-badge">master_inventaris</span></h3>
-                        <div style="font-size:0.75rem; color:#6b7f97; margin-bottom:0.5rem;">
-                            <span class="status-badge approved">Boleh Dipinjam</span>
-                            <span class="status-badge rejected">Tidak Boleh</span>
-                            <span class="status-badge pending">Dipinjam</span>
-                        </div>
-                        <div id="masterInventarisList"><p style="color:#6b7f97;">Memuat...</p></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="users" class="panel">
-            <div class="card">
-                <div class="card-header">
-                    <h2><i class="fas fa-users-cog"></i> Manajemen Users</h2>
-                    <button class="btn-primary admin-only" id="btnTambahUser"><i class="fas fa-plus-circle"></i> Tambah User</button>
-                </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Username</th><th>Role</th><th>Nama Lengkap</th><th class="admin-only">Aksi</th></tr></thead>
-                        <tbody id="usersTableBody"><tr><td colspan="4" style="text-align:center; color:#6b7f97;">Memuat data users...</td></tr></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer-note">
-            <i class="fas fa-database"></i> Data tersimpan di Google Sheets · 
-            <i class="fas fa-github"></i> Hosted on GitHub Pages
-        </div>
+    <!-- STATS -->
+    <div class="stats-grid" id="statsContainer">
+        <div class="stat-item"><div class="number" id="statRuang">0</div><div class="label">🏢 Ruang</div></div>
+        <div class="stat-item"><div class="number" id="statInventaris">0</div><div class="label">📦 Inventaris</div></div>
+        <div class="stat-item"><div class="number" id="statPeminjaman">0</div><div class="label">📋 Total Peminjaman</div></div>
+        <div class="stat-item"><div class="number" id="statMenunggu">0</div><div class="label">⏳ Menunggu Approve</div></div>
     </div>
 
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-box">
-            <form id="loginForm" novalidate>
-                <h2><i class="fas fa-lock" style="color:#2a7de1;"></i> Login Admin / Petugas</h2>
-                <p>Masukkan kredensial yang terdaftar di sheet <strong>users</strong></p>
+    <!-- NOTIFICATION -->
+    <div id="notification" class="notification"></div>
+
+    <!-- FORM PENGAJUAN -->
+    <div class="card">
+        <h2>📝 Ajukan Peminjaman</h2>
+        <form id="peminjamanForm">
+            <div class="form-grid">
                 <div class="form-group">
-                    <label for="usernameInput">Username</label>
-                    <input type="text" id="usernameInput" placeholder="Masukkan username" autocomplete="username" />
+                    <label>Jenis Peminjaman *</label>
+                    <select id="jenisPeminjaman" required>
+                        <option value="">-- Pilih Jenis --</option>
+                        <option value="ruang">🏢 Ruang Lab</option>
+                        <option value="inventaris">📦 Inventaris</option>
+                    </select>
+                </div>
+                <div class="form-group" id="itemContainer">
+                    <label>Pilih Item *</label>
+                    <select id="itemSelect" required><option value="">-- Pilih Item --</option></select>
                 </div>
                 <div class="form-group">
-                    <label for="passwordInput">Password</label>
-                    <input type="password" id="passwordInput" placeholder="Masukkan password" autocomplete="current-password" />
+                    <label>Nama Peminjam *</label>
+                    <input type="text" id="namaPeminjam" placeholder="Nama lengkap" required>
                 </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-outline" id="modalCancelBtn">Batal</button>
-                    <button type="button" class="btn-primary" id="modalLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                <div class="form-group" id="jumlahContainer" style="display:none;">
+                    <label>Jumlah *</label>
+                    <input type="number" id="jumlah" min="1" value="1">
                 </div>
-            </form>
+                <div class="form-group">
+                    <label>Tanggal Pinjam *</label>
+                    <input type="date" id="tanggalPinjam" required>
+                </div>
+                <div class="form-group">
+                    <label>Tanggal Kembali</label>
+                    <input type="date" id="tanggalKembali">
+                </div>
+                <div class="form-group form-full">
+                    <label>Keperluan</label>
+                    <textarea id="keperluan" placeholder="Contoh: Praktikum, Ujian, dll"></textarea>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">📤 Ajukan Peminjaman</button>
+                <button type="reset" class="btn btn-outline">↺ Reset</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- DAFTAR PEMINJAMAN -->
+    <div class="card">
+        <h2>📋 Daftar Peminjaman <span class="badge" id="totalPeminjamanBadge">0</span></h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Jenis</th>
+                        <th>Item/Ruang</th>
+                        <th>Peminjam</th>
+                        <th>Jumlah</th>
+                        <th>Tgl Pinjam</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="peminjamanTableBody">
+                    <tr><td colspan="8" class="text-center text-muted">⏳ Memuat data...</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="modal-overlay" id="crudModal">
-        <div class="modal-box">
-            <form id="crudForm" novalidate>
-                <h2 id="crudTitle">Tambah Data</h2>
-                <p id="crudSubtitle">Isi data di bawah ini</p>
-                <div id="crudFields"></div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-outline" id="crudCancelBtn">Batal</button>
-                    <button type="submit" class="btn-primary" id="crudSubmitBtn"><i class="fas fa-save"></i> Simpan</button>
-                </div>
-            </form>
+</div>
+
+<!-- MODAL ADMIN -->
+<div class="modal-overlay" id="adminModal">
+    <div class="modal-box">
+        <h2 id="modalTitle">⚙️ Aksi Admin</h2>
+        <div id="modalBody"></div>
+        <div class="modal-actions">
+            <button class="btn btn-success" id="modalApproveBtn">✅ Setujui</button>
+            <button class="btn btn-danger" id="modalRejectBtn">❌ Tolak</button>
+            <button class="btn btn-outline" onclick="closeModal()">Tutup</button>
         </div>
     </div>
+</div>
 
-    <div id="toast" class="toast"></div>
+<script>
+// ============================================================
+// KONFIGURASI - GANTI DENGAN URL APPS SCRIPT ANDA
+// ============================================================
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec";
 
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-    <script>
-    (function() {
-        'use strict';
-
-        // ============================================================
-        // KONFIGURASI - GANTI DENGAN URL APPS SCRIPT ANDA
-        // ============================================================
-        const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec';
-
-        // ============================================================
-        // API WRAPPER - Menggunakan JSONP
-        // ============================================================
-        const api = createApiWrapper(GOOGLE_SHEETS_URL);
-
-        // ============================================================
-        // FORMAT FUNCTIONS
-        // ============================================================
-        const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-
-        function formatTanggal(dateStr) {
-            if (!dateStr) return '-';
-            let date = new Date(dateStr);
-            if (isNaN(date.getTime())) {
-                const parts = dateStr.split('-');
-                if (parts.length === 3) {
-                    const y = parseInt(parts[0]);
-                    const m = parseInt(parts[1]) - 1;
-                    const d = parseInt(parts[2]);
-                    if (!isNaN(y) && !isNaN(m) && !isNaN(d)) date = new Date(y, m, d);
-                }
-            }
-            if (isNaN(date.getTime())) return dateStr;
-            return date.getDate() + ' ' + BULAN[date.getMonth()] + ' ' + date.getFullYear();
-        }
-
-        function formatJam(timeStr) {
-            if (!timeStr) return '-';
-            if (/^\d{2}:\d{2}$/.test(timeStr)) return timeStr;
-            const match = timeStr.match(/\d{2}:\d{2}/);
-            if (match) return match[0];
-            const date = new Date(timeStr);
-            if (!isNaN(date.getTime())) {
-                return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
-            }
-            return timeStr;
-        }
-
-        // ============================================================
-        // STATE
-        // ============================================================
-        let peminjamanRuang = [], peminjamanInventaris = [], masterRuang = [], masterInventaris = [], users = [];
-        let isAdmin = false, currentUser = null, calendarInstance = null, crudMode = '', crudData = null;
-
-        // ============================================================
-        // DOM REFS
-        // ============================================================
-        const $ = id => document.getElementById(id);
-        const loginModal = $('loginModal'), crudModal = $('crudModal');
-        const loginToggleBtn = $('loginToggleBtn'), loginBtnText = $('loginBtnText'), roleDisplay = $('roleDisplay');
-        const modalCancelBtn = $('modalCancelBtn'), modalLoginBtn = $('modalLoginBtn');
-        const usernameInput = $('usernameInput'), passwordInput = $('passwordInput');
-        const pinjamRuangForm = $('pinjamRuangForm'), pinjamInventarisForm = $('pinjamInventarisForm');
-        const ruangTableBody = $('pinjamRuangTableBody'), invTableBody = $('pinjamInvTableBody'), usersTableBody = $('usersTableBody');
-        const totalPinjamRuang = $('totalPinjamRuang'), totalPinjamInv = $('totalPinjamInv');
-        const activeCount = $('activeCount'), pendingCount = $('pendingCount');
-        const toast = $('toast'), loadingOverlay = $('loadingOverlay'), loadingStatus = $('loadingStatus'), loadingProgressBar = $('loadingProgressBar');
-        const statRuang = $('statRuang'), statInventaris = $('statInventaris');
-        const ruangSelect = $('ruangSelect'), pinjamInvItem = $('pinjamInvItem');
-        const masterRuangList = $('masterRuangList'), masterInventarisList = $('masterInventarisList');
-        const btnTambahInventarisMaster = $('btnTambahInventarisMaster'), btnTambahRuangMaster = $('btnTambahRuangMaster'), btnTambahUser = $('btnTambahUser');
-
-        // ============================================================
-        // TOAST & LOADING
-        // ============================================================
-        function showToast(msg, type = '') {
-            toast.textContent = msg;
-            toast.className = 'toast show ' + type;
-            clearTimeout(toast._timer);
-            toast._timer = setTimeout(() => toast.classList.remove('show'), 4000);
-        }
-
-        function updateLoading(text, progress) {
-            if (loadingStatus) loadingStatus.textContent = text;
-            if (loadingProgressBar) loadingProgressBar.style.width = progress + '%';
-        }
-
-        function hideLoading() { 
-            loadingOverlay.classList.remove('show'); 
-        }
-
-        function showLoading(text) {
-            loadingOverlay.classList.add('show');
-            if (text) loadingStatus.textContent = text;
-        }
-
-        // ============================================================
-        // API CALL VIA JSONP
-        // ============================================================
-        async function apiCall(action, params = {}) {
-            try {
-                const result = await api.call(action, params);
-                return result;
-            } catch (error) {
-                console.error('API Error:', error);
-                return { status: 'error', message: error.toString() };
-            }
-        }
-
-        // ============================================================
-        // LOAD ALL DATA
-        // ============================================================
-async function loadAllData() {
-    showLoading('Memuat data...');
-    let progress = 0;
+// ============================================================
+// JSONP HELPER - SAMA SEPERTI DI input_produksi.html
+// ============================================================
+const JSONP = {
+    _callbackId: 0,
+    _pending: {},
     
+    request(url, params = {}, timeout = 30000) {
+        return new Promise((resolve, reject) => {
+            const callbackName = 'jsonp_callback_' + (++this._callbackId);
+            const script = document.createElement('script');
+            
+            const timer = setTimeout(() => {
+                this._cleanup(callbackName);
+                reject(new Error('Request timeout after ' + timeout + 'ms'));
+            }, timeout);
+            
+            this._pending[callbackName] = {
+                resolve: (data) => {
+                    clearTimeout(timer);
+                    this._cleanup(callbackName);
+                    resolve(data);
+                },
+                reject: (error) => {
+                    clearTimeout(timer);
+                    this._cleanup(callbackName);
+                    reject(error);
+                }
+            };
+            
+            const urlParams = new URLSearchParams(params);
+            urlParams.append('callback', callbackName);
+            urlParams.append('_t', Date.now());
+            
+            window[callbackName] = function(data) {
+                if (this._pending[callbackName]) {
+                    this._pending[callbackName].resolve(data);
+                }
+            }.bind(this);
+            
+            script.onerror = function() {
+                if (this._pending[callbackName]) {
+                    this._pending[callbackName].reject(new Error('Network error or script load failed'));
+                }
+            }.bind(this);
+            
+            script.src = url + '?' + urlParams.toString();
+            document.head.appendChild(script);
+        });
+    },
+    
+    _cleanup(callbackName) {
+        delete window[callbackName];
+        delete this._pending[callbackName];
+        document.querySelectorAll('script[src*="' + callbackName + '"]').forEach(el => el.remove());
+    }
+};
+
+// ============================================================
+// API WRAPPER
+// ============================================================
+const API = {
+    call(action, params = {}) {
+        return JSONP.request(SCRIPT_URL, { action, ...params });
+    },
+    
+    // READ
+    getRuang() { return this.call('get_ruang'); },
+    getInventaris() { return this.call('get_inventaris'); },
+    getPeminjamanRuang() { return this.call('get_peminjaman_ruang'); },
+    getPeminjamanInventaris() { return this.call('get_peminjaman_inventaris'); },
+    getAllPeminjaman() { return this.call('get_all_peminjaman'); },
+    getStats() { return this.call('get_stats'); },
+    
+    // WRITE - Peminjaman
+    addPeminjamanRuang(data) { return this.call('add_peminjaman_ruang', { data: JSON.stringify(data) }); },
+    addPeminjamanInventaris(data) { return this.call('add_peminjaman_inventaris', { data: JSON.stringify(data) }); },
+    
+    // WRITE - Admin Approve/Reject
+    approveRuang(id) { return this.call('approve_ruang', { id }); },
+    rejectRuang(id) { return this.call('reject_ruang', { id }); },
+    approveInventaris(id) { return this.call('approve_inventaris', { id }); },
+    rejectInventaris(id) { return this.call('reject_inventaris', { id }); },
+    returnInventaris(id) { return this.call('return_inventaris', { id }); }
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let isAdmin = false;
+let currentUser = null;
+let allData = {
+    ruang: [],
+    inventaris: [],
+    peminjaman: []
+};
+
+// ============================================================
+// UTILITY FUNCTIONS
+// ============================================================
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        if (m === '"') return '&quot;';
+        return m;
+    });
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '-';
     try {
-        // Coba load dengan timeout
-        const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('Timeout: Server tidak merespons')), 15000);
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return '-';
+        return d.toLocaleDateString('id-ID');
+    } catch { return '-'; }
+}
+
+function getStatusBadge(status) {
+    const map = {
+        'pending': ['status-pending', '⏳ Menunggu'],
+        'approved': ['status-approved', '✅ Disetujui'],
+        'rejected': ['status-rejected', '❌ Ditolak'],
+        'returned': ['status-returned', '↩️ Dikembalikan']
+    };
+    const [cls, label] = map[status] || ['status-pending', status];
+    return `<span class="status-badge ${cls}">${label}</span>`;
+}
+
+function showNotification(message, type = 'info') {
+    const el = document.getElementById('notification');
+    el.textContent = message;
+    el.className = 'notification ' + type;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+// ============================================================
+// LOAD DATA DARI APPS SCRIPT (JSONP)
+// ============================================================
+async function loadAllData() {
+    try {
+        console.log('🔄 Memuat data dari Apps Script...');
+        
+        // 1. Load Stats
+        const stats = await API.getStats();
+        if (stats.status === 'success') {
+            document.getElementById('statRuang').textContent = stats.data.totalRuang || 0;
+            document.getElementById('statInventaris').textContent = stats.data.totalInventaris || 0;
+            document.getElementById('statPeminjaman').textContent = stats.data.totalPeminjaman || 0;
+            document.getElementById('statMenunggu').textContent = stats.data.menungguApprove || 0;
+        } else {
+            console.warn('Stats error:', stats.message);
+        }
+        
+        // 2. Load All Peminjaman
+        const peminjaman = await API.getAllPeminjaman();
+        if (peminjaman.status === 'success') {
+            allData.peminjaman = peminjaman.data || [];
+            renderPeminjaman();
+            document.getElementById('totalPeminjamanBadge').textContent = allData.peminjaman.length;
+        } else {
+            console.warn('Peminjaman error:', peminjaman.message);
+        }
+        
+        // 3. Load Ruang untuk dropdown
+        const ruang = await API.getRuang();
+        if (ruang.status === 'success') {
+            allData.ruang = ruang.data || [];
+            updateItemDropdown('ruang');
+        } else {
+            console.warn('Ruang error:', ruang.message);
+        }
+        
+        // 4. Load Inventaris untuk dropdown
+        const inventaris = await API.getInventaris();
+        if (inventaris.status === 'success') {
+            allData.inventaris = inventaris.data || [];
+            updateItemDropdown('inventaris');
+        } else {
+            console.warn('Inventaris error:', inventaris.message);
+        }
+        
+        console.log('✅ Data berhasil dimuat:', {
+            ruang: allData.ruang.length,
+            inventaris: allData.inventaris.length,
+            peminjaman: allData.peminjaman.length
         });
         
-        // Gunakan Promise.race untuk timeout
-        const loadRuang = async () => {
-            updateLoading('Memuat data ruang...', progress += 10);
-            const ruang = await api.getRuang();
-            if (ruang.status === 'success') masterRuang = ruang.data || [];
-        };
-        
-        const loadInventaris = async () => {
-            updateLoading('Memuat data inventaris...', progress += 10);
-            const inv = await api.getInventaris();
-            if (inv.status === 'success') masterInventaris = inv.data || [];
-        };
-        
-        const loadPeminjamanRuang = async () => {
-            updateLoading('Memuat peminjaman ruang...', progress += 15);
-            const pr = await api.getPeminjamanRuang();
-            if (pr.status === 'success') peminjamanRuang = pr.data || [];
-        };
-        
-        const loadPeminjamanInventaris = async () => {
-            updateLoading('Memuat peminjaman inventaris...', progress += 15);
-            const pi = await api.getPeminjamanInventaris();
-            if (pi.status === 'success') peminjamanInventaris = pi.data || [];
-        };
-        
-        // Jalankan semua request paralel dengan timeout
-        await Promise.race([
-            Promise.all([
-                loadRuang(),
-                loadInventaris(),
-                loadPeminjamanRuang(),
-                loadPeminjamanInventaris()
-            ]),
-            timeoutPromise
-        ]);
-        
-        if (isAdmin) {
-            updateLoading('Memuat data users...', progress += 10);
-            try {
-                const usersData = await api.getUsers();
-                if (usersData.status === 'success') users = usersData.data || [];
-            } catch (e) {
-                console.warn('Gagal load users:', e);
-            }
-        }
-        
-        updateLoading('Selesai!', 100);
-        renderAll();
-        hideLoading();
-        
     } catch (error) {
-        console.error('Error loading data:', error);
-        showToast('❌ Gagal memuat data: ' + error.message, 'error');
-        hideLoading();
+        console.error('❌ Error loading data:', error);
+        showNotification('Gagal memuat data: ' + error.message, 'error');
     }
 }
 
-        // ============================================================
-        // RENDER ALL
-        // ============================================================
-        function renderAll() {
-            updateRuangDropdown();
-            updateInventarisDropdown();
-            renderRuangTable();
-            renderInventarisTable();
-            renderMasterRuang();
-            renderMasterInventaris();
-            if (isAdmin) renderUsersTable();
-            updateStats();
-            updateCalendarEvents();
-        }
+// ============================================================
+// RENDER PEMINJAMAN KE TABEL
+// ============================================================
+function renderPeminjaman() {
+    const tbody = document.getElementById('peminjamanTableBody');
+    const data = allData.peminjaman;
+    
+    if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">📭 Belum ada data peminjaman</td></tr>';
+        return;
+    }
+    
+    let html = '';
+    // Tampilkan 20 terakhir
+    const displayData = data.slice(0, 20);
+    displayData.forEach((item, index) => {
+        const isPending = item.Status === 'pending';
+        html += `<tr>
+            <td>${index + 1}</td>
+            <td>${item.type === 'Ruang' ? '🏢 Ruang' : '📦 Inventaris'}</td>
+            <td>${escapeHtml(item.NamaRuang || item.NamaItem)}</td>
+            <td>${escapeHtml(item.Peminjam)}</td>
+            <td>${item.Jumlah || '-'}</td>
+            <td>${formatDate(item.TanggalPinjam)}</td>
+            <td>${getStatusBadge(item.Status)}</td>
+            <td>
+                ${isAdmin && isPending ? `<button class="btn btn-success btn-sm" onclick="openAdminModal(${item.ID}, '${item.type}')">⚙️</button>` : '-'}
+            </td>
+        </tr>`;
+    });
+    tbody.innerHTML = html;
+}
 
-        // ============================================================
-        // GET 20 DATA TERAKHIR
-        // ============================================================
-        function getLast20(data, sortField = 'timestamp') {
-            if (!data || !data.length) return [];
-            const sorted = [...data].sort((a, b) => {
-                const aVal = a[sortField] || '';
-                const bVal = b[sortField] || '';
-                return bVal.localeCompare(aVal);
+// ============================================================
+// UPDATE DROPDOWN ITEM
+// ============================================================
+function updateItemDropdown(type) {
+    const select = document.getElementById('itemSelect');
+    const data = type === 'ruang' ? allData.ruang : allData.inventaris;
+    
+    const label = type === 'ruang' ? 'Ruang' : 'Item';
+    select.innerHTML = `<option value="">-- Pilih ${label} --</option>`;
+    
+    if (data && data.length > 0) {
+        data.forEach(item => {
+            const text = type === 'ruang' 
+                ? `${item.Nama} (Kapasitas: ${item.Kapasitas || '-'})` 
+                : `${item.Nama} (Stok: ${item.Stok || 0})`;
+            select.innerHTML += `<option value="${item.ID}">${escapeHtml(text)}</option>`;
+        });
+    } else {
+        select.innerHTML += `<option value="">Tidak ada data ${label}</option>`;
+    }
+}
+
+// ============================================================
+// FORM HANDLING
+// ============================================================
+document.getElementById('jenisPeminjaman').addEventListener('change', function() {
+    const type = this.value;
+    const jumlahContainer = document.getElementById('jumlahContainer');
+    const itemSelect = document.getElementById('itemSelect');
+    
+    if (type === 'ruang') {
+        jumlahContainer.style.display = 'none';
+        updateItemDropdown('ruang');
+    } else if (type === 'inventaris') {
+        jumlahContainer.style.display = 'block';
+        updateItemDropdown('inventaris');
+    } else {
+        jumlahContainer.style.display = 'none';
+        itemSelect.innerHTML = '<option value="">-- Pilih Item --</option>';
+    }
+});
+
+// Set default date
+document.getElementById('tanggalPinjam').valueAsDate = new Date();
+
+document.getElementById('peminjamanForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const jenis = document.getElementById('jenisPeminjaman').value;
+    const itemId = document.getElementById('itemSelect').value;
+    const peminjam = document.getElementById('namaPeminjam').value.trim();
+    const tanggalPinjam = document.getElementById('tanggalPinjam').value;
+    const tanggalKembali = document.getElementById('tanggalKembali').value;
+    const keperluan = document.getElementById('keperluan').value.trim();
+    const jumlah = parseInt(document.getElementById('jumlah').value) || 1;
+    
+    if (!jenis || !itemId || !peminjam || !tanggalPinjam) {
+        showNotification('Harap lengkapi semua field yang wajib', 'error');
+        return;
+    }
+    
+    try {
+        let result;
+        if (jenis === 'ruang') {
+            result = await API.addPeminjamanRuang({
+                IDRuang: parseInt(itemId),
+                Peminjam: peminjam,
+                TanggalPinjam: tanggalPinjam,
+                TanggalKembali: tanggalKembali || tanggalPinjam,
+                Keperluan: keperluan
             });
-            return sorted.slice(0, 20);
-        }
-
-        // ============================================================
-        // UPDATE DROPDOWNS
-        // ============================================================
-        function updateRuangDropdown() {
-            ruangSelect.innerHTML = '<option value="">-- Pilih Ruang --</option>';
-            if (masterRuang && masterRuang.length) {
-                masterRuang.forEach(r => {
-                    const opt = document.createElement('option');
-                    opt.value = r.nama_ruang || r.nama || r;
-                    opt.textContent = r.nama_ruang || r.nama || r;
-                    ruangSelect.appendChild(opt);
-                });
-            }
-        }
-
-        function updateInventarisDropdown() {
-            pinjamInvItem.innerHTML = '<option value="">-- Pilih Item --</option>';
-            if (masterInventaris && masterInventaris.length) {
-                const available = masterInventaris.filter(item => item.status_pinjam === 'Boleh Dipinjam' && parseInt(item.stok_tersedia || 0) > 0);
-                available.forEach(item => {
-                    const opt = document.createElement('option');
-                    opt.value = item.nama_item || item.nama || item;
-                    opt.textContent = (item.nama_item || item.nama || item) + ' (Tersedia: ' + (item.stok_tersedia || '0') + ')';
-                    pinjamInvItem.appendChild(opt);
-                });
-            }
-        }
-
-        // ============================================================
-        // RENDER MASTER
-        // ============================================================
-        function renderMasterRuang() {
-            if (!masterRuang || !masterRuang.length) { 
-                masterRuangList.innerHTML = '<p style="color:#6b7f97;">Belum ada data ruang</p>'; 
-                return; 
-            }
-            let html = '';
-            masterRuang.forEach(r => {
-                html += `<div class="master-item"><strong>${r.nama_ruang || r.nama || r}</strong><span class="badge">${r.kode || ''}</span><span style="font-size:0.8rem;color:#6b7f97;">Kapasitas: ${r.kapasitas || '-'}</span>
-                ${isAdmin ? `<span style="float:right;"><i class="fas fa-edit" style="cursor:pointer;color:#2a7de1;" onclick="editMaster('ruang', ${r.id})"></i><i class="fas fa-trash-alt" style="cursor:pointer;color:#b13a3a;" onclick="deleteMaster('ruang', ${r.id})"></i></span>` : ''}</div>`;
+        } else {
+            result = await API.addPeminjamanInventaris({
+                IDItem: parseInt(itemId),
+                Peminjam: peminjam,
+                Jumlah: jumlah,
+                TanggalPinjam: tanggalPinjam,
+                TanggalKembali: tanggalKembali || '',
+                Keperluan: keperluan
             });
-            masterRuangList.innerHTML = html;
         }
-
-        function renderMasterInventaris() {
-            if (!masterInventaris || !masterInventaris.length) { 
-                masterInventarisList.innerHTML = '<p style="color:#6b7f97;">Belum ada data inventaris</p>'; 
-                return; 
-            }
-            let html = '';
-            masterInventaris.forEach(item => {
-                let statusClass = 'approved', statusText = 'Boleh Dipinjam';
-                if (item.status_pinjam === 'Tidak Boleh') { statusClass = 'rejected'; statusText = 'Tidak Boleh'; }
-                if (item.status_pinjam === 'Dipinjam') { statusClass = 'pending'; statusText = 'Dipinjam'; }
-                if (item.kondisi === 'Rusak') { statusClass = 'rejected'; statusText = 'Rusak'; }
-                const stokInfo = (item.total_stok || 0) + '/' + (item.stok_tersedia || 0);
-                html += `<div class="master-item"><strong>${item.nama_item || item.nama || item}</strong><span class="kategori-badge ${(item.kategori || '').toLowerCase()}">${item.kategori || ''}</span><span class="badge">Stok: ${stokInfo}</span><span class="status-badge ${statusClass}" style="font-size:0.65rem;">${statusText}</span><span style="font-size:0.75rem;color:#6b7f97;">${item.lokasi || '-'}</span>
-                ${isAdmin ? `<span style="float:right;"><i class="fas fa-edit" style="cursor:pointer;color:#2a7de1;" onclick="editMaster('inventaris', ${item.id})"></i><i class="fas fa-trash-alt" style="cursor:pointer;color:#b13a3a;" onclick="deleteMaster('inventaris', ${item.id})"></i></span>` : ''}</div>`;
-            });
-            masterInventarisList.innerHTML = html;
-        }
-
-        // ============================================================
-        // RENDER RUANG TABLE
-        // ============================================================
-        function renderRuangTable() {
-            const last20 = getLast20(peminjamanRuang, 'timestamp');
-            if (!last20 || !last20.length) {
-                ruangTableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman ruang</td></tr>`;
-                totalPinjamRuang.textContent = 'Total: ' + peminjamanRuang.length + ' (20 terakhir)';
-                return;
-            }
-            let html = '';
-            const sorted = [...last20].sort((a, b) => {
-                if (a.tanggal !== b.tanggal) return a.tanggal.localeCompare(b.tanggal);
-                return a.jamMulai.localeCompare(b.jamMulai);
-            });
-            sorted.forEach(p => {
-                let statusClass = 'pending', statusText = 'Menunggu';
-                if (p.status === 'approved') { statusClass = 'approved'; statusText = 'Disetujui'; }
-                if (p.status === 'rejected') { statusClass = 'rejected'; statusText = 'Ditolak'; }
-                if (p.status === 'done') { statusClass = 'done'; statusText = 'Selesai'; }
-                const tanggal = formatTanggal(p.tanggal);
-                const jamMulai = formatJam(p.jamMulai);
-                const jamSelesai = formatJam(p.jamSelesai);
-                const jam = jamMulai + ' – ' + jamSelesai;
-
-                let aksiHtml = '';
-                if (isAdmin) {
-                    if (p.status === 'pending') {
-                        aksiHtml = `<i class="fas fa-check-circle" title="Approve" data-action="approve_ruang" data-id="${p.id}"></i><i class="fas fa-times-circle" title="Tolak" data-action="reject" data-id="${p.id}"></i>`;
-                    }
-                    else if (p.status === 'approved') { 
-                        aksiHtml = `<i class="fas fa-check-double" title="Selesaikan" data-action="done" data-id="${p.id}"></i><i class="fas fa-times-circle" title="Batalkan" data-action="reject" data-id="${p.id}"></i>`;
-                    }
-                    else { 
-                        aksiHtml = `<i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo" data-id="${p.id}"></i><i class="fas fa-trash-alt" title="Hapus" data-action="delete" data-id="${p.id}"></i>`;
-                    }
-                }
-                html += `<tr><td>${p.ruang}</td><td>${p.peminjam}</td><td>${tanggal}</td><td>${jam}</td><td><span class="status-badge ${statusClass}">${statusText}</span></td><td class="admin-only">${aksiHtml}</td></tr>`;
-            });
-            ruangTableBody.innerHTML = html;
-            totalPinjamRuang.textContent = 'Total: ' + peminjamanRuang.length + ' (20 terakhir)';
-            if (isAdmin) {
-                ruangTableBody.querySelectorAll('[data-action]').forEach(el => {
-                    el.addEventListener('click', function(e) {
-                        const action = this.dataset.action;
-                        const id = parseInt(this.dataset.id);
-                        handleRuangAction(action, id);
-                    });
-                });
-            }
-        }
-
-        // ============================================================
-        // RENDER INVENTARIS TABLE
-        // ============================================================
-        function renderInventarisTable() {
-            const last20 = getLast20(peminjamanInventaris, 'timestamp');
-            if (!last20 || !last20.length) {
-                invTableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman inventaris</td></tr>`;
-                totalPinjamInv.textContent = 'Total: ' + peminjamanInventaris.length + ' (20 terakhir)';
-                return;
-            }
-            let html = '';
-            const sorted = [...last20].sort((a, b) => a.tanggal_pinjam.localeCompare(b.tanggal_pinjam));
-            sorted.forEach(p => {
-                let statusClass = 'pending', statusText = 'Menunggu';
-                if (p.status === 'approved') { statusClass = 'approved'; statusText = 'Disetujui'; }
-                if (p.status === 'rejected') { statusClass = 'rejected'; statusText = 'Ditolak'; }
-                if (p.status === 'done') { statusClass = 'done'; statusText = 'Dikembalikan'; }
-                const tglPinjam = formatTanggal(p.tanggal_pinjam);
-                const tglKembali = formatTanggal(p.tanggal_kembali);
-
-                let aksiHtml = '';
-                if (isAdmin) {
-                    if (p.status === 'pending') {
-                        aksiHtml = `<i class="fas fa-check-circle" title="Setujui" data-action="approve_inventaris" data-id="${p.id}"></i><i class="fas fa-times-circle" title="Tolak" data-action="reject_inventaris" data-id="${p.id}"></i>`;
-                    }
-                    else if (p.status === 'approved') { 
-                        aksiHtml = `<i class="fas fa-arrow-left" title="Kembalikan" data-action="return_inventaris" data-id="${p.id}"></i><i class="fas fa-times-circle" title="Batalkan" data-action="reject_inventaris" data-id="${p.id}"></i>`;
-                    }
-                    else { 
-                        aksiHtml = `<i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo_inventaris" data-id="${p.id}"></i><i class="fas fa-trash-alt" title="Hapus" data-action="delete_inventaris" data-id="${p.id}"></i>`;
-                    }
-                }
-                html += `<tr><td>${p.nama_item}</td><td>${p.peminjam}</td><td>${p.jumlah}</td><td>${tglPinjam}</td><td>${tglKembali}</td><td><span class="status-badge ${statusClass}">${statusText}</span></td><td class="admin-only">${aksiHtml}</td></tr>`;
-            });
-            invTableBody.innerHTML = html;
-            totalPinjamInv.textContent = 'Total: ' + peminjamanInventaris.length + ' (20 terakhir)';
-            if (isAdmin) {
-                invTableBody.querySelectorAll('[data-action]').forEach(el => {
-                    el.addEventListener('click', function(e) {
-                        const action = this.dataset.action;
-                        const id = parseInt(this.dataset.id);
-                        handleInventarisAction(action, id);
-                    });
-                });
-            }
-        }
-
-        // ============================================================
-        // RENDER USERS
-        // ============================================================
-        function renderUsersTable() {
-            if (!users || !users.length) { 
-                usersTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#6b7f97;">Belum ada data users</td></tr>`; 
-                return; 
-            }
-            let html = '';
-            users.forEach(u => {
-                html += `<tr><td>${u.username}</td><td><span class="status-badge ${u.role === 'admin' ? 'approved' : 'pending'}">${u.role}</span></td><td>${u.nama_lengkap || u.username}</td><td class="admin-only"><i class="fas fa-edit" style="cursor:pointer;color:#2a7de1;" onclick="editUser(${u.id})"></i><i class="fas fa-trash-alt" style="cursor:pointer;color:#b13a3a;" onclick="deleteUser(${u.id})"></i></td></tr>`;
-            });
-            usersTableBody.innerHTML = html;
-        }
-
-        // ============================================================
-        // UPDATE STATS
-        // ============================================================
-        function updateStats() {
-            statRuang.textContent = masterRuang.length || 0;
-            statInventaris.textContent = masterInventaris.length || 0;
-            let active = 0, pending = 0;
-            peminjamanRuang.forEach(p => { if (p.status === 'approved') active++; if (p.status === 'pending') pending++; });
-            peminjamanInventaris.forEach(p => { if (p.status === 'approved') active++; if (p.status === 'pending') pending++; });
-            activeCount.textContent = active;
-            pendingCount.textContent = pending;
-        }
-
-        // ============================================================
-        // KALENDER
-        // ============================================================
-        function updateCalendarEvents() {
-            if (!calendarInstance) return;
-            const events = [];
-            peminjamanRuang.forEach(p => {
-                if (p.status === 'approved' || p.status === 'pending') {
-                    const start = p.tanggal + 'T' + formatJam(p.jamMulai) + ':00';
-                    const end = p.tanggal + 'T' + formatJam(p.jamSelesai) + ':00';
-                    const color = p.status === 'approved' ? '#3788d8' : '#f39c12';
-                    events.push({ title: '🔵 ' + p.ruang + ' - ' + p.peminjam + (p.status === 'pending' ? ' (pending)' : ''), start: start, end: end, color: color, extendedProps: { type: 'ruang', id: p.id, status: p.status } });
-                }
-            });
-            peminjamanInventaris.forEach(p => {
-                if (p.status === 'approved' || p.status === 'pending') {
-                    const start = p.tanggal_pinjam + 'T09:00:00';
-                    const end = p.tanggal_kembali + 'T17:00:00';
-                    const color = p.status === 'approved' ? '#27ae60' : '#f39c12';
-                    events.push({ title: '🟢 ' + p.nama_item + ' x' + p.jumlah + ' - ' + p.peminjam + (p.status === 'pending' ? ' (pending)' : ''), start: start, end: end, color: color, extendedProps: { type: 'inventaris', id: p.id, status: p.status } });
-                }
-            });
-            calendarInstance.removeAllEvents();
-            calendarInstance.addEventSource(events);
-        }
-
-        function initCalendar() {
-            const calendarEl = document.getElementById('calendar');
-            if (!calendarEl) return;
-            if (typeof FullCalendar === 'undefined') { setTimeout(initCalendar, 500); return; }
-            if (calendarInstance) { calendarInstance.destroy(); calendarInstance = null; }
-            calendarInstance = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek' },
-                eventClick: function(info) {
-                    const props = info.event.extendedProps;
-                    alert('📋 Detail Peminjaman:\nJenis: ' + (props.type === 'ruang' ? 'Ruang' : 'Inventaris') + '\nStatus: ' + props.status + '\nID: ' + props.id);
-                },
-                height: 'auto', contentHeight: 450
-            });
-            calendarInstance.render();
-            updateCalendarEvents();
-        }
-
-        // ============================================================
-        // HANDLE RUANG ACTIONS
-        // ============================================================
-        async function handleRuangAction(action, id) {
-            const p = peminjamanRuang.find(x => x.id === id);
-            if (!p) return;
-            
-            try {
-                let result;
-                switch (action) {
-                    case 'approve_ruang':
-                        result = await api.approveRuang(p);
-                        if (result.status === 'success') {
-                            showToast('✅ Peminjaman ruang ' + p.peminjam + ' disetujui', 'success');
-                        } else {
-                            showToast('❌ ' + (result.message || 'Gagal approve'), 'error');
-                        }
-                        break;
-                    case 'reject':
-                        p.status = 'rejected';
-                        result = await api.update('peminjaman_ruang', p);
-                        showToast('⛔ Peminjaman ' + p.peminjam + ' ditolak', 'error');
-                        break;
-                    case 'done':
-                        p.status = 'done';
-                        result = await api.update('peminjaman_ruang', p);
-                        showToast('✅ Peminjaman ' + p.peminjam + ' selesai', 'success');
-                        break;
-                    case 'undo':
-                        p.status = 'pending';
-                        result = await api.update('peminjaman_ruang', p);
-                        showToast('↩️ Dikembalikan ke pending', 'warning');
-                        break;
-                    case 'delete':
-                        if (!confirm('Hapus peminjaman ini?')) return;
-                        result = await api.remove('peminjaman_ruang', id);
-                        showToast('🗑️ Peminjaman dihapus', '');
-                        break;
-                }
-                if (result && result.status === 'success') {
-                    await loadAllData();
-                }
-            } catch (error) {
-                showToast('❌ Error: ' + error.message, 'error');
-            }
-        }
-
-        // ============================================================
-        // HANDLE INVENTARIS ACTIONS
-        // ============================================================
-        async function handleInventarisAction(action, id) {
-            const p = peminjamanInventaris.find(x => x.id === id);
-            if (!p) return;
-            
-            try {
-                let result;
-                switch (action) {
-                    case 'approve_inventaris':
-                        result = await api.approveInventaris(p);
-                        if (result.status === 'success') {
-                            showToast('✅ Peminjaman inventaris ' + p.peminjam + ' disetujui', 'success');
-                        } else {
-                            showToast('❌ ' + (result.message || 'Gagal approve'), 'error');
-                        }
-                        break;
-                    case 'reject_inventaris':
-                        p.status = 'rejected';
-                        result = await api.update('peminjaman_inventaris', p);
-                        showToast('⛔ Peminjaman ' + p.peminjam + ' ditolak', 'error');
-                        break;
-                    case 'return_inventaris':
-                        result = await api.returnInventaris(p);
-                        if (result.status === 'success') {
-                            showToast('✅ Inventaris dikembalikan', 'success');
-                        } else {
-                            showToast('❌ ' + (result.message || 'Gagal mengembalikan'), 'error');
-                        }
-                        break;
-                    case 'undo_inventaris':
-                        p.status = 'pending';
-                        result = await api.update('peminjaman_inventaris', p);
-                        showToast('↩️ Dikembalikan ke pending', 'warning');
-                        break;
-                    case 'delete_inventaris':
-                        if (!confirm('Hapus peminjaman ini?')) return;
-                        result = await api.remove('peminjaman_inventaris', id);
-                        showToast('🗑️ Peminjaman dihapus', '');
-                        break;
-                }
-                if (result && result.status === 'success') {
-                    await loadAllData();
-                }
-            } catch (error) {
-                showToast('❌ Error: ' + error.message, 'error');
-            }
-        }
-
-        // ============================================================
-        // MASTER & USER CRUD
-        // ============================================================
-        function editMaster(sheet, id) {
-            const data = sheet === 'ruang' ? masterRuang.find(x => x.id === id) : masterInventaris.find(x => x.id === id);
-            if (!data) return;
-            showModal(sheet, data);
-        }
-
-        async function deleteMaster(sheet, id) {
-            if (!confirm('Hapus data ini?')) return;
-            const sheetName = sheet === 'ruang' ? 'master_ruang' : 'master_inventaris';
-            await api.remove(sheetName, id);
-            showToast('🗑️ Data dihapus', '');
+        
+        if (result.status === 'success') {
+            showNotification('✅ ' + result.message, 'success');
+            this.reset();
+            document.getElementById('tanggalPinjam').valueAsDate = new Date();
+            document.getElementById('jumlah').value = 1;
+            document.getElementById('jenisPeminjaman').value = '';
+            document.getElementById('itemSelect').innerHTML = '<option value="">-- Pilih Item --</option>';
             await loadAllData();
+        } else {
+            showNotification('❌ ' + (result.message || 'Gagal menyimpan'), 'error');
         }
+    } catch (error) {
+        showNotification('❌ Gagal mengajukan: ' + error.message, 'error');
+    }
+});
 
-        function editUser(id) {
-            const data = users.find(x => x.id === id);
-            if (!data) return;
-            showModal('users', data);
+// ============================================================
+// ADMIN MODAL (Approve/Reject)
+// ============================================================
+let modalTarget = { id: null, type: null };
+
+function openAdminModal(id, type) {
+    modalTarget = { id, type };
+    document.getElementById('modalTitle').textContent = `⚙️ ${type} - ID #${id}`;
+    document.getElementById('modalBody').innerHTML = `
+        <p>Apakah Anda ingin menyetujui atau menolak peminjaman ini?</p>
+        <p style="font-size:0.85rem;color:#6b7a8a;margin-top:8px;">
+            ID: ${id} | Jenis: ${type}
+        </p>
+    `;
+    document.getElementById('adminModal').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('adminModal').classList.remove('active');
+}
+
+document.getElementById('modalApproveBtn').addEventListener('click', async function() {
+    const { id, type } = modalTarget;
+    if (!id) return;
+    
+    try {
+        let result;
+        if (type === 'Ruang') {
+            result = await API.approveRuang(id);
+        } else {
+            result = await API.approveInventaris(id);
         }
-
-        async function deleteUser(id) {
-            if (!confirm('Hapus user ini?')) return;
-            await api.remove('users', id);
-            showToast('🗑️ User dihapus', '');
+        
+        if (result.status === 'success') {
+            showNotification('✅ ' + result.message, 'success');
+            closeModal();
             await loadAllData();
+        } else {
+            showNotification('❌ ' + (result.message || 'Gagal approve'), 'error');
         }
+    } catch (error) {
+        showNotification('❌ Error: ' + error.message, 'error');
+    }
+});
 
-        // ============================================================
-        // MODAL CRUD
-        // ============================================================
-        function showModal(sheet, data = null) {
-            crudMode = sheet;
-            crudData = data;
-            const title = document.getElementById('crudTitle');
-            const subtitle = document.getElementById('crudSubtitle');
-            const fields = document.getElementById('crudFields');
-            let fieldsHtml = '';
-
-            if (sheet === 'ruang') {
-                const isEdit = data !== null;
-                title.textContent = isEdit ? 'Edit Ruang Lab' : 'Tambah Ruang Lab';
-                subtitle.textContent = isEdit ? 'Edit data ruang yang sudah ada' : 'Isi data ruang lab baru';
-                fieldsHtml = `
-                    <div class="form-group"><label for="f_nama">Nama Ruang</label><input type="text" id="f_nama" value="${data?.nama_ruang || ''}" required /></div>
-                    <div class="form-group"><label for="f_kode">Kode Ruang</label><input type="text" id="f_kode" value="${data?.kode || ''}" /></div>
-                    <div class="form-group"><label for="f_kapasitas">Kapasitas</label><input type="number" id="f_kapasitas" value="${data?.kapasitas || ''}" /></div>
-                    <div class="form-group"><label for="f_keterangan">Keterangan</label><input type="text" id="f_keterangan" value="${data?.keterangan || ''}" /></div>
-                `;
-            } else if (sheet === 'inventaris') {
-                const isEdit = data !== null;
-                title.textContent = isEdit ? 'Edit Item Inventaris' : 'Tambah Item Inventaris';
-                subtitle.textContent = isEdit ? 'Edit data item yang sudah ada' : 'Isi data item inventaris baru';
-                fieldsHtml = `
-                    <div class="form-group"><label for="f_nama">Nama Item</label><input type="text" id="f_nama" value="${data?.nama_item || ''}" required /></div>
-                    <div class="form-group"><label for="f_kategori">Kategori</label>
-                        <select id="f_kategori">
-                            <option value="Komputer" ${data?.kategori === 'Komputer' ? 'selected' : ''}>Komputer</option>
-                            <option value="Furniture" ${data?.kategori === 'Furniture' ? 'selected' : ''}>Furniture</option>
-                            <option value="Elektronik" ${data?.kategori === 'Elektronik' ? 'selected' : ''}>Elektronik</option>
-                            <option value="Aksesoris" ${data?.kategori === 'Aksesoris' ? 'selected' : ''}>Aksesoris</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label for="f_satuan">Satuan</label><input type="text" id="f_satuan" value="${data?.satuan || 'unit'}" /></div>
-                    <div class="form-group"><label for="f_total_stok">Total Stok</label><input type="number" id="f_total_stok" value="${data?.total_stok || 1}" min="1" required /></div>
-                    <div class="form-group"><label for="f_kondisi">Kondisi</label>
-                        <select id="f_kondisi">
-                            <option value="Baik" ${data?.kondisi === 'Baik' ? 'selected' : ''}>Baik</option>
-                            <option value="Rusak" ${data?.kondisi === 'Rusak' ? 'selected' : ''}>Rusak</option>
-                            <option value="Perbaikan" ${data?.kondisi === 'Perbaikan' ? 'selected' : ''}>Perbaikan</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label for="f_lokasi">Lokasi</label><input type="text" id="f_lokasi" value="${data?.lokasi || 'Lab ICT A'}" /></div>
-                    <div class="form-group"><label for="f_keterangan">Keterangan</label><input type="text" id="f_keterangan" value="${data?.keterangan || ''}" /></div>
-                    <div style="font-size:0.8rem; color:#6b7f97; background:#f9fcff; padding:0.5rem; border-radius:8px;">
-                        <i class="fas fa-info-circle"></i> <strong>stok_tersedia</strong> akan otomatis = total_stok saat pertama kali ditambahkan.
-                    </div>
-                `;
-            } else if (sheet === 'users') {
-                const isEdit = data !== null;
-                title.textContent = isEdit ? 'Edit User' : 'Tambah User';
-                subtitle.textContent = isEdit ? 'Edit data user yang sudah ada' : 'Isi data user baru';
-                fieldsHtml = `
-                    <div class="form-group"><label for="f_username">Username</label><input type="text" id="f_username" value="${data?.username || ''}" required ${isEdit ? 'readonly' : ''} /></div>
-                    <div class="form-group"><label for="f_password">Password ${isEdit ? '(kosongkan jika tidak diubah)' : '*'}</label><input type="password" id="f_password" placeholder="${isEdit ? 'Kosongkan jika tidak diubah' : 'Masukkan password'}" ${!isEdit ? 'required' : ''} /></div>
-                    <div class="form-group"><label for="f_role">Role</label>
-                        <select id="f_role">
-                            <option value="admin" ${data?.role === 'admin' ? 'selected' : ''}>Admin</option>
-                            <option value="petugas" ${data?.role === 'petugas' ? 'selected' : ''}>Petugas</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label for="f_nama">Nama Lengkap</label><input type="text" id="f_nama" value="${data?.nama_lengkap || ''}" /></div>
-                `;
-            }
-
-            fields.innerHTML = fieldsHtml;
-            crudModal.classList.add('show');
+document.getElementById('modalRejectBtn').addEventListener('click', async function() {
+    const { id, type } = modalTarget;
+    if (!id) return;
+    
+    if (!confirm('Yakin ingin menolak peminjaman ini?')) return;
+    
+    try {
+        let result;
+        if (type === 'Ruang') {
+            result = await API.rejectRuang(id);
+        } else {
+            result = await API.rejectInventaris(id);
         }
-
-        function closeModal() { crudModal.classList.remove('show'); }
-
-        // ============================================================
-        // CRUD FORM SUBMIT
-        // ============================================================
-        document.getElementById('crudForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            let data = {}, sheet = '';
-            if (crudMode === 'ruang') {
-                sheet = 'master_ruang';
-                data = { 
-                    nama_ruang: document.getElementById('f_nama').value, 
-                    kode: document.getElementById('f_kode').value, 
-                    kapasitas: document.getElementById('f_kapasitas').value, 
-                    keterangan: document.getElementById('f_keterangan').value 
-                };
-                if (crudData) data.id = crudData.id;
-            } else if (crudMode === 'inventaris') {
-                sheet = 'master_inventaris';
-                data = {
-                    nama_item: document.getElementById('f_nama').value,
-                    kategori: document.getElementById('f_kategori').value,
-                    satuan: document.getElementById('f_satuan').value || 'unit',
-                    total_stok: parseInt(document.getElementById('f_total_stok').value) || 1,
-                    kondisi: document.getElementById('f_kondisi').value,
-                    lokasi: document.getElementById('f_lokasi').value || 'Lab ICT A',
-                    keterangan: document.getElementById('f_keterangan').value || ''
-                };
-                if (crudData) data.id = crudData.id;
-            } else if (crudMode === 'users') {
-                sheet = 'users';
-                data = { 
-                    username: document.getElementById('f_username').value, 
-                    password: document.getElementById('f_password').value || crudData?.password || '', 
-                    role: document.getElementById('f_role').value, 
-                    nama_lengkap: document.getElementById('f_nama').value 
-                };
-                if (crudData) data.id = crudData.id;
-            }
-            const action = crudData ? 'update' : 'add';
-            showLoading('Menyimpan data...');
-            try {
-                const result = await api[action](sheet, data);
-                showLoading(false);
-                if (result.status === 'success') {
-                    showToast('✅ Data berhasil disimpan', 'success');
-                    closeModal();
-                    await loadAllData();
-                } else {
-                    showToast('❌ ' + (result.message || 'Gagal menyimpan data'), 'error');
-                }
-            } catch (error) {
-                showLoading(false);
-                showToast('❌ Error: ' + error.message, 'error');
-            }
-        });
-
-        // ============================================================
-        // FORM PENGAJUAN RUANG
-        // ============================================================
-        pinjamRuangForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const nama = document.getElementById('peminjamName').value.trim();
-            const ruang = document.getElementById('ruangSelect').value;
-            const tanggal = document.getElementById('tanggalPinjam').value;
-            const jamMulai = document.getElementById('jamMulai').value;
-            const jamSelesai = document.getElementById('jamSelesai').value;
-            const keperluan = document.getElementById('keperluanRuang').value.trim() || '-';
-            
-            if (!nama || !ruang || !tanggal || !jamMulai || !jamSelesai) { 
-                showToast('⚠️ Semua field wajib diisi!', 'error'); 
-                return; 
-            }
-            if (jamMulai >= jamSelesai) { 
-                showToast('⚠️ Jam mulai harus lebih awal dari jam selesai!', 'error'); 
-                return; 
-            }
-            
-            const hasConflict = peminjamanRuang.some(p => { 
-                if (p.ruang !== ruang) return false; 
-                if (p.tanggal !== tanggal) return false; 
-                if (p.status !== 'approved' && p.status !== 'pending') return false; 
-                return (jamMulai < p.jamSelesai && jamSelesai > p.jamMulai); 
-            });
-            if (hasConflict) { 
-                showToast('❌ Ruang sudah dipakai pada jam tersebut!', 'error'); 
-                return; 
-            }
-            
-            const newPinjam = { 
-                ruang: ruang, 
-                peminjam: nama, 
-                tanggal: tanggal, 
-                jamMulai: jamMulai, 
-                jamSelesai: jamSelesai, 
-                status: 'pending', 
-                keperluan: keperluan 
-            };
-            
-            showLoading('Menyimpan pengajuan...');
-            try {
-                const result = await api.add('peminjaman_ruang', newPinjam);
-                showLoading(false);
-                if (result.status === 'success') {
-                    showToast('📩 Pengajuan berhasil dikirim!', 'success');
-                    pinjamRuangForm.reset();
-                    document.getElementById('tanggalPinjam').value = new Date().toISOString().split('T')[0];
-                    await loadAllData();
-                } else {
-                    showToast('❌ ' + (result.message || 'Gagal mengirim'), 'error');
-                }
-            } catch (error) {
-                showLoading(false);
-                showToast('❌ Error: ' + error.message, 'error');
-            }
-        });
-
-        // ============================================================
-        // FORM PENGAJUAN INVENTARIS
-        // ============================================================
-        pinjamInventarisForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const nama = document.getElementById('pinjamInvNama').value.trim();
-            const item = document.getElementById('pinjamInvItem').value;
-            const jumlah = parseInt(document.getElementById('pinjamInvJumlah').value) || 1;
-            const tanggalPinjam = document.getElementById('pinjamInvTanggal').value;
-            const tanggalKembali = document.getElementById('pinjamInvKembali').value;
-            const keperluan = document.getElementById('pinjamInvKeperluan').value.trim() || '-';
-            
-            if (!nama || !item || !tanggalPinjam || !tanggalKembali) { 
-                showToast('⚠️ Semua field wajib diisi!', 'error'); 
-                return; 
-            }
-            if (new Date(tanggalKembali) < new Date(tanggalPinjam)) { 
-                showToast('⚠️ Tanggal kembali harus setelah tanggal pinjam!', 'error'); 
-                return; 
-            }
-            
-            const masterItem = masterInventaris.find(m => m.nama_item === item);
-            if (masterItem && parseInt(masterItem.stok_tersedia || 0) < jumlah) { 
-                showToast('❌ Stok tidak mencukupi! Tersedia: ' + (masterItem.stok_tersedia || 0) + ', Diminta: ' + jumlah, 'error'); 
-                return; 
-            }
-            
-            const newPinjam = { 
-                nama_item: item, 
-                peminjam: nama, 
-                jumlah: jumlah, 
-                tanggal_pinjam: tanggalPinjam, 
-                tanggal_kembali: tanggalKembali, 
-                status: 'pending', 
-                keperluan: keperluan 
-            };
-            
-            showLoading('Menyimpan pengajuan...');
-            try {
-                const result = await api.add('peminjaman_inventaris', newPinjam);
-                showLoading(false);
-                if (result.status === 'success') {
-                    showToast('📩 Pengajuan berhasil dikirim!', 'success');
-                    pinjamInventarisForm.reset();
-                    await loadAllData();
-                } else {
-                    showToast('❌ ' + (result.message || 'Gagal mengirim'), 'error');
-                }
-            } catch (error) {
-                showLoading(false);
-                showToast('❌ Error: ' + error.message, 'error');
-            }
-        });
-
-        // ============================================================
-        // LOGIN
-        // ============================================================
-        async function handleLogin(username, password) {
-            const user = username.trim(), pass = password.trim();
-            if (!user || !pass) {
-                showToast('⚠️ Username dan password harus diisi!', 'error');
-                return;
-            }
-            try {
-                showLoading('Login...');
-                const result = await api.login(user, pass);
-                if (result.status === 'success') {
-                    currentUser = result.data;
-                    isAdmin = true;
-                    document.body.classList.add('admin-mode');
-                    roleDisplay.innerHTML = '<i class="fas fa-user-shield"></i> ' + (result.data.nama || result.data.username);
-                    roleDisplay.classList.add('admin');
-                    loginBtnText.textContent = 'Logout';
-                    loginToggleBtn.classList.add('logout');
-                    loginToggleBtn.classList.remove('outline');
-                    showToast('✅ Login berhasil', 'success');
-                    loginModal.classList.remove('show');
-                    await loadAllData();
-                } else {
-                    showToast('❌ ' + (result.message || 'Username atau password salah!'), 'error');
-                }
-            } catch (error) {
-                showToast('❌ Gagal login: ' + error.message, 'error');
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        function handleLogout() {
-            isAdmin = false;
-            currentUser = null;
-            document.body.classList.remove('admin-mode');
-            roleDisplay.innerHTML = '<i class="fas fa-user"></i> Pengguna';
-            roleDisplay.classList.remove('admin');
-            loginBtnText.textContent = 'Login';
-            loginToggleBtn.classList.remove('logout');
-            loginToggleBtn.classList.add('outline');
-            showToast('👋 Logout berhasil', '');
-            renderAll();
-        }
-
-        // ============================================================
-        // EVENT LISTENERS
-        // ============================================================
-        loginToggleBtn.addEventListener('click', function() {
-            if (isAdmin) { handleLogout(); } else {
-                loginModal.classList.add('show');
-                usernameInput.value = '';
-                passwordInput.value = '';
-                setTimeout(() => usernameInput.focus(), 100);
-            }
-        });
-
-        modalCancelBtn.addEventListener('click', () => loginModal.classList.remove('show'));
-        modalLoginBtn.addEventListener('click', () => handleLogin(usernameInput.value, passwordInput.value));
-        passwordInput.addEventListener('keydown', function(e) { 
-            if (e.key === 'Enter') { 
-                e.preventDefault();
-                handleLogin(usernameInput.value, passwordInput.value); 
-            } 
-        });
-        usernameInput.addEventListener('keydown', function(e) { 
-            if (e.key === 'Enter') { 
-                e.preventDefault();
-                passwordInput.focus(); 
-            } 
-        });
-        loginModal.addEventListener('click', function(e) { 
-            if (e.target === loginModal) loginModal.classList.remove('show'); 
-        });
-        crudModal.addEventListener('click', function(e) { 
-            if (e.target === crudModal) closeModal(); 
-        });
-        document.getElementById('crudCancelBtn').addEventListener('click', closeModal);
-        btnTambahInventarisMaster.addEventListener('click', () => showModal('inventaris'));
-        btnTambahRuangMaster.addEventListener('click', () => showModal('ruang'));
-        btnTambahUser.addEventListener('click', () => showModal('users'));
-
-        // ============================================================
-        // TAB
-        // ============================================================
-        const tabButtons = document.querySelectorAll('.tab-btn');
-        const panels = { 
-            ruang: document.getElementById('ruang'), 
-            pinjam_inventaris: document.getElementById('pinjam_inventaris'), 
-            kalender: document.getElementById('kalender'), 
-            master: document.getElementById('master'), 
-            users: document.getElementById('users') 
-        };
-
-        function activateTab(tabId) {
-            Object.keys(panels).forEach(key => panels[key].classList.remove('active'));
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            if (panels[tabId]) panels[tabId].classList.add('active');
-            tabButtons.forEach(btn => { if (btn.dataset.tab === tabId) btn.classList.add('active'); });
-            if (tabId === 'kalender' && calendarInstance) { setTimeout(() => calendarInstance.updateSize(), 100); }
-        }
-        tabButtons.forEach(btn => { btn.addEventListener('click', function() { activateTab(this.dataset.tab); }); });
-
-        // ============================================================
-        // EXPOSE GLOBAL
-        // ============================================================
-        window.loadAllData = loadAllData;
-        window.editMaster = editMaster;
-        window.deleteMaster = deleteMaster;
-        window.editUser = editUser;
-        window.deleteUser = deleteUser;
-        window.showModal = showModal;
-        window.closeModal = closeModal;
-
-        // ============================================================
-        // INIT
-        // ============================================================
-        async function init() {
-            console.log('🚀 Inisialisasi LAB ICT SMAN 1 Malang (JSONP)...');
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('tanggalPinjam').value = today;
-            document.getElementById('pinjamInvTanggal').value = today;
-            document.getElementById('pinjamInvKembali').value = today;
-            initCalendar();
+        
+        if (result.status === 'success') {
+            showNotification('✅ ' + result.message, 'success');
+            closeModal();
             await loadAllData();
-            activateTab('ruang');
-            console.log('✅ Sistem siap.');
-            console.log('🔑 Login: admin/admin123 atau petugas/petugas123');
+        } else {
+            showNotification('❌ ' + (result.message || 'Gagal reject'), 'error');
         }
+    } catch (error) {
+        showNotification('❌ Error: ' + error.message, 'error');
+    }
+});
 
-        if (document.readyState === 'complete') { init(); } else { document.addEventListener('DOMContentLoaded', init); }
+// Close modal on overlay click
+document.getElementById('adminModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                if (loginModal.classList.contains('show')) loginModal.classList.remove('show');
-                if (crudModal.classList.contains('show')) closeModal();
-            }
-        });
+// ============================================================
+// LOGIN / LOGOUT
+// ============================================================
+function checkLoginStatus() {
+    const userData = sessionStorage.getItem('user');
+    if (userData) {
+        try {
+            const user = JSON.parse(userData);
+            isAdmin = true;
+            currentUser = user;
+            document.getElementById('userBadge').textContent = '👤 ' + user.name;
+            document.getElementById('userBadge').classList.add('show');
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'inline-block';
+            console.log('✅ Admin logged in:', user.name);
+        } catch (e) {
+            console.error('Error parsing user data:', e);
+        }
+    } else {
+        console.log('ℹ️ Not logged in');
+    }
+}
 
-    })();
-    </script>
+function logout() {
+    sessionStorage.removeItem('user');
+    isAdmin = false;
+    currentUser = null;
+    document.getElementById('userBadge').classList.remove('show');
+    document.getElementById('loginBtn').style.display = 'inline-block';
+    document.getElementById('logoutBtn').style.display = 'none';
+    showNotification('Anda telah logout', 'info');
+    loadAllData();
+}
+
+// ============================================================
+// INIT - JALANKAN SAAT HALAMAN DIMUAT
+// ============================================================
+checkLoginStatus();
+loadAllData();
+
+// Refresh data setiap 30 detik (seperti di input_produksi)
+setInterval(loadAllData, 30000);
+
+console.log('🚀 Aplikasi LAB ICT siap digunakan');
+console.log('📡 API URL:', SCRIPT_URL);
+console.log('👤 Admin mode:', isAdmin);
+</script>
 </body>
 </html>
