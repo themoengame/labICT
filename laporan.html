@@ -526,7 +526,10 @@ function renderReport() {
     let html = '';
     data.forEach((item, index) => {
         const itemName = item.nama_ruang || item.nama_item || '-';
-        const jam = item.jam_mulai && item.jam_selesai ? `${formatTime(item.jam_mulai)} - ${formatTime(item.jam_selesai)}` : '-';
+        // GABUNGKAN JAM MULAI DAN JAM SELESAI DENGAN FORMAT BARU
+        const jamMulai = formatTime(item.jam_mulai);
+        const jamSelesai = formatTime(item.jam_selesai);
+        const jam = (jamMulai !== '-' && jamSelesai !== '-') ? `${jamMulai} - ${jamSelesai}` : '-';
         
         html += `<tr>
             <td>${index + 1}</td>
