@@ -1262,7 +1262,7 @@
             }
 
 // ============================================================
-// API CALLS - DENGAN CORS PROXY
+// API CALLS - SEMUA MENGGUNAKAN GET
 // ============================================================
 async function apiCall(action, data = null, sheet = '', method = 'GET') {
     try {
@@ -1270,80 +1270,17 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
         params.append('action', action);
         if (sheet) params.append('sheet', sheet);
         if (authToken) params.append('auth', authToken);
-
-        let url = GOOGLE_SHEETS_URL + '?' + params.toString();
-
-        // Untuk GET request, gunakan proxy CORS
-        if (method === 'GET') {
-            // Gunakan proxy untuk menghindari CORS
-            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-            const response = await fetch(proxyUrl);
-            const result = await response.json();
-            return result;
+        
+        // Jika ada data, encode ke JSON dan kirim sebagai parameter
+        if (data) {
+            params.append('data', JSON.stringify(data));
         }
-
-        // Untuk POST request
-        if (method === 'POST' && data) {
-            const options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    action: action,
-                    sheet: sheet,
-                    data: data,
-                    auth: authToken
-                })
-            };
-            
-            // POST via proxy
-            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(GOOGLE_SHEETS_URL);
-            const response = await fetch(proxyUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    url: GOOGLE_SHEETS_URL,
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: action,
-                        sheet: sheet,
-                        data: data,
-                        auth: authToken
-                    })
-                })
-            });
-            
-            // Coba parse response
-            try {
-                const result = await response.json();
-                return result;
-            } catch (e) {
-                // Jika proxy tidak support POST, fallback ke no-cors
-                await fetch(GOOGLE_SHEETS_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: action,
-                        sheet: sheet,
-                        data: data,
-                        auth: authToken
-                    })
-                });
-                return { status: 'success', message: 'Data terkirim (no-cors)' };
-            }
-        }
-
-        return { status: 'error', message: 'Method tidak didukung' };
-
+        
+        const url = GOOGLE_SHEETS_URL + '?' + params.toString();
+        const response = await fetch(url);
+        const result = await response.json();
+        return result;
+        
     } catch (error) {
         console.error('API Error:', error);
         return { status: 'error', message: error.toString() };
