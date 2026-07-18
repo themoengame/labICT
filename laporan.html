@@ -326,24 +326,35 @@
         // ============================================================
         // LOAD DATA
         // ============================================================
-        async function loadData() {
-            try {
-                showLoading(true);
-                const pr = await api.getPeminjamanRuang();
-                if (pr.status === 'success') { peminjamanRuang = pr.data || []; }
-                const pi = await api.getPeminjamanInventaris();
-                if (pi.status === 'success') { peminjamanInventaris = pi.data || []; }
-                setDefaultDates();
-                filterData();
-                const now = new Date();
-                printDate.textContent = now.toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' });
-                showLoading(false);
-            } catch (error) {
-                console.error('Error loading data:', error);
-                showToast('Error: ' + error.message, 'error');
-                showLoading(false);
-            }
-        }
+async function loadData() {
+    try {
+        showLoading(true);
+        
+        // Timeout untuk request
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Timeout: Server tidak merespons')), 15000);
+        });
+        
+        const loadDataPromise = (async () => {
+            const pr = await api.getPeminjamanRuang();
+            if (pr.status === 'success') { peminjamanRuang = pr.data || []; }
+            const pi = await api.getPeminjamanInventaris();
+            if (pi.status === 'success') { peminjamanInventaris = pi.data || []; }
+        })();
+        
+        await Promise.race([loadDataPromise, timeoutPromise]);
+        
+        setDefaultDates();
+        filterData();
+        const now = new Date();
+        printDate.textContent = now.toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' });
+        showLoading(false);
+    } catch (error) {
+        console.error('Error loading data:', error);
+        showToast('⚠️ Gagal memuat data: ' + error.message, 'error');
+        showLoading(false);
+    }
+}
 
         // ============================================================
         // SET DEFAULT DATES
