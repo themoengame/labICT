@@ -72,6 +72,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            text-decoration: none;
         }
         .btn:hover {
             transform: scale(0.97);
@@ -304,6 +305,20 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { color: #1f3b5c; font-weight: 500; }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7f97;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            color: #d0ddee;
+            margin-bottom: 1rem;
+            display: block;
+        }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 680px) {
@@ -330,7 +345,7 @@
     <!-- LOADING -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <p style="color:#1f3b5c; font-weight:500;">Memuat laporan...</p>
+        <div class="loading-text">⏳ Memuat laporan...</div>
     </div>
 
     <div class="container">
@@ -340,13 +355,13 @@
                 <div class="logo"><i class="fas fa-microchip"></i></div>
                 <div>
                     <h1>LAB <span>ICT</span> · SMAN 1 Malang</h1>
-                    <div class="sub">Laporan Peminjaman Ruang & Inventaris</div>
+                    <div class="sub">Laporan Peminjaman Ruang &amp; Inventaris</div>
                 </div>
             </div>
             <div class="header-right no-print">
-                <button class="btn btn-outline" onclick="window.location.href='index.html'">
+                <a href="index.html" class="btn btn-outline">
                     <i class="fas fa-arrow-left"></i> Kembali
-                </button>
+                </a>
                 <button class="btn btn-primary" onclick="filterData()">
                     <i class="fas fa-search"></i> Tampilkan
                 </button>
@@ -486,7 +501,6 @@
             let peminjamanInventaris = [];
             let filteredRuang = [];
             let filteredInventaris = [];
-            let isAdmin = false;
 
             // ============================================================
             // DOM REFS
@@ -509,7 +523,7 @@
             const printDate = $('printDate');
 
             // ============================================================
-            // TOAST
+            // TOAST & LOADING
             // ============================================================
             function showToast(message, type = '') {
                 toast.textContent = message;
@@ -523,15 +537,18 @@
             }
 
             // ============================================================
-            // API CALLS
+            // API CALL (SEMUA GET)
             // ============================================================
-            async function apiCall(action, sheet = '') {
+            async function apiCall(action, params = {}) {
                 try {
-                    const params = new URLSearchParams();
-                    params.append('action', action);
-                    if (sheet) params.append('sheet', sheet);
-
-                    const url = GOOGLE_SHEETS_URL + '?' + params.toString();
+                    const urlParams = new URLSearchParams();
+                    urlParams.append('action', action);
+                    Object.keys(params).forEach(key => {
+                        if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+                            urlParams.append(key, params[key]);
+                        }
+                    });
+                    const url = GOOGLE_SHEETS_URL + '?' + urlParams.toString();
                     const response = await fetch(url);
                     const result = await response.json();
                     return result;
@@ -567,7 +584,8 @@
                     filterData();
 
                     // Set print date
-                    printDate.textContent = new Date().toLocaleString('id-ID', {
+                    const now = new Date();
+                    printDate.textContent = now.toLocaleString('id-ID', {
                         dateStyle: 'full',
                         timeStyle: 'medium'
                     });
@@ -617,20 +635,16 @@
 
                 // Filter Ruang
                 filteredRuang = peminjamanRuang.filter(p => {
-                    // Filter tanggal
                     if (startDate && p.tanggal < startDate) return false;
                     if (endDate && p.tanggal > endDate) return false;
-                    // Filter status
                     if (status !== 'semua' && p.status !== status) return false;
                     return true;
                 });
 
                 // Filter Inventaris
                 filteredInventaris = peminjamanInventaris.filter(p => {
-                    // Filter tanggal
                     if (startDate && p.tanggal_pinjam < startDate) return false;
                     if (endDate && p.tanggal_pinjam > endDate) return false;
-                    // Filter status
                     if (status !== 'semua' && p.status !== status) return false;
                     return true;
                 });
@@ -649,18 +663,14 @@
             // RENDER TABLE
             // ============================================================
             function renderTable() {
-                // Render Ruang
                 renderRuangTable();
-                // Render Inventaris
                 renderInventarisTable();
 
-                // Update total
                 totalRuang.textContent = 'Total: ' + filteredRuang.length;
                 totalInventaris.textContent = 'Total: ' + filteredInventaris.length;
                 totalRuangCount.textContent = 'Total: ' + filteredRuang.length + ' peminjaman';
                 totalInventarisCount.textContent = 'Total: ' + filteredInventaris.length + ' peminjaman';
 
-                // Date info
                 const start = filterStart.value || '-';
                 const end = filterEnd.value || '-';
                 ruangDateInfo.textContent = 'Periode: ' + start + ' s/d ' + end;
@@ -672,8 +682,16 @@
             // ============================================================
             function renderRuangTable() {
                 if (!filteredRuang || !filteredRuang.length) {
-                    ruangTableBody.innerHTML =
-                        `<tr><td colspan="7" style="text-align:center; color:#6b7f97;">Tidak ada data peminjaman ruang</td></tr>`;
+                    ruangTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="fas fa-inbox"></i>
+                                    Tidak ada data peminjaman ruang
+                                </div>
+                            </td>
+                        </tr>
+                    `;
                     return;
                 }
 
@@ -714,8 +732,16 @@
             // ============================================================
             function renderInventarisTable() {
                 if (!filteredInventaris || !filteredInventaris.length) {
-                    inventarisTableBody.innerHTML =
-                        `<tr><td colspan="8" style="text-align:center; color:#6b7f97;">Tidak ada data peminjaman inventaris</td></tr>`;
+                    inventarisTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="8">
+                                <div class="empty-state">
+                                    <i class="fas fa-inbox"></i>
+                                    Tidak ada data peminjaman inventaris
+                                </div>
+                            </td>
+                        </tr>
+                    `;
                     return;
                 }
 
@@ -766,7 +792,6 @@
             // EXPORT EXCEL (CSV)
             // ============================================================
             function exportExcel() {
-                // Gabungkan data
                 let allData = [];
 
                 // Header
@@ -816,6 +841,11 @@
                     ]);
                 });
 
+                if (allData.length <= 1) {
+                    showToast('⚠️ Tidak ada data untuk diexport', 'error');
+                    return;
+                }
+
                 // Buat CSV
                 let csv = allData.map(row => row.join(',')).join('\n');
                 const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
@@ -833,43 +863,26 @@
             // EXPORT PDF (menggunakan print)
             // ============================================================
             function exportPDF() {
-                // Buat elemen untuk print
-                const originalTitle = document.title;
-                document.title = 'Laporan LAB ICT SMAN 1 Malang';
+                // Cek data
+                if (filteredRuang.length === 0 && filteredInventaris.length === 0) {
+                    showToast('⚠️ Tidak ada data untuk dicetak', 'error');
+                    return;
+                }
 
-                // Simpan state filter
                 const start = filterStart.value || '-';
                 const end = filterEnd.value || '-';
                 const jenis = filterJenis.options[filterJenis.selectedIndex].text;
                 const status = filterStatus.options[filterStatus.selectedIndex].text;
 
-                // Tambahkan info filter di header
-                const filterInfo = document.createElement('div');
-                filterInfo.style.cssText =
-                    'padding: 10px 0; font-size: 12px; color: #666; border-bottom: 1px solid #ddd; margin-bottom: 15px;';
-                filterInfo.innerHTML = `
-                    <strong>Periode:</strong> ${start} s/d ${end} &nbsp;|&nbsp;
-                    <strong>Jenis:</strong> ${jenis} &nbsp;|&nbsp;
-                    <strong>Status:</strong> ${status}
-                `;
-
-                // Cari elemen header report
-                const laporanRuang = document.getElementById('laporanRuang');
-                const laporanInventaris = document.getElementById('laporanInventaris');
-
-                // Clone untuk print
-                const printRuang = laporanRuang.cloneNode(true);
-                const printInventaris = laporanInventaris.cloneNode(true);
-
                 // Siapkan konten print
                 const printContent = document.createElement('div');
-                printContent.style.cssText = 'padding: 20px;';
+                printContent.style.cssText = 'padding: 20px; max-width: 1100px; margin: 0 auto;';
 
                 // Header
                 const headerHtml = `
                     <div style="text-align:center; margin-bottom:20px; border-bottom:2px solid #2a7de1; padding-bottom:15px;">
                         <h1 style="font-size:24px; color:#0b2b4a;">LAB ICT SMAN 1 Malang</h1>
-                        <p style="font-size:16px; color:#4d627a;">Laporan Peminjaman Ruang & Inventaris</p>
+                        <p style="font-size:16px; color:#4d627a;">Laporan Peminjaman Ruang &amp; Inventaris</p>
                         <p style="font-size:12px; color:#6b7f97;">Dicetak: ${new Date().toLocaleString('id-ID')}</p>
                         <div style="font-size:12px; color:#666; background:#f5f5f5; padding:8px; border-radius:8px; margin-top:10px;">
                             <strong>Periode:</strong> ${start} s/d ${end} &nbsp;|&nbsp;
@@ -880,8 +893,23 @@
                 `;
 
                 printContent.innerHTML = headerHtml;
-                printContent.appendChild(printRuang);
-                printContent.appendChild(printInventaris);
+
+                // Clone tables
+                const ruangCard = document.getElementById('laporanRuang').cloneNode(true);
+                const invCard = document.getElementById('laporanInventaris').cloneNode(true);
+
+                // Hapus elemen yang tidak perlu di print
+                ruangCard.querySelectorAll('.no-print').forEach(el => el.remove());
+                invCard.querySelectorAll('.no-print').forEach(el => el.remove());
+
+                // Bersihkan header card
+                ruangCard.querySelector('.card-header').style.cssText =
+                    'margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;';
+                invCard.querySelector('.card-header').style.cssText =
+                    'margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;';
+
+                printContent.appendChild(ruangCard);
+                printContent.appendChild(invCard);
 
                 // Footer
                 const footer = document.createElement('div');
@@ -902,22 +930,25 @@
                     <html>
                     <head>
                         <title>Laporan LAB ICT SMAN 1 Malang</title>
-                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
                         <style>
-                            body { font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: white; }
-                            table { width: 100%; border-collapse: collapse; font-size: 12px; }
-                            th { background: #f2f7fd; padding: 8px; text-align: left; border: 1px solid #ddd; }
-                            td { padding: 6px 8px; border: 1px solid #ddd; }
-                            .status-badge { padding: 2px 10px; border-radius: 20px; font-size: 11px; display: inline-block; }
+                            * { font-family: 'Segoe UI', Roboto, sans-serif; }
+                            body { margin: 0; padding: 20px; background: white; }
+                            table { width: 100%; border-collapse: collapse; font-size: 11px; }
+                            th { background: #f2f7fd; padding: 6px 8px; text-align: left; border: 1px solid #ddd; font-weight: 600; }
+                            td { padding: 5px 8px; border: 1px solid #ddd; }
+                            .status-badge { padding: 2px 10px; border-radius: 20px; font-size: 10px; display: inline-block; }
                             .status-badge.approved { background: #dff0d8; color: #1f6d3b; }
                             .status-badge.pending { background: #fff3d6; color: #a46b1a; }
                             .status-badge.rejected { background: #fde8e8; color: #b13a3a; }
                             .status-badge.done { background: #e9edf2; color: #4d5c6e; }
-                            .card { margin-bottom: 20px; }
-                            .card-header { margin-bottom: 10px; }
-                            .card-header h2 { font-size: 16px; color: #0b2b4a; }
-                            .table-info { font-size: 11px; color: #666; margin-top: 8px; }
+                            .card { margin-bottom: 25px; }
+                            .card-header { margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+                            .card-header h2 { font-size: 14px; color: #0b2b4a; margin: 0; }
+                            .table-info { font-size: 10px; color: #666; margin-top: 6px; }
+                            .empty-state { text-align: center; padding: 20px; color: #999; }
+                            .empty-state i { font-size: 24px; display: block; margin-bottom: 8px; }
                             @media print {
+                                body { padding: 10px; }
                                 .no-print { display: none !important; }
                             }
                         </style>
@@ -934,8 +965,6 @@
                 `);
 
                 win.document.close();
-
-                document.title = originalTitle;
                 showToast('✅ PDF siap dicetak', 'success');
             }
 
@@ -946,6 +975,14 @@
             filterEnd.addEventListener('change', filterData);
             filterJenis.addEventListener('change', filterData);
             filterStatus.addEventListener('change', filterData);
+
+            // ============================================================
+            // EXPOSE FUNCTIONS KE GLOBAL
+            // ============================================================
+            window.filterData = filterData;
+            window.resetFilter = resetFilter;
+            window.exportExcel = exportExcel;
+            window.exportPDF = exportPDF;
 
             // ============================================================
             // INIT
@@ -961,12 +998,6 @@
             } else {
                 document.addEventListener('DOMContentLoaded', init);
             }
-
-            // Expose functions
-            window.filterData = filterData;
-            window.resetFilter = resetFilter;
-            window.exportExcel = exportExcel;
-            window.exportPDF = exportPDF;
 
         })();
     </script>
