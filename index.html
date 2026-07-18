@@ -586,15 +586,17 @@ function renderPeminjaman() {
     displayData.forEach((item, index) => {
         const isPending = item.status === 'pending';
         const itemName = item.nama_ruang || item.nama_item || '-';
-        const jumlah = item.jumlah || '-';
-        const jam = item.jam_mulai && item.jam_selesai ? `${formatTime(item.jam_mulai)} - ${formatTime(item.jam_selesai)}` : '-';
+        // GABUNGKAN JAM MULAI DAN JAM SELESAI DENGAN FORMAT BARU
+        const jamMulai = formatTime(item.jam_mulai);
+        const jamSelesai = formatTime(item.jam_selesai);
+        const jam = (jamMulai !== '-' && jamSelesai !== '-') ? `${jamMulai} - ${jamSelesai}` : '-';
         
         html += `<tr>
             <td>${index + 1}</td>
             <td>${item.type === 'Ruang' ? '🏢' : '📦'} ${item.type || '-'}</td>
             <td>${escapeHtml(itemName)}</td>
             <td>${escapeHtml(item.peminjam || '-')}</td>
-            <td>${jumlah}</td>
+            <td>${item.jumlah || '-'}</td>
             <td>${formatDate(item.tanggal_pinjam)}</td>
             <td>${jam}</td>
             <td>${getStatusBadge(item.status)}</td>
@@ -606,7 +608,6 @@ function renderPeminjaman() {
     });
     tbody.innerHTML = html;
 }
-
 // ============================================================
 // UPDATE DROPDOWN ITEM
 // ============================================================
