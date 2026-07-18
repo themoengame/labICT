@@ -9,7 +9,6 @@
         body { background: #eef2f5; min-height: 100vh; padding: 20px; }
         .container { max-width: 1400px; margin: 0 auto; }
         
-        /* Header */
         .header {
             background: white;
             border-radius: 24px;
@@ -24,12 +23,15 @@
         }
         .header h1 { font-size: 1.4rem; color: #1a2a3a; }
         .header h1 span { color: #2c7da0; }
-        .header .right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .header .right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .btn-laporan { background: #27ae60; color: white; padding: 8px 20px; border-radius: 20px; text-decoration: none; font-weight: 600; display: inline-block; }
+        .btn-laporan:hover { background: #1e8449; }
+        .btn-riwayat { background: #2c7da0; color: white; padding: 8px 20px; border-radius: 20px; text-decoration: none; font-weight: 600; display: inline-block; }
+        .btn-riwayat:hover { background: #1a6a8a; }
         .user-badge { background: #e8f0fe; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; color: #1a2a3a; }
         .btn-logout { background: #e74c3c; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: 600; }
         .btn-logout:hover { background: #c0392b; }
         
-        /* Card */
         .card {
             background: white;
             border-radius: 24px;
@@ -48,25 +50,22 @@
         .card h2 { font-size: 1.2rem; color: #1a2a3a; }
         .card h2 .badge { font-size: 0.7rem; background: #e74c3c; color: white; padding: 2px 10px; border-radius: 12px; margin-left: 8px; }
         
-        /* Stats */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 16px;
             margin-bottom: 24px;
         }
         .stat-item {
             background: white;
-            padding: 20px;
+            padding: 16px;
             border-radius: 16px;
             text-align: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .stat-item .number { font-size: 2rem; font-weight: 700; color: #1a2a3a; }
-        .stat-item .label { font-size: 0.8rem; color: #6b7a8a; }
-        .stat-item .icon { font-size: 1.5rem; }
+        .stat-item .number { font-size: 1.8rem; font-weight: 700; color: #1a2a3a; }
+        .stat-item .label { font-size: 0.75rem; color: #6b7a8a; }
         
-        /* Buttons */
         .btn { padding: 8px 20px; border: none; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
         .btn-primary { background: #2c7da0; color: white; }
         .btn-primary:hover { background: #1a6a8a; }
@@ -78,10 +77,9 @@
         .btn-warning:hover { background: #d68910; }
         .btn-secondary { background: #dde4ec; color: #4a5a6a; }
         .btn-secondary:hover { background: #c8d1db; }
-        .btn-sm { padding: 4px 12px; font-size: 0.75rem; }
         .btn-xs { padding: 2px 10px; font-size: 0.7rem; }
+        .btn-sm { padding: 4px 14px; font-size: 0.75rem; }
         
-        /* Tabs */
         .tabs {
             display: flex;
             gap: 4px;
@@ -103,14 +101,10 @@
             transition: 0.2s;
         }
         .tab-btn:hover { background: rgba(44, 125, 160, 0.1); }
-        .tab-btn.active {
-            background: #2c7da0;
-            color: white;
-        }
+        .tab-btn.active { background: #2c7da0; color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* Table */
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
         th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #eef2f5; }
@@ -119,14 +113,13 @@
         .text-center { text-align: center; }
         .text-muted { color: #8a9aa8; }
         
-        /* Status Badge */
         .status-badge { padding: 3px 12px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
         .status-pending { background: #fff3e0; color: #e65100; }
         .status-approved { background: #e8f5e9; color: #2e7d32; }
         .status-rejected { background: #ffebee; color: #c62828; }
         .status-returned { background: #e3f2fd; color: #0d47a1; }
+        .status-completed { background: #e8f5e9; color: #2e7d32; }
         
-        /* Filter */
         .filter-bar {
             display: flex;
             flex-wrap: wrap;
@@ -144,13 +137,8 @@
             font-size: 0.85rem;
             min-width: 140px;
         }
-        .filter-bar select:focus, .filter-bar input:focus {
-            outline: none;
-            border-color: #2c7da0;
-        }
-        .filter-bar .btn { padding: 8px 20px; }
+        .filter-bar select:focus, .filter-bar input:focus { outline: none; border-color: #2c7da0; }
         
-        /* Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -184,7 +172,6 @@
         .form-group input:focus, .form-group select:focus { outline: none; border-color: #2c7da0; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
         
-        /* Notification */
         .notification {
             padding: 12px 18px;
             border-radius: 12px;
@@ -195,7 +182,6 @@
         .notification.error { background: #ffebee; color: #c62828; display: block; }
         .notification.info { background: #e3f2fd; color: #0d47a1; display: block; }
         
-        /* Loading Overlay */
         .loading-overlay {
             display: none;
             position: fixed;
@@ -251,6 +237,7 @@
             .filter-bar select, .filter-bar input { min-width: 100%; }
             .header { flex-direction: column; align-items: stretch; text-align: center; }
             .header .right { justify-content: center; }
+            .stats-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
         }
     </style>
 </head>
@@ -260,7 +247,7 @@
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-box">
         <div class="loading-spinner"></div>
-        <p id="loadingText">⏳ Memuat data...</p>
+        <p id="loadingText">⏳ Memuat data admin...</p>
         <p class="sub" id="loadingSub">Mohon tunggu sebentar</p>
         <div class="loading-progress">
             <div class="bar"><div class="fill" id="loadingProgress"></div></div>
@@ -272,76 +259,53 @@
 
     <!-- HEADER -->
     <div class="header">
-    <h1>⚙️ Dashboard <span>Admin</span> · LAB ICT SMAN 1 Malang</h1>
-    <div class="right">
-        <a href="laporan.html" class="btn-laporan" style="background:#27ae60;color:white;padding:8px 20px;border-radius:20px;text-decoration:none;font-weight:600;display:inline-block;">📊 Laporan</a>
-        <a href="riwayat.html" class="btn-riwayat" style="background:#2c7da0;color:white;padding:8px 20px;border-radius:20px;text-decoration:none;font-weight:600;display:inline-block;">📜 Riwayat</a>
-        <span class="user-badge" id="userBadge">👤 Admin</span>
-        <button class="btn-logout" onclick="logout()" style="background:#e74c3c;color:white;border:none;padding:8px 20px;border-radius:20px;cursor:pointer;font-weight:600;">🚪 Logout</button>
+        <h1>⚙️ Dashboard <span>Admin</span> · LAB ICT SMAN 1 Malang</h1>
+        <div class="right">
+            <a href="laporan.html" class="btn-laporan">📊 Laporan</a>
+            <a href="riwayat.html" class="btn-riwayat">📜 Riwayat</a>
+            <span class="user-badge" id="userBadge">👤 Admin</span>
+            <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+        </div>
     </div>
-</div>
 
     <!-- STATS -->
-<div class="stats-grid" id="statsContainer">
-    <div class="stat-item">
-        <div class="number" id="statRuang">-</div>
-        <div class="label">🏢 Ruang</div>
+    <div class="stats-grid" id="statsContainer">
+        <div class="stat-item"><div class="number" id="statRuang">-</div><div class="label">🏢 Ruang</div></div>
+        <div class="stat-item"><div class="number" id="statInventaris">-</div><div class="label">📦 Inventaris</div></div>
+        <div class="stat-item"><div class="number" id="statPeminjaman">-</div><div class="label">📋 Total Peminjaman</div></div>
+        <div class="stat-item"><div class="number" id="statMenunggu">-</div><div class="label">⏳ Menunggu Approve</div></div>
+        <div class="stat-item" style="background:#e8f5e9;"><div class="number" id="statAktif">-</div><div class="label">🔄 Sedang Berlangsung</div></div>
+        <div class="stat-item" style="background:#e3f2fd;"><div class="number" id="statSelesai">-</div><div class="label">✅ Selesai</div></div>
+        <div class="stat-item" style="background:#ffebee;"><div class="number" id="statDitolak">-</div><div class="label">❌ Ditolak</div></div>
+        <div class="stat-item"><div class="number" id="statUsers">-</div><div class="label">👤 Users</div></div>
     </div>
-    <div class="stat-item">
-        <div class="number" id="statInventaris">-</div>
-        <div class="label">📦 Inventaris</div>
-    </div>
-    <div class="stat-item">
-        <div class="number" id="statPeminjaman">-</div>
-        <div class="label">📋 Total Peminjaman</div>
-    </div>
-    <div class="stat-item">
-        <div class="number" id="statMenunggu">-</div>
-        <div class="label">⏳ Menunggu Approve</div>
-    </div>
-    <!-- STATISTIK BARU -->
-    <div class="stat-item" style="background:#e8f5e9;">
-        <div class="number" id="statAktif">-</div>
-        <div class="label">🔄 Sedang Berlangsung</div>
-    </div>
-    <div class="stat-item" style="background:#e3f2fd;">
-        <div class="number" id="statSelesai">-</div>
-        <div class="label">✅ Selesai</div>
-    </div>
-    <div class="stat-item" style="background:#ffebee;">
-        <div class="number" id="statDitolak">-</div>
-        <div class="label">❌ Ditolak</div>
-    </div>
-</div>
 
     <!-- NOTIFICATION -->
     <div id="notification" class="notification"></div>
 
     <!-- TABS -->
     <div class="tabs">
-        <button class="tab-btn active" data-tab="peminjaman">📋 Peminjaman</button>
+        <button class="tab-btn active" data-tab="peminjaman">📋 Peminjaman Aktif</button>
         <button class="tab-btn" data-tab="ruang">🏢 Ruang Lab</button>
         <button class="tab-btn" data-tab="inventaris">📦 Inventaris</button>
+        <button class="tab-btn" data-tab="users">👤 Users</button>
     </div>
 
-    <!-- TAB: PEMINJAMAN -->
+    <!-- TAB: PEMINJAMAN AKTIF -->
     <div id="tab-peminjaman" class="tab-content active">
         <div class="card">
             <div class="card-header">
-                <h2>📋 Daftar Peminjaman <span class="badge" id="totalPeminjamanBadge">0</span></h2>
+                <h2>📋 Peminjaman Aktif <span class="badge" id="totalPeminjamanBadge">0</span></h2>
                 <div>
                     <button class="btn btn-primary btn-sm" onclick="refreshData()">🔄 Refresh</button>
                 </div>
             </div>
             
-            <!-- Filter -->
             <div class="filter-bar">
                 <select id="filterStatus">
                     <option value="ALL">Semua Status</option>
                     <option value="pending">⏳ Menunggu</option>
                     <option value="approved">✅ Disetujui</option>
-                    <option value="rejected">❌ Ditolak</option>
-                    <option value="returned">↩️ Dikembalikan</option>
                 </select>
                 <select id="filterJenis">
                     <option value="ALL">Semua Jenis</option>
@@ -517,12 +481,82 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tP
 })();
 
 // ============================================================
+// FORMAT TANGGAL & JAM
+// ============================================================
+function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return '-';
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = months[d.getMonth()];
+        const year = d.getFullYear();
+        return `${day} ${month} ${year}`;
+    } catch { return '-'; }
+}
+
+function formatTime(timeStr) {
+    if (!timeStr) return '-';
+    if (timeStr.match(/^\d{1,2}:\d{2}$/)) {
+        const parts = timeStr.split(':');
+        const hours = String(parseInt(parts[0])).padStart(2, '0');
+        return `${hours}:${parts[1]}`;
+    }
+    if (timeStr.match(/^\d{1,2}:\d{2}:\d{2}$/)) {
+        const parts = timeStr.split(':');
+        const hours = String(parseInt(parts[0])).padStart(2, '0');
+        return `${hours}:${parts[1]}`;
+    }
+    try {
+        const d = new Date(timeStr);
+        if (!isNaN(d.getTime())) {
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+    } catch {}
+    return timeStr;
+}
+
+function getStatusBadge(status) {
+    const map = {
+        'pending': ['status-pending', '⏳ Menunggu'],
+        'approved': ['status-approved', '✅ Disetujui'],
+        'rejected': ['status-rejected', '❌ Ditolak'],
+        'returned': ['status-returned', '↩️ Dikembalikan'],
+        'completed': ['status-completed', '✅ Selesai']
+    };
+    const [cls, label] = map[status] || ['status-pending', status];
+    return `<span class="status-badge ${cls}">${label}</span>`;
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        if (m === '"') return '&quot;';
+        return m;
+    });
+}
+
+function showNotification(message, type = 'info') {
+    const el = document.getElementById('notification');
+    el.textContent = message;
+    el.className = 'notification ' + type;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+// ============================================================
 // LOADING MODAL
 // ============================================================
-function showLoading(text = '⏳ Memuat data...', sub = 'Mohon tunggu sebentar', progress = 0) {
-    document.getElementById('loadingText').textContent = text;
-    document.getElementById('loadingSub').textContent = sub;
-    document.getElementById('loadingProgress').style.width = progress + '%';
+function showLoading(text, sub, progress) {
+    document.getElementById('loadingText').textContent = text || '⏳ Memuat data...';
+    document.getElementById('loadingSub').textContent = sub || 'Mohon tunggu sebentar';
+    document.getElementById('loadingProgress').style.width = (progress || 0) + '%';
     document.getElementById('loadingOverlay').classList.add('active');
 }
 
@@ -539,36 +573,31 @@ function updateLoading(text, sub, progress) {
 // ============================================================
 // JSONP HELPER
 // ============================================================
-function jsonpRequest(url, params = {}, timeout = 30000) {
-    return new Promise((resolve, reject) => {
-        const callbackName = 'jsonp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-        const script = document.createElement('script');
-        
-        const timer = setTimeout(() => {
+function jsonpRequest(url, params, timeout) {
+    timeout = timeout || 30000;
+    return new Promise(function(resolve, reject) {
+        var callbackName = 'jsonp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+        var script = document.createElement('script');
+        var timer = setTimeout(function() {
             cleanup();
             reject(new Error('Request timeout'));
         }, timeout);
-        
         function cleanup() {
             clearTimeout(timer);
             delete window[callbackName];
             if (script.parentNode) script.parentNode.removeChild(script);
         }
-        
         window[callbackName] = function(data) {
             cleanup();
             resolve(data);
         };
-        
         script.onerror = function() {
             cleanup();
             reject(new Error('Network error'));
         };
-        
-        const urlParams = new URLSearchParams(params);
+        var urlParams = new URLSearchParams(params);
         urlParams.append('callback', callbackName);
         urlParams.append('_t', Date.now());
-        
         script.src = url + '?' + urlParams.toString();
         document.head.appendChild(script);
     });
@@ -577,162 +606,49 @@ function jsonpRequest(url, params = {}, timeout = 30000) {
 // ============================================================
 // API WRAPPER
 // ============================================================
-const API = {
-    call(action, params = {}) {
-        return jsonpRequest(SCRIPT_URL, { action, ...params });
+var API = {
+    call: function(action, params) {
+        return jsonpRequest(SCRIPT_URL, Object.assign({ action: action }, params || {}));
     },
-    
-    // READ
-    getRuang() { return this.call('get_ruang'); },
-    getInventaris() { return this.call('get_inventaris'); },
-    getPeminjamanRuang() { return this.call('get_peminjaman_ruang'); },
-    getPeminjamanInventaris() { return this.call('get_peminjaman_inventaris'); },
-    getAllPeminjaman() { return this.call('get_all_peminjaman'); },
-    getStats() { return this.call('get_stats'); },
-    getUsers() { return this.call('get_users'); },
-    
-    // WRITE - CRUD
-    add(sheet, data) { return this.call('add', { sheet, data: JSON.stringify(data) }); },
-    update(sheet, data) { return this.call('update', { sheet, data: JSON.stringify(data) }); },
-    delete(sheet, id) { return this.call('delete', { sheet, id }); },
-    
-    // WRITE - Peminjaman
-    addPeminjamanRuang(data) { return this.call('add_peminjaman_ruang', { data: JSON.stringify(data) }); },
-    addPeminjamanInventaris(data) { return this.call('add_peminjaman_inventaris', { data: JSON.stringify(data) }); },
-    
-    // WRITE - Approve/Reject/Return
-    approveRuang(id) { return this.call('approve_ruang', { id }); },
-    rejectRuang(id) { return this.call('reject_ruang', { id }); },
-    approveInventaris(id) { return this.call('approve_inventaris', { id }); },
-    rejectInventaris(id) { return this.call('reject_inventaris', { id }); },
-    returnInventaris(id) { return this.call('return_inventaris', { id }); }
+    getRuang: function() { return this.call('get_ruang'); },
+    getInventaris: function() { return this.call('get_inventaris'); },
+    getUsers: function() { return this.call('get_users'); },
+    getFullStats: function() { return this.call('get_full_stats'); },
+    getAllPeminjaman: function() { return this.call('get_all_peminjaman'); },
+    add: function(sheet, data) { return this.call('add', { sheet: sheet, data: JSON.stringify(data) }); },
+    update: function(sheet, data) { return this.call('update', { sheet: sheet, data: JSON.stringify(data) }); },
+    delete: function(sheet, id) { return this.call('delete', { sheet: sheet, id: id }); },
+    approveRuang: function(id) { return this.call('approve_ruang', { id: id }); },
+    rejectRuang: function(id) { return this.call('reject_ruang', { id: id }); },
+    approveInventaris: function(id) { return this.call('approve_inventaris', { id: id }); },
+    rejectInventaris: function(id) { return this.call('reject_inventaris', { id: id }); },
+    returnInventaris: function(id) { return this.call('return_inventaris', { id: id }); },
+    completeRuang: function(id) { return this.call('complete_ruang', { id: id }); },
+    rejectWithNote: function(id, type, alasan) { return this.call('reject_with_note', { id: id, type: type, alasan: alasan }); }
 };
 
 // ============================================================
 // STATE
 // ============================================================
-let allData = {
+var allData = {
     ruang: [],
     inventaris: [],
     peminjaman: [],
-    users: []
+    users: [],
+    allPeminjaman: []
 };
-let filteredData = [];
-let currentModal = { type: null, data: null, isEdit: false };
+var filteredData = [];
+var currentModal = { type: null, data: null, isEdit: false };
+var adminTarget = { id: null, type: null };
 
 // ============================================================
-// UTILITY
-// ============================================================
-function escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/[&<>"]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        if (m === '"') return '&quot;';
-        return m;
-    });
-}
-
-function formatDate(dateStr) {
-    if (!dateStr) return '-';
-    try {
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return '-';
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = months[d.getMonth()];
-        const year = d.getFullYear();
-        return `${day} ${month} ${year}`;
-    } catch { return '-'; }
-}
-
-// Format jam: HH:mm (menangani berbagai format input)
-function formatTime(timeStr) {
-    if (!timeStr) return '-';
-    
-    // Jika sudah format HH:mm
-    if (timeStr.match(/^\d{1,2}:\d{2}$/)) {
-        const parts = timeStr.split(':');
-        const hours = String(parseInt(parts[0])).padStart(2, '0');
-        return `${hours}:${parts[1]}`;
-    }
-    
-    // Jika format HH:mm:ss
-    if (timeStr.match(/^\d{1,2}:\d{2}:\d{2}$/)) {
-        const parts = timeStr.split(':');
-        const hours = String(parseInt(parts[0])).padStart(2, '0');
-        return `${hours}:${parts[1]}`;
-    }
-    
-    // Jika format timestamp ISO (1899-12-30T00:52:48.000Z)
-    try {
-        const d = new Date(timeStr);
-        if (!isNaN(d.getTime())) {
-            const hours = String(d.getHours()).padStart(2, '0');
-            const minutes = String(d.getMinutes()).padStart(2, '0');
-            return `${hours}:${minutes}`;
-        }
-    } catch {}
-    
-    // Jika format dengan AM/PM
-    try {
-        const d = new Date('2000-01-01T' + timeStr);
-        if (!isNaN(d.getTime())) {
-            const hours = String(d.getHours()).padStart(2, '0');
-            const minutes = String(d.getMinutes()).padStart(2, '0');
-            return `${hours}:${minutes}`;
-        }
-    } catch {}
-    
-    return timeStr;
-}
-
-// Format datetime lengkap: dd MMM yyyy HH:mm
-function formatDateTime(dateStr) {
-    if (!dateStr) return '-';
-    try {
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return '-';
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = months[d.getMonth()];
-        const year = d.getFullYear();
-        const hours = String(d.getHours()).padStart(2, '0');
-        const minutes = String(d.getMinutes()).padStart(2, '0');
-        return `${day} ${month} ${year} ${hours}:${minutes}`;
-    } catch { return '-'; }
-}
-
-function getStatusBadge(status) {
-    const map = {
-        'pending': ['status-pending', '⏳ Menunggu'],
-        'approved': ['status-approved', '✅ Disetujui'],
-        'rejected': ['status-rejected', '❌ Ditolak'],
-        'returned': ['status-returned', '↩️ Dikembalikan']
-    };
-    const [cls, label] = map[status] || ['status-pending', status];
-    return `<span class="status-badge ${cls}">${label}</span>`;
-}
-
-function showNotification(message, type = 'info') {
-    const el = document.getElementById('notification');
-    el.textContent = message;
-    el.className = 'notification ' + type;
-    el.style.display = 'block';
-    setTimeout(() => { el.style.display = 'none'; }, 4000);
-}
-
-// ============================================================
-// LOAD ALL DATA (DENGAN LOADING PROGRESS)
+// LOAD ALL DATA
 // ============================================================
 async function loadAllData() {
     showLoading('⏳ Memuat data admin...', 'Menghubungi server...', 10);
-    
     try {
-        // Step 1: Full Stats (termasuk riwayat)
         updateLoading('📊 Memuat statistik...', 'Mengambil data statistik', 15);
-        const stats = await API.getFullStats();
+        var stats = await API.getFullStats();
         if (stats.status === 'success') {
             document.getElementById('statRuang').textContent = stats.data.totalRuang || 0;
             document.getElementById('statInventaris').textContent = stats.data.totalInventaris || 0;
@@ -742,80 +658,50 @@ async function loadAllData() {
             document.getElementById('statSelesai').textContent = stats.data.selesai || 0;
             document.getElementById('statDitolak').textContent = stats.data.ditolak || 0;
         }
-        
-        // Step 2: Users
+
         updateLoading('👤 Memuat data users...', 'Mengambil data users', 30);
-        const users = await API.getUsers();
+        var users = await API.getUsers();
         if (users.status === 'success') {
             allData.users = users.data || [];
             document.getElementById('statUsers').textContent = allData.users.length;
             renderUsers();
         }
-        
-        // Step 3: Ruang
+
         updateLoading('🏢 Memuat data ruang...', 'Mengambil data master ruang', 45);
-        const ruang = await API.getRuang();
+        var ruang = await API.getRuang();
         if (ruang.status === 'success') {
             allData.ruang = ruang.data || [];
             renderRuang();
         }
-        
-        // Step 4: Inventaris
+
         updateLoading('📦 Memuat data inventaris...', 'Mengambil data master inventaris', 60);
-        const inventaris = await API.getInventaris();
+        var inventaris = await API.getInventaris();
         if (inventaris.status === 'success') {
             allData.inventaris = inventaris.data || [];
             renderInventaris();
         }
-        
-        // Step 5: Peminjaman (hanya pending & approved untuk dashboard aktif)
+
         updateLoading('📋 Memuat data peminjaman...', 'Mengambil data peminjaman aktif', 75);
-        const peminjaman = await API.getAllPeminjaman();
+        var peminjaman = await API.getAllPeminjaman();
         if (peminjaman.status === 'success') {
-            // Filter hanya pending dan approved untuk dashboard aktif
-            allData.peminjaman = peminjaman.data.filter(d => 
-                d.status === 'pending' || d.status === 'approved'
-            );
-            // Simpan semua data untuk filter
-            allData.allPeminjaman = peminjaman.data;
-            filteredData = [...allData.peminjaman];
+            allData.allPeminjaman = peminjaman.data || [];
+            allData.peminjaman = allData.allPeminjaman.filter(function(d) {
+                return d.status === 'pending' || d.status === 'approved';
+            });
+            filteredData = allData.peminjaman.slice();
             renderPeminjaman();
             document.getElementById('totalPeminjamanBadge').textContent = allData.peminjaman.length;
         }
-        
+
         updateLoading('✅ Selesai!', 'Semua data berhasil dimuat', 100);
         setTimeout(hideLoading, 500);
-        
     } catch (error) {
         console.error('Error loading data:', error);
         updateLoading('❌ Gagal memuat data', error.message, 100);
-        setTimeout(() => {
+        setTimeout(function() {
             hideLoading();
             showNotification('Gagal memuat data: ' + error.message, 'error');
         }, 1500);
-    }
-}
-
-    // ============================================================
-// COMPLETE RUANG (Tandai Selesai)
-// ============================================================
-async function completeRuang(id) {
-    if (!confirm('Tandai peminjaman ruang ini sebagai selesai?')) return;
-    
-    showLoading('⏳ Memproses...', 'Menandai peminjaman selesai', 50);
-    
-    try {
-        const result = await API.completeRuang(id);
-        hideLoading();
-        if (result.status === 'success') {
-            showNotification('✅ ' + result.message, 'success');
-            await loadAllData();
-        } else {
-            showNotification('❌ ' + result.message, 'error');
-        }
-    } catch (error) {
-        hideLoading();
-        showNotification('❌ Error: ' + error.message, 'error');
     }
 }
 
@@ -823,162 +709,104 @@ async function completeRuang(id) {
 // RENDER FUNCTIONS
 // ============================================================
 
-// --- RENDER PEMINJAMAN ---
 function renderPeminjaman() {
-    const tbody = document.getElementById('peminjamanTableBody');
-    const data = filteredData.length > 0 ? filteredData : allData.peminjaman;
-    
+    var tbody = document.getElementById('peminjamanTableBody');
+    var data = filteredData.length > 0 ? filteredData : allData.peminjaman;
     if (!data || data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">Tidak ada peminjaman aktif</td></tr>';
         return;
     }
-    
-    let html = '';
-    data.slice(0, 50).forEach((item, index) => {
-        const isPending = item.status === 'pending';
-        const isApproved = item.status === 'approved';
-        const itemName = item.nama_ruang || item.nama_item || '-';
-        const jamMulai = formatTime(item.jam_mulai);
-        const jamSelesai = formatTime(item.jam_selesai);
-        const jam = (jamMulai !== '-' && jamSelesai !== '-') ? `${jamMulai} - ${jamSelesai}` : '-';
-        
-        html += `<tr>
-            <td>${item.id}</td>
-            <td>${item.type === 'Ruang' ? '🏢' : '📦'} ${item.type || '-'}</td>
-            <td>${escapeHtml(itemName)}</td>
-            <td>${escapeHtml(item.peminjam || '-')}</td>
-            <td>${item.jumlah || '-'}</td>
-            <td>${formatDate(item.tanggal_pinjam)}</td>
-            <td>${jam}</td>
-            <td>${getStatusBadge(item.status)}</td>
-            <td>
-                ${isPending ? `
-                    <button class="btn btn-success btn-xs" onclick="openAdminModal(${item.id}, '${item.type}')">✅ Approve</button>
-                    <button class="btn btn-danger btn-xs" onclick="rejectWithReason(${item.id}, '${item.type}')">❌ Tolak</button>
-                ` : ''}
-                ${isApproved && item.type === 'Ruang' ? `
-                    <button class="btn btn-success btn-xs" onclick="completeRuang(${item.id})">✅ Selesai</button>
-                ` : ''}
-                ${isApproved && item.type === 'Inventaris' ? `
-                    <button class="btn btn-warning btn-xs" onclick="returnItem(${item.id})">↩️ Kembali</button>
-                ` : ''}
-            </td>
-        </tr>`;
+    var html = '';
+    data.slice(0, 50).forEach(function(item, index) {
+        var isPending = item.status === 'pending';
+        var isApproved = item.status === 'approved';
+        var itemName = item.nama_ruang || item.nama_item || '-';
+        var jamMulai = formatTime(item.jam_mulai);
+        var jamSelesai = formatTime(item.jam_selesai);
+        var jam = (jamMulai !== '-' && jamSelesai !== '-') ? jamMulai + ' - ' + jamSelesai : '-';
+        html += '<tr>' +
+            '<td>' + item.id + '</td>' +
+            '<td>' + (item.type === 'Ruang' ? '🏢' : '📦') + ' ' + (item.type || '-') + '</td>' +
+            '<td>' + escapeHtml(itemName) + '</td>' +
+            '<td>' + escapeHtml(item.peminjam || '-') + '</td>' +
+            '<td>' + (item.jumlah || '-') + '</td>' +
+            '<td>' + formatDate(item.tanggal_pinjam) + '</td>' +
+            '<td>' + jam + '</td>' +
+            '<td>' + getStatusBadge(item.status) + '</td>' +
+            '<td>' +
+            (isPending ? '<button class="btn btn-success btn-xs" onclick="openAdminModal(' + item.id + ', \'' + item.type + '\')">✅ Approve</button> <button class="btn btn-danger btn-xs" onclick="rejectWithReason(' + item.id + ', \'' + item.type + '\')">❌ Tolak</button>' : '') +
+            (isApproved && item.type === 'Ruang' ? '<button class="btn btn-success btn-xs" onclick="completeRuang(' + item.id + ')">✅ Selesai</button>' : '') +
+            (isApproved && item.type === 'Inventaris' ? '<button class="btn btn-warning btn-xs" onclick="returnItem(' + item.id + ')">↩️ Kembali</button>' : '') +
+            '</td>' +
+            '</tr>';
     });
     tbody.innerHTML = html;
 }
 
-    // ============================================================
-// REJECT WITH REASON (Popup alasan)
-// ============================================================
-// ✅ BENAR - Dengan async
-async function rejectWithReason(id, type) {
-    const alasan = prompt('Masukkan alasan penolakan:');
-    if (alasan === null) return;
-    if (!alasan.trim()) {
-        showNotification('Harap masukkan alasan penolakan', 'error');
-        return;
-    }
-    
-    showLoading('⏳ Memproses...', 'Menolak peminjaman', 50);
-    
-    try {
-        const result = await API.rejectWithNote(id, type, alasan.trim());
-        hideLoading();
-        if (result.status === 'success') {
-            showNotification('✅ ' + result.message, 'success');
-            await loadAllData();
-        } else {
-            showNotification('❌ ' + result.message, 'error');
-        }
-    } catch (error) {
-        hideLoading();
-        showNotification('❌ Error: ' + error.message, 'error');
-    }
-}
-
-// --- RENDER RUANG ---
 function renderRuang() {
-    const tbody = document.getElementById('ruangTableBody');
-    const data = allData.ruang;
-    
+    var tbody = document.getElementById('ruangTableBody');
+    var data = allData.ruang;
     if (!data || data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Belum ada data ruang</td></tr>';
         return;
     }
-    
-    let html = '';
-    data.forEach(item => {
-        html += `<tr>
-            <td>${item.id}</td>
-            <td>${escapeHtml(item.nama_ruang)}</td>
-            <td>${escapeHtml(item.kode || '-')}</td>
-            <td>${item.kapasitas || '-'}</td>
-            <td>${escapeHtml(item.keterangan || '-')}</td>
-            <td>
-                <button class="btn btn-warning btn-xs" onclick="editData('ruang', ${item.id})">✏️</button>
-                <button class="btn btn-danger btn-xs" onclick="deleteData('ruang', ${item.id})">🗑️</button>
-            </td>
-        </tr>`;
+    var html = '';
+    data.forEach(function(item) {
+        html += '<tr>' +
+            '<td>' + item.id + '</td>' +
+            '<td>' + escapeHtml(item.nama_ruang) + '</td>' +
+            '<td>' + escapeHtml(item.kode || '-') + '</td>' +
+            '<td>' + (item.kapasitas || '-') + '</td>' +
+            '<td>' + escapeHtml(item.keterangan || '-') + '</td>' +
+            '<td><button class="btn btn-warning btn-xs" onclick="editData(\'ruang\', ' + item.id + ')">✏️</button> <button class="btn btn-danger btn-xs" onclick="deleteData(\'ruang\', ' + item.id + ')">🗑️</button></td>' +
+            '</tr>';
     });
     tbody.innerHTML = html;
 }
 
-// --- RENDER INVENTARIS ---
 function renderInventaris() {
-    const tbody = document.getElementById('inventarisTableBody');
-    const data = allData.inventaris;
-    
+    var tbody = document.getElementById('inventarisTableBody');
+    var data = allData.inventaris;
     if (!data || data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted">Belum ada data inventaris</td></tr>';
         return;
     }
-    
-    let html = '';
-    data.forEach(item => {
-        const statusPinjam = item.status_pinjam || 'Tidak Tersedia';
-        const isBolehDipinjam = statusPinjam === 'Boleh Dipinjam';
-        html += `<tr>
-            <td>${item.id}</td>
-            <td>${escapeHtml(item.nama_item)}</td>
-            <td>${escapeHtml(item.kategori || '-')}</td>
-            <td>${escapeHtml(item.satuan || '-')}</td>
-            <td>${item.total_stok || 0}</td>
-            <td>${item.stok_tersedia || 0}</td>
-            <td><span style="color:${isBolehDipinjam ? '#27ae60' : '#e74c3c'}">${statusPinjam}</span></td>
-            <td>${escapeHtml(item.kondisi || '-')}</td>
-            <td>${escapeHtml(item.lokasi || '-')}</td>
-            <td>
-                <button class="btn btn-warning btn-xs" onclick="editData('inventaris', ${item.id})">✏️</button>
-                <button class="btn btn-danger btn-xs" onclick="deleteData('inventaris', ${item.id})">🗑️</button>
-            </td>
-        </tr>`;
+    var html = '';
+    data.forEach(function(item) {
+        var statusPinjam = item.status_pinjam || 'Tidak Tersedia';
+        var isBolehDipinjam = statusPinjam === 'Boleh Dipinjam';
+        html += '<tr>' +
+            '<td>' + item.id + '</td>' +
+            '<td>' + escapeHtml(item.nama_item) + '</td>' +
+            '<td>' + escapeHtml(item.kategori || '-') + '</td>' +
+            '<td>' + escapeHtml(item.satuan || '-') + '</td>' +
+            '<td>' + (item.total_stok || 0) + '</td>' +
+            '<td>' + (item.stok_tersedia || 0) + '</td>' +
+            '<td><span style="color:' + (isBolehDipinjam ? '#27ae60' : '#e74c3c') + '">' + statusPinjam + '</span></td>' +
+            '<td>' + escapeHtml(item.kondisi || '-') + '</td>' +
+            '<td>' + escapeHtml(item.lokasi || '-') + '</td>' +
+            '<td><button class="btn btn-warning btn-xs" onclick="editData(\'inventaris\', ' + item.id + ')">✏️</button> <button class="btn btn-danger btn-xs" onclick="deleteData(\'inventaris\', ' + item.id + ')">🗑️</button></td>' +
+            '</tr>';
     });
     tbody.innerHTML = html;
 }
 
-// --- RENDER USERS ---
 function renderUsers() {
-    const tbody = document.getElementById('usersTableBody');
-    const data = allData.users;
-    
+    var tbody = document.getElementById('usersTableBody');
+    var data = allData.users;
     if (!data || data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Belum ada data users</td></tr>';
         return;
     }
-    
-    let html = '';
-    data.forEach(item => {
-        html += `<tr>
-            <td>${item.id}</td>
-            <td>${escapeHtml(item.username)}</td>
-            <td>${escapeHtml(item.nama)}</td>
-            <td>${escapeHtml(item.role || 'admin')}</td>
-            <td>
-                <button class="btn btn-warning btn-xs" onclick="editData('users', ${item.id})">✏️</button>
-                <button class="btn btn-danger btn-xs" onclick="deleteData('users', ${item.id})">🗑️</button>
-            </td>
-        </tr>`;
+    var html = '';
+    data.forEach(function(item) {
+        html += '<tr>' +
+            '<td>' + item.id + '</td>' +
+            '<td>' + escapeHtml(item.username) + '</td>' +
+            '<td>' + escapeHtml(item.nama) + '</td>' +
+            '<td>' + escapeHtml(item.role || 'admin') + '</td>' +
+            '<td><button class="btn btn-warning btn-xs" onclick="editData(\'users\', ' + item.id + ')">✏️</button> <button class="btn btn-danger btn-xs" onclick="deleteData(\'users\', ' + item.id + ')">🗑️</button></td>' +
+            '</tr>';
     });
     tbody.innerHTML = html;
 }
@@ -987,29 +815,27 @@ function renderUsers() {
 // FILTER FUNCTIONS
 // ============================================================
 function applyFilter() {
-    const status = document.getElementById('filterStatus').value;
-    const jenis = document.getElementById('filterJenis').value;
-    const tglMulai = document.getElementById('filterTglMulai').value;
-    const tglSelesai = document.getElementById('filterTglSelesai').value;
-    
-    filteredData = allData.peminjaman.filter(item => {
+    var status = document.getElementById('filterStatus').value;
+    var jenis = document.getElementById('filterJenis').value;
+    var tglMulai = document.getElementById('filterTglMulai').value;
+    var tglSelesai = document.getElementById('filterTglSelesai').value;
+    filteredData = allData.peminjaman.filter(function(item) {
         if (status !== 'ALL' && item.status !== status) return false;
         if (jenis !== 'ALL' && item.type !== jenis) return false;
         if (tglMulai) {
-            const tgl = new Date(item.tanggal_pinjam);
-            const mulai = new Date(tglMulai);
-            mulai.setHours(0,0,0,0);
+            var tgl = new Date(item.tanggal_pinjam);
+            var mulai = new Date(tglMulai);
+            mulai.setHours(0, 0, 0, 0);
             if (tgl < mulai) return false;
         }
         if (tglSelesai) {
-            const tgl = new Date(item.tanggal_pinjam);
-            const selesai = new Date(tglSelesai);
-            selesai.setHours(23,59,59,999);
-            if (tgl > selesai) return false;
+            var tgl2 = new Date(item.tanggal_pinjam);
+            var selesai = new Date(tglSelesai);
+            selesai.setHours(23, 59, 59, 999);
+            if (tgl2 > selesai) return false;
         }
         return true;
     });
-    
     renderPeminjaman();
     showNotification('Filter diterapkan: ' + filteredData.length + ' data ditemukan', 'info');
 }
@@ -1019,7 +845,7 @@ function resetFilter() {
     document.getElementById('filterJenis').value = 'ALL';
     document.getElementById('filterTglMulai').value = '';
     document.getElementById('filterTglSelesai').value = '';
-    filteredData = [...allData.peminjaman];
+    filteredData = allData.peminjaman.slice();
     renderPeminjaman();
     showNotification('Filter direset', 'info');
 }
@@ -1027,116 +853,43 @@ function resetFilter() {
 // ============================================================
 // CRUD MODAL FUNCTIONS
 // ============================================================
-function openModal(type, editData = null) {
-    const modal = document.getElementById('crudModal');
-    const title = document.getElementById('modalTitle');
-    const fields = document.getElementById('modalFields');
-    
-    const isEdit = editData !== null;
-    currentModal = { type, data: editData, isEdit };
-    title.textContent = isEdit ? `✏️ Edit ${type}` : `➕ Tambah ${type}`;
-    
-    let html = '';
-    
+function openModal(type, editData) {
+    var modal = document.getElementById('crudModal');
+    var title = document.getElementById('modalTitle');
+    var fields = document.getElementById('modalFields');
+    var isEdit = editData !== null && editData !== undefined;
+    currentModal = { type: type, data: editData, isEdit: isEdit };
+    title.textContent = isEdit ? '✏️ Edit ' + type : '➕ Tambah ' + type;
+    var html = '';
     if (type === 'ruang') {
-        html = `
-            <input type="hidden" id="field_id" value="${isEdit ? editData.id : ''}">
-            <div class="form-group">
-                <label>Nama Ruang *</label>
-                <input type="text" id="field_nama_ruang" value="${isEdit ? escapeHtml(editData.nama_ruang) : ''}" required>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Kode</label>
-                    <input type="text" id="field_kode" value="${isEdit ? escapeHtml(editData.kode || '') : ''}">
-                </div>
-                <div class="form-group">
-                    <label>Kapasitas</label>
-                    <input type="number" id="field_kapasitas" value="${isEdit ? editData.kapasitas || '' : ''}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Keterangan</label>
-                <textarea id="field_keterangan">${isEdit ? escapeHtml(editData.keterangan || '') : ''}</textarea>
-            </div>
-        `;
+        html = '<input type="hidden" id="field_id" value="' + (isEdit ? editData.id : '') + '">' +
+            '<div class="form-group"><label>Nama Ruang *</label><input type="text" id="field_nama_ruang" value="' + (isEdit ? escapeHtml(editData.nama_ruang) : '') + '" required></div>' +
+            '<div class="form-row"><div class="form-group"><label>Kode</label><input type="text" id="field_kode" value="' + (isEdit ? escapeHtml(editData.kode || '') : '') + '"></div>' +
+            '<div class="form-group"><label>Kapasitas</label><input type="number" id="field_kapasitas" value="' + (isEdit ? (editData.kapasitas || '') : '') + '"></div></div>' +
+            '<div class="form-group"><label>Keterangan</label><textarea id="field_keterangan">' + (isEdit ? escapeHtml(editData.keterangan || '') : '') + '</textarea></div>';
     } else if (type === 'inventaris') {
-        html = `
-            <input type="hidden" id="field_id" value="${isEdit ? editData.id : ''}">
-            <div class="form-group">
-                <label>Nama Item *</label>
-                <input type="text" id="field_nama_item" value="${isEdit ? escapeHtml(editData.nama_item) : ''}" required>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Kategori</label>
-                    <input type="text" id="field_kategori" value="${isEdit ? escapeHtml(editData.kategori || '') : ''}">
-                </div>
-                <div class="form-group">
-                    <label>Satuan</label>
-                    <input type="text" id="field_satuan" value="${isEdit ? escapeHtml(editData.satuan || '') : ''}">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Total Stok</label>
-                    <input type="number" id="field_total_stok" value="${isEdit ? editData.total_stok || 0 : 0}">
-                </div>
-                <div class="form-group">
-                    <label>Stok Tersedia</label>
-                    <input type="number" id="field_stok_tersedia" value="${isEdit ? editData.stok_tersedia || 0 : 0}">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Status Pinjam</label>
-                    <select id="field_status_pinjam">
-                        <option value="Boleh Dipinjam" ${isEdit && editData.status_pinjam === 'Boleh Dipinjam' ? 'selected' : ''}>Boleh Dipinjam</option>
-                        <option value="Tidak Boleh Dipinjam" ${isEdit && editData.status_pinjam === 'Tidak Boleh Dipinjam' ? 'selected' : ''}>Tidak Boleh Dipinjam</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Kondisi</label>
-                    <select id="field_kondisi">
-                        <option value="Baik" ${isEdit && editData.kondisi === 'Baik' ? 'selected' : ''}>Baik</option>
-                        <option value="Rusak" ${isEdit && editData.kondisi === 'Rusak' ? 'selected' : ''}>Rusak</option>
-                        <option value="Perbaikan" ${isEdit && editData.kondisi === 'Perbaikan' ? 'selected' : ''}>Perbaikan</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Lokasi</label>
-                <input type="text" id="field_lokasi" value="${isEdit ? escapeHtml(editData.lokasi || '') : ''}">
-            </div>
-            <div class="form-group">
-                <label>Keterangan</label>
-                <textarea id="field_keterangan">${isEdit ? escapeHtml(editData.keterangan || '') : ''}</textarea>
-            </div>
-        `;
+        html = '<input type="hidden" id="field_id" value="' + (isEdit ? editData.id : '') + '">' +
+            '<div class="form-group"><label>Nama Item *</label><input type="text" id="field_nama_item" value="' + (isEdit ? escapeHtml(editData.nama_item) : '') + '" required></div>' +
+            '<div class="form-row"><div class="form-group"><label>Kategori</label><input type="text" id="field_kategori" value="' + (isEdit ? escapeHtml(editData.kategori || '') : '') + '"></div>' +
+            '<div class="form-group"><label>Satuan</label><input type="text" id="field_satuan" value="' + (isEdit ? escapeHtml(editData.satuan || '') : '') + '"></div></div>' +
+            '<div class="form-row"><div class="form-group"><label>Total Stok</label><input type="number" id="field_total_stok" value="' + (isEdit ? (editData.total_stok || 0) : 0) + '"></div>' +
+            '<div class="form-group"><label>Stok Tersedia</label><input type="number" id="field_stok_tersedia" value="' + (isEdit ? (editData.stok_tersedia || 0) : 0) + '"></div></div>' +
+            '<div class="form-row"><div class="form-group"><label>Status Pinjam</label><select id="field_status_pinjam">' +
+            '<option value="Boleh Dipinjam"' + (isEdit && editData.status_pinjam === 'Boleh Dipinjam' ? ' selected' : '') + '>Boleh Dipinjam</option>' +
+            '<option value="Tidak Boleh Dipinjam"' + (isEdit && editData.status_pinjam === 'Tidak Boleh Dipinjam' ? ' selected' : '') + '>Tidak Boleh Dipinjam</option></select></div>' +
+            '<div class="form-group"><label>Kondisi</label><select id="field_kondisi">' +
+            '<option value="Baik"' + (isEdit && editData.kondisi === 'Baik' ? ' selected' : '') + '>Baik</option>' +
+            '<option value="Rusak"' + (isEdit && editData.kondisi === 'Rusak' ? ' selected' : '') + '>Rusak</option>' +
+            '<option value="Perbaikan"' + (isEdit && editData.kondisi === 'Perbaikan' ? ' selected' : '') + '>Perbaikan</option></select></div></div>' +
+            '<div class="form-group"><label>Lokasi</label><input type="text" id="field_lokasi" value="' + (isEdit ? escapeHtml(editData.lokasi || '') : '') + '"></div>' +
+            '<div class="form-group"><label>Keterangan</label><textarea id="field_keterangan">' + (isEdit ? escapeHtml(editData.keterangan || '') : '') + '</textarea></div>';
     } else if (type === 'users') {
-        html = `
-            <input type="hidden" id="field_id" value="${isEdit ? editData.id : ''}">
-            <div class="form-group">
-                <label>Username *</label>
-                <input type="text" id="field_username" value="${isEdit ? escapeHtml(editData.username) : ''}" required ${isEdit ? 'readonly' : ''}>
-            </div>
-            <div class="form-group">
-                <label>Password *</label>
-                <input type="text" id="field_password" value="${isEdit ? escapeHtml(editData.password) : ''}" required>
-            </div>
-            <div class="form-group">
-                <label>Nama *</label>
-                <input type="text" id="field_nama" value="${isEdit ? escapeHtml(editData.nama) : ''}" required>
-            </div>
-            <div class="form-group">
-                <label>Role</label>
-                <select id="field_role">
-                    <option value="admin" ${isEdit && editData.role === 'admin' ? 'selected' : ''}>Admin</option>
-                </select>
-            </div>
-        `;
+        html = '<input type="hidden" id="field_id" value="' + (isEdit ? editData.id : '') + '">' +
+            '<div class="form-group"><label>Username *</label><input type="text" id="field_username" value="' + (isEdit ? escapeHtml(editData.username) : '') + '" required ' + (isEdit ? 'readonly' : '') + '></div>' +
+            '<div class="form-group"><label>Password *</label><input type="text" id="field_password" value="' + (isEdit ? escapeHtml(editData.password) : '') + '" required></div>' +
+            '<div class="form-group"><label>Nama *</label><input type="text" id="field_nama" value="' + (isEdit ? escapeHtml(editData.nama) : '') + '" required></div>' +
+            '<div class="form-group"><label>Role</label><select id="field_role"><option value="admin"' + (isEdit && editData.role === 'admin' ? ' selected' : '') + '>Admin</option></select></div>';
     }
-    
     fields.innerHTML = html;
     modal.classList.add('active');
 }
@@ -1145,27 +898,20 @@ function closeModal() {
     document.getElementById('crudModal').classList.remove('active');
 }
 
-// CRUD Form Submit
 document.getElementById('crudForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    
-    const { type, data, isEdit } = currentModal;
-    const sheetMap = {
-        'ruang': 'MasterRuang',
-        'inventaris': 'MasterInventaris',
-        'users': 'Users'
-    };
-    
+    var type = currentModal.type;
+    var isEdit = currentModal.isEdit;
+    var sheetMap = { 'ruang': 'MasterRuang', 'inventaris': 'MasterInventaris', 'users': 'Users' };
     try {
-        let formData = {};
-        const fields = document.getElementById('modalFields').querySelectorAll('input, select, textarea');
-        fields.forEach(field => {
+        var formData = {};
+        var fields = document.getElementById('modalFields').querySelectorAll('input, select, textarea');
+        fields.forEach(function(field) {
             formData[field.id.replace('field_', '')] = field.value;
         });
-        
         if (isEdit) {
             formData.id = parseInt(formData.id);
-            const result = await API.update(sheetMap[type], formData);
+            var result = await API.update(sheetMap[type], formData);
             if (result.status === 'success') {
                 showNotification('✅ Data berhasil diupdate', 'success');
                 closeModal();
@@ -1175,13 +921,13 @@ document.getElementById('crudForm').addEventListener('submit', async function(e)
             }
         } else {
             delete formData.id;
-            const result = await API.add(sheetMap[type], formData);
-            if (result.status === 'success') {
+            var result2 = await API.add(sheetMap[type], formData);
+            if (result2.status === 'success') {
                 showNotification('✅ Data berhasil ditambahkan', 'success');
                 closeModal();
                 await loadAllData();
             } else {
-                showNotification('❌ ' + result.message, 'error');
+                showNotification('❌ ' + result2.message, 'error');
             }
         }
     } catch (error) {
@@ -1193,31 +939,19 @@ document.getElementById('crudForm').addEventListener('submit', async function(e)
 // EDIT & DELETE FUNCTIONS
 // ============================================================
 function editData(type, id) {
-    let data;
-    if (type === 'ruang') data = allData.ruang.find(d => d.id === id);
-    else if (type === 'inventaris') data = allData.inventaris.find(d => d.id === id);
-    else if (type === 'users') data = allData.users.find(d => d.id === id);
-    
-    if (data) {
-        openModal(type, data);
-    } else {
-        showNotification('Data tidak ditemukan', 'error');
-    }
+    var data;
+    if (type === 'ruang') data = allData.ruang.find(function(d) { return d.id === id; });
+    else if (type === 'inventaris') data = allData.inventaris.find(function(d) { return d.id === id; });
+    else if (type === 'users') data = allData.users.find(function(d) { return d.id === id; });
+    if (data) { openModal(type, data); } else { showNotification('Data tidak ditemukan', 'error'); }
 }
 
 async function deleteData(type, id) {
     if (!confirm('Yakin ingin menghapus data ini?')) return;
-    
-    const sheetMap = {
-        'ruang': 'MasterRuang',
-        'inventaris': 'MasterInventaris',
-        'users': 'Users'
-    };
-    
+    var sheetMap = { 'ruang': 'MasterRuang', 'inventaris': 'MasterInventaris', 'users': 'Users' };
     showLoading('⏳ Menghapus data...', 'Mohon tunggu', 50);
-    
     try {
-        const result = await API.delete(sheetMap[type], id);
+        var result = await API.delete(sheetMap[type], id);
         hideLoading();
         if (result.status === 'success') {
             showNotification('✅ Data berhasil dihapus', 'success');
@@ -1234,15 +968,10 @@ async function deleteData(type, id) {
 // ============================================================
 // ADMIN MODAL (Approve/Reject)
 // ============================================================
-let adminTarget = { id: null, type: null };
-
 function openAdminModal(id, type) {
-    adminTarget = { id, type };
-    document.getElementById('adminModalTitle').textContent = `⚙️ ${type} - ID #${id}`;
-    document.getElementById('adminModalBody').innerHTML = `
-        <p>Apakah Anda ingin menyetujui atau menolak peminjaman ini?</p>
-        <p style="font-size:0.85rem;color:#6b7a8a;">ID: ${id} | Jenis: ${type}</p>
-    `;
+    adminTarget = { id: id, type: type };
+    document.getElementById('adminModalTitle').textContent = '⚙️ ' + type + ' - ID #' + id;
+    document.getElementById('adminModalBody').innerHTML = '<p>Apakah Anda ingin menyetujui atau menolak peminjaman ini?</p><p style="font-size:0.85rem;color:#6b7a8a;">ID: ' + id + ' | Jenis: ' + type + '</p>';
     document.getElementById('adminModal').classList.add('active');
 }
 
@@ -1251,18 +980,13 @@ function closeAdminModal() {
 }
 
 document.getElementById('modalApproveBtn').addEventListener('click', async function() {
-    const { id, type } = adminTarget;
+    var id = adminTarget.id;
+    var type = adminTarget.type;
     if (!id) return;
-    
     showLoading('⏳ Memproses...', 'Menyetujui peminjaman', 50);
-    
     try {
-        let result;
-        if (type === 'Ruang') {
-            result = await API.approveRuang(id);
-        } else {
-            result = await API.approveInventaris(id);
-        }
+        var result;
+        if (type === 'Ruang') { result = await API.approveRuang(id); } else { result = await API.approveInventaris(id); }
         hideLoading();
         if (result.status === 'success') {
             showNotification('✅ ' + result.message, 'success');
@@ -1278,20 +1002,18 @@ document.getElementById('modalApproveBtn').addEventListener('click', async funct
 });
 
 document.getElementById('modalRejectBtn').addEventListener('click', async function() {
-    const { id, type } = adminTarget;
+    var id = adminTarget.id;
+    var type = adminTarget.type;
     if (!id) return;
-    
-    const alasan = prompt('Masukkan alasan penolakan:');
+    var alasan = prompt('Masukkan alasan penolakan:');
     if (alasan === null) return;
     if (!alasan.trim()) {
         showNotification('Harap masukkan alasan penolakan', 'error');
         return;
     }
-    
     showLoading('⏳ Memproses...', 'Menolak peminjaman', 50);
-    
     try {
-        const result = await API.rejectWithNote(id, type, alasan.trim());
+        var result = await API.rejectWithNote(id, type, alasan.trim());
         hideLoading();
         if (result.status === 'success') {
             showNotification('✅ ' + result.message, 'success');
@@ -1307,20 +1029,13 @@ document.getElementById('modalRejectBtn').addEventListener('click', async functi
 });
 
 // ============================================================
-// REJECT & RETURN FUNCTIONS (Quick Action)
+// COMPLETE RUANG
 // ============================================================
-async function rejectItem(id, type) {
-    if (!confirm('Yakin ingin menolak peminjaman ini?')) return;
-    
-    showLoading('⏳ Memproses...', 'Menolak peminjaman', 50);
-    
+async function completeRuang(id) {
+    if (!confirm('Tandai peminjaman ruang ini sebagai selesai?')) return;
+    showLoading('⏳ Memproses...', 'Menandai peminjaman selesai', 50);
     try {
-        let result;
-        if (type === 'Ruang') {
-            result = await API.rejectRuang(id);
-        } else {
-            result = await API.rejectInventaris(id);
-        }
+        var result = await API.completeRuang(id);
         hideLoading();
         if (result.status === 'success') {
             showNotification('✅ ' + result.message, 'success');
@@ -1334,13 +1049,40 @@ async function rejectItem(id, type) {
     }
 }
 
+// ============================================================
+// REJECT WITH REASON
+// ============================================================
+async function rejectWithReason(id, type) {
+    var alasan = prompt('Masukkan alasan penolakan:');
+    if (alasan === null) return;
+    if (!alasan.trim()) {
+        showNotification('Harap masukkan alasan penolakan', 'error');
+        return;
+    }
+    showLoading('⏳ Memproses...', 'Menolak peminjaman', 50);
+    try {
+        var result = await API.rejectWithNote(id, type, alasan.trim());
+        hideLoading();
+        if (result.status === 'success') {
+            showNotification('✅ ' + result.message, 'success');
+            await loadAllData();
+        } else {
+            showNotification('❌ ' + result.message, 'error');
+        }
+    } catch (error) {
+        hideLoading();
+        showNotification('❌ Error: ' + error.message, 'error');
+    }
+}
+
+// ============================================================
+// RETURN ITEM
+// ============================================================
 async function returnItem(id) {
     if (!confirm('Konfirmasi pengembalian inventaris?')) return;
-    
     showLoading('⏳ Memproses...', 'Mengembalikan inventaris', 50);
-    
     try {
-        const result = await API.returnInventaris(id);
+        var result = await API.returnInventaris(id);
         hideLoading();
         if (result.status === 'success') {
             showNotification('✅ ' + result.message, 'success');
@@ -1364,12 +1106,11 @@ function refreshData() {
 // ============================================================
 // TABS
 // ============================================================
-document.querySelectorAll('.tab-btn').forEach(btn => {
+document.querySelectorAll('.tab-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
         this.classList.add('active');
-        
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });
         document.getElementById('tab-' + this.dataset.tab).classList.add('active');
     });
 });
@@ -1388,9 +1129,7 @@ function logout() {
 // INIT
 // ============================================================
 loadAllData();
-
-// Auto refresh setiap 30 detik
-setInterval(loadAllData, 120000);
+setInterval(loadAllData, 30000);
 </script>
 </body>
 </html>
