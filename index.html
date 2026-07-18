@@ -27,8 +27,6 @@
         .header .right { display: flex; align-items: center; gap: 16px; }
         .btn-login { background: #1a2a3a; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: 600; }
         .btn-login:hover { background: #2a3a4a; }
-        .btn-logout { background: #e74c3c; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: 600; display: none; }
-        .btn-logout:hover { background: #c0392b; }
         .user-badge { background: #e8f0fe; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; color: #1a2a3a; display: none; }
         .user-badge.show { display: inline-block; }
         
@@ -68,8 +66,6 @@
         .btn-warning { background: #f39c12; color: white; }
         .btn-warning:hover { background: #d68910; }
         .btn-sm { padding: 4px 14px; font-size: 0.75rem; }
-        .btn-outline { background: transparent; border: 1.5px solid #dde4ec; color: #4a5a6a; }
-        .btn-outline:hover { background: #f0f2f5; }
         
         .form-actions { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
         
@@ -77,7 +73,7 @@
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
         th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #eef2f5; }
-        th { background: #f8fafc; font-weight: 600; color: #4a5a6a; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        th { background: #f8fafc; font-weight: 600; color: #4a5a6a; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
         td { font-size: 0.9rem; }
         .text-center { text-align: center; }
         .text-muted { color: #8a9aa8; }
@@ -103,7 +99,7 @@
         @media (max-width: 768px) {
             .form-grid { grid-template-columns: 1fr; }
             .header { flex-direction: column; align-items: stretch; text-align: center; }
-            .header .right { justify-content: center; flex-wrap: wrap; }
+            .header .right { justify-content: center; }
         }
         
         /* Modal */
@@ -127,7 +123,8 @@
             overflow-y: auto;
         }
         .modal-box h2 { margin-bottom: 16px; }
-        .modal-actions { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 16px; }
+        .loading-text { color: #8a9aa8; text-align: center; padding: 20px; }
     </style>
 </head>
 <body>
@@ -139,16 +136,16 @@
         <div class="right">
             <span class="user-badge" id="userBadge">👤 Admin</span>
             <button class="btn-login" id="loginBtn" onclick="window.location.href='login.html'">🔐 Login Admin</button>
-            <button class="btn-logout" id="logoutBtn" onclick="logout()">🚪 Logout</button>
+            <button class="btn-login" id="logoutBtn" style="display:none; background:#e74c3c;" onclick="logout()">🚪 Logout</button>
         </div>
     </div>
 
     <!-- STATS -->
     <div class="stats-grid" id="statsContainer">
-        <div class="stat-item"><div class="number" id="statRuang">0</div><div class="label">🏢 Ruang</div></div>
-        <div class="stat-item"><div class="number" id="statInventaris">0</div><div class="label">📦 Inventaris</div></div>
-        <div class="stat-item"><div class="number" id="statPeminjaman">0</div><div class="label">📋 Total Peminjaman</div></div>
-        <div class="stat-item"><div class="number" id="statMenunggu">0</div><div class="label">⏳ Menunggu Approve</div></div>
+        <div class="stat-item"><div class="number" id="statRuang">-</div><div class="label">🏢 Ruang</div></div>
+        <div class="stat-item"><div class="number" id="statInventaris">-</div><div class="label">📦 Inventaris</div></div>
+        <div class="stat-item"><div class="number" id="statPeminjaman">-</div><div class="label">📋 Total Peminjaman</div></div>
+        <div class="stat-item"><div class="number" id="statMenunggu">-</div><div class="label">⏳ Menunggu Approve</div></div>
     </div>
 
     <!-- NOTIFICATION -->
@@ -194,7 +191,7 @@
             </div>
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">📤 Ajukan Peminjaman</button>
-                <button type="reset" class="btn btn-outline">↺ Reset</button>
+                <button type="reset" class="btn" style="background:#dde4ec;color:#4a5a6a;">↺ Reset</button>
             </div>
         </form>
     </div>
@@ -217,7 +214,7 @@
                     </tr>
                 </thead>
                 <tbody id="peminjamanTableBody">
-                    <tr><td colspan="8" class="text-center text-muted">⏳ Memuat data...</td></tr>
+                    <tr><td colspan="8" class="loading-text">⏳ Memuat data...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -225,7 +222,7 @@
 
 </div>
 
-<!-- MODAL ADMIN -->
+<!-- MODAL ADMIN (untuk approve/reject) -->
 <div class="modal-overlay" id="adminModal">
     <div class="modal-box">
         <h2 id="modalTitle">⚙️ Aksi Admin</h2>
@@ -233,7 +230,7 @@
         <div class="modal-actions">
             <button class="btn btn-success" id="modalApproveBtn">✅ Setujui</button>
             <button class="btn btn-danger" id="modalRejectBtn">❌ Tolak</button>
-            <button class="btn btn-outline" onclick="closeModal()">Tutup</button>
+            <button class="btn" style="background:#dde4ec;color:#4a5a6a;" onclick="closeModal()">Tutup</button>
         </div>
     </div>
 </div>
@@ -245,72 +242,52 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec";
 
 // ============================================================
-// JSONP HELPER - SAMA SEPERTI DI input_produksi.html
+// JSONP HELPER (Built-in, tidak perlu file terpisah)
 // ============================================================
-const JSONP = {
-    _callbackId: 0,
-    _pending: {},
-    
-    request(url, params = {}, timeout = 30000) {
-        return new Promise((resolve, reject) => {
-            const callbackName = 'jsonp_callback_' + (++this._callbackId);
-            const script = document.createElement('script');
-            
-            const timer = setTimeout(() => {
-                this._cleanup(callbackName);
-                reject(new Error('Request timeout after ' + timeout + 'ms'));
-            }, timeout);
-            
-            this._pending[callbackName] = {
-                resolve: (data) => {
-                    clearTimeout(timer);
-                    this._cleanup(callbackName);
-                    resolve(data);
-                },
-                reject: (error) => {
-                    clearTimeout(timer);
-                    this._cleanup(callbackName);
-                    reject(error);
-                }
-            };
-            
-            const urlParams = new URLSearchParams(params);
-            urlParams.append('callback', callbackName);
-            urlParams.append('_t', Date.now());
-            
-            window[callbackName] = function(data) {
-                if (this._pending[callbackName]) {
-                    this._pending[callbackName].resolve(data);
-                }
-            }.bind(this);
-            
-            script.onerror = function() {
-                if (this._pending[callbackName]) {
-                    this._pending[callbackName].reject(new Error('Network error or script load failed'));
-                }
-            }.bind(this);
-            
-            script.src = url + '?' + urlParams.toString();
-            document.head.appendChild(script);
-        });
-    },
-    
-    _cleanup(callbackName) {
-        delete window[callbackName];
-        delete this._pending[callbackName];
-        document.querySelectorAll('script[src*="' + callbackName + '"]').forEach(el => el.remove());
-    }
-};
+function jsonpRequest(url, params = {}, timeout = 30000) {
+    return new Promise((resolve, reject) => {
+        const callbackName = 'jsonp_callback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+        const script = document.createElement('script');
+        
+        const timer = setTimeout(() => {
+            cleanup();
+            reject(new Error('Request timeout'));
+        }, timeout);
+        
+        function cleanup() {
+            clearTimeout(timer);
+            delete window[callbackName];
+            if (script.parentNode) script.parentNode.removeChild(script);
+        }
+        
+        window[callbackName] = function(data) {
+            cleanup();
+            resolve(data);
+        };
+        
+        script.onerror = function() {
+            cleanup();
+            reject(new Error('Network error atau script gagal dimuat'));
+        };
+        
+        const urlParams = new URLSearchParams(params);
+        urlParams.append('callback', callbackName);
+        urlParams.append('_t', Date.now());
+        
+        script.src = url + '?' + urlParams.toString();
+        document.head.appendChild(script);
+    });
+}
 
 // ============================================================
-// API WRAPPER
+// API WRAPPER - SEMUA REQUEST KE APPS SCRIPT
 // ============================================================
 const API = {
     call(action, params = {}) {
-        return JSONP.request(SCRIPT_URL, { action, ...params });
+        return jsonpRequest(SCRIPT_URL, { action, ...params });
     },
     
-    // READ
+    // ===== READ =====
     getRuang() { return this.call('get_ruang'); },
     getInventaris() { return this.call('get_inventaris'); },
     getPeminjamanRuang() { return this.call('get_peminjaman_ruang'); },
@@ -318,11 +295,11 @@ const API = {
     getAllPeminjaman() { return this.call('get_all_peminjaman'); },
     getStats() { return this.call('get_stats'); },
     
-    // WRITE - Peminjaman
+    // ===== WRITE - PEMINJAMAN =====
     addPeminjamanRuang(data) { return this.call('add_peminjaman_ruang', { data: JSON.stringify(data) }); },
     addPeminjamanInventaris(data) { return this.call('add_peminjaman_inventaris', { data: JSON.stringify(data) }); },
     
-    // WRITE - Admin Approve/Reject
+    // ===== WRITE - ADMIN =====
     approveRuang(id) { return this.call('approve_ruang', { id }); },
     rejectRuang(id) { return this.call('reject_ruang', { id }); },
     approveInventaris(id) { return this.call('approve_inventaris', { id }); },
@@ -342,7 +319,7 @@ let allData = {
 };
 
 // ============================================================
-// UTILITY FUNCTIONS
+// UTILITY
 // ============================================================
 function escapeHtml(str) {
     if (!str) return '';
@@ -384,72 +361,56 @@ function showNotification(message, type = 'info') {
 }
 
 // ============================================================
-// LOAD DATA DARI APPS SCRIPT (JSONP)
+// LOAD DATA DARI DATABASE (APPS SCRIPT)
 // ============================================================
 async function loadAllData() {
     try {
-        console.log('🔄 Memuat data dari Apps Script...');
-        
-        // 1. Load Stats
+        // 1. Load stats
         const stats = await API.getStats();
         if (stats.status === 'success') {
             document.getElementById('statRuang').textContent = stats.data.totalRuang || 0;
             document.getElementById('statInventaris').textContent = stats.data.totalInventaris || 0;
             document.getElementById('statPeminjaman').textContent = stats.data.totalPeminjaman || 0;
             document.getElementById('statMenunggu').textContent = stats.data.menungguApprove || 0;
-        } else {
-            console.warn('Stats error:', stats.message);
         }
         
-        // 2. Load All Peminjaman
+        // 2. Load semua peminjaman
         const peminjaman = await API.getAllPeminjaman();
         if (peminjaman.status === 'success') {
             allData.peminjaman = peminjaman.data || [];
             renderPeminjaman();
             document.getElementById('totalPeminjamanBadge').textContent = allData.peminjaman.length;
-        } else {
-            console.warn('Peminjaman error:', peminjaman.message);
         }
         
-        // 3. Load Ruang untuk dropdown
-        const ruang = await API.getRuang();
+        // 3. Load ruang & inventaris untuk dropdown
+        const [ruang, inventaris] = await Promise.all([
+            API.getRuang(),
+            API.getInventaris()
+        ]);
         if (ruang.status === 'success') {
             allData.ruang = ruang.data || [];
             updateItemDropdown('ruang');
-        } else {
-            console.warn('Ruang error:', ruang.message);
         }
-        
-        // 4. Load Inventaris untuk dropdown
-        const inventaris = await API.getInventaris();
         if (inventaris.status === 'success') {
             allData.inventaris = inventaris.data || [];
             updateItemDropdown('inventaris');
-        } else {
-            console.warn('Inventaris error:', inventaris.message);
         }
         
-        console.log('✅ Data berhasil dimuat:', {
-            ruang: allData.ruang.length,
-            inventaris: allData.inventaris.length,
-            peminjaman: allData.peminjaman.length
-        });
-        
     } catch (error) {
-        console.error('❌ Error loading data:', error);
+        console.error('Error loading data:', error);
         showNotification('Gagal memuat data: ' + error.message, 'error');
     }
 }
 
 // ============================================================
-// RENDER PEMINJAMAN KE TABEL
+// RENDER PEMINJAMAN
 // ============================================================
 function renderPeminjaman() {
     const tbody = document.getElementById('peminjamanTableBody');
     const data = allData.peminjaman;
     
     if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">📭 Belum ada data peminjaman</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">Belum ada data peminjaman</td></tr>';
         return;
     }
     
@@ -458,16 +419,20 @@ function renderPeminjaman() {
     const displayData = data.slice(0, 20);
     displayData.forEach((item, index) => {
         const isPending = item.Status === 'pending';
+        const itemName = item.NamaRuang || item.NamaItem || '-';
+        const jumlah = item.Jumlah || '-';
+        
         html += `<tr>
             <td>${index + 1}</td>
-            <td>${item.type === 'Ruang' ? '🏢 Ruang' : '📦 Inventaris'}</td>
-            <td>${escapeHtml(item.NamaRuang || item.NamaItem)}</td>
-            <td>${escapeHtml(item.Peminjam)}</td>
-            <td>${item.Jumlah || '-'}</td>
+            <td>${item.type === 'Ruang' ? '🏢' : '📦'} ${item.type || '-'}</td>
+            <td>${escapeHtml(itemName)}</td>
+            <td>${escapeHtml(item.Peminjam || '-')}</td>
+            <td>${jumlah}</td>
             <td>${formatDate(item.TanggalPinjam)}</td>
             <td>${getStatusBadge(item.Status)}</td>
             <td>
-                ${isAdmin && isPending ? `<button class="btn btn-success btn-sm" onclick="openAdminModal(${item.ID}, '${item.type}')">⚙️</button>` : '-'}
+                ${isAdmin && isPending ? `<button class="btn btn-success btn-sm" onclick="openAdminModal(${item.ID}, '${item.type}')">⚙️</button>` : ''}
+                ${item.Status === 'approved' && item.type === 'Inventaris' ? `<button class="btn btn-warning btn-sm" onclick="returnItem(${item.ID})">↩️</button>` : ''}
             </td>
         </tr>`;
     });
@@ -483,7 +448,6 @@ function updateItemDropdown(type) {
     
     const label = type === 'ruang' ? 'Ruang' : 'Item';
     select.innerHTML = `<option value="">-- Pilih ${label} --</option>`;
-    
     if (data && data.length > 0) {
         data.forEach(item => {
             const text = type === 'ruang' 
@@ -492,7 +456,7 @@ function updateItemDropdown(type) {
             select.innerHTML += `<option value="${item.ID}">${escapeHtml(text)}</option>`;
         });
     } else {
-        select.innerHTML += `<option value="">Tidak ada data ${label}</option>`;
+        select.innerHTML += `<option value="">Tidak ada data</option>`;
     }
 }
 
@@ -563,9 +527,10 @@ document.getElementById('peminjamanForm').addEventListener('submit', async funct
             document.getElementById('jumlah').value = 1;
             document.getElementById('jenisPeminjaman').value = '';
             document.getElementById('itemSelect').innerHTML = '<option value="">-- Pilih Item --</option>';
+            // Reload data
             await loadAllData();
         } else {
-            showNotification('❌ ' + (result.message || 'Gagal menyimpan'), 'error');
+            showNotification('❌ ' + result.message, 'error');
         }
     } catch (error) {
         showNotification('❌ Gagal mengajukan: ' + error.message, 'error');
@@ -573,7 +538,7 @@ document.getElementById('peminjamanForm').addEventListener('submit', async funct
 });
 
 // ============================================================
-// ADMIN MODAL (Approve/Reject)
+// ADMIN MODAL
 // ============================================================
 let modalTarget = { id: null, type: null };
 
@@ -582,9 +547,7 @@ function openAdminModal(id, type) {
     document.getElementById('modalTitle').textContent = `⚙️ ${type} - ID #${id}`;
     document.getElementById('modalBody').innerHTML = `
         <p>Apakah Anda ingin menyetujui atau menolak peminjaman ini?</p>
-        <p style="font-size:0.85rem;color:#6b7a8a;margin-top:8px;">
-            ID: ${id} | Jenis: ${type}
-        </p>
+        <p style="font-size:0.85rem;color:#6b7a8a;">ID: ${id} | Jenis: ${type}</p>
     `;
     document.getElementById('adminModal').classList.add('active');
 }
@@ -610,7 +573,7 @@ document.getElementById('modalApproveBtn').addEventListener('click', async funct
             closeModal();
             await loadAllData();
         } else {
-            showNotification('❌ ' + (result.message || 'Gagal approve'), 'error');
+            showNotification('❌ ' + result.message, 'error');
         }
     } catch (error) {
         showNotification('❌ Error: ' + error.message, 'error');
@@ -636,12 +599,29 @@ document.getElementById('modalRejectBtn').addEventListener('click', async functi
             closeModal();
             await loadAllData();
         } else {
-            showNotification('❌ ' + (result.message || 'Gagal reject'), 'error');
+            showNotification('❌ ' + result.message, 'error');
         }
     } catch (error) {
         showNotification('❌ Error: ' + error.message, 'error');
     }
 });
+
+// Fungsi Return Item (khusus inventaris)
+async function returnItem(id) {
+    if (!confirm('Konfirmasi pengembalian inventaris?')) return;
+    
+    try {
+        const result = await API.returnInventaris(id);
+        if (result.status === 'success') {
+            showNotification('✅ ' + result.message, 'success');
+            await loadAllData();
+        } else {
+            showNotification('❌ ' + result.message, 'error');
+        }
+    } catch (error) {
+        showNotification('❌ Error: ' + error.message, 'error');
+    }
+}
 
 // Close modal on overlay click
 document.getElementById('adminModal').addEventListener('click', function(e) {
@@ -662,12 +642,9 @@ function checkLoginStatus() {
             document.getElementById('userBadge').classList.add('show');
             document.getElementById('loginBtn').style.display = 'none';
             document.getElementById('logoutBtn').style.display = 'inline-block';
-            console.log('✅ Admin logged in:', user.name);
         } catch (e) {
-            console.error('Error parsing user data:', e);
+            console.error('Error parsing user data');
         }
-    } else {
-        console.log('ℹ️ Not logged in');
     }
 }
 
@@ -683,17 +660,13 @@ function logout() {
 }
 
 // ============================================================
-// INIT - JALANKAN SAAT HALAMAN DIMUAT
+// INIT - LOAD DATA SAAT PERTAMA KALI
 // ============================================================
 checkLoginStatus();
 loadAllData();
 
-// Refresh data setiap 30 detik (seperti di input_produksi)
+// Auto refresh setiap 30 detik
 setInterval(loadAllData, 30000);
-
-console.log('🚀 Aplikasi LAB ICT siap digunakan');
-console.log('📡 API URL:', SCRIPT_URL);
-console.log('👤 Admin mode:', isAdmin);
 </script>
 </body>
 </html>
