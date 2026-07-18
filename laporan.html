@@ -490,6 +490,48 @@
             'use strict';
 
             // ============================================================
+            // FORMAT FUNCTIONS
+            // ============================================================
+            const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
+                'November', 'Desember'
+            ];
+
+            function formatTanggal(dateStr) {
+                if (!dateStr) return '-';
+                let date = new Date(dateStr);
+                if (isNaN(date.getTime())) {
+                    const parts = dateStr.split('-');
+                    if (parts.length === 3) {
+                        const y = parseInt(parts[0]);
+                        const m = parseInt(parts[1]) - 1;
+                        const d = parseInt(parts[2]);
+                        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+                            date = new Date(y, m, d);
+                        }
+                    }
+                }
+                if (isNaN(date.getTime())) return dateStr;
+                const d = date.getDate();
+                const m = BULAN[date.getMonth()];
+                const y = date.getFullYear();
+                return d + ' ' + m + ' ' + y;
+            }
+
+            function formatJam(timeStr) {
+                if (!timeStr) return '-';
+                if (/^\d{2}:\d{2}$/.test(timeStr)) return timeStr;
+                const match = timeStr.match(/\d{2}:\d{2}/);
+                if (match) return match[0];
+                const date = new Date(timeStr);
+                if (!isNaN(date.getTime())) {
+                    const h = String(date.getHours()).padStart(2, '0');
+                    const m = String(date.getMinutes()).padStart(2, '0');
+                    return h + ':' + m;
+                }
+                return timeStr;
+            }
+
+            // ============================================================
             // KONFIGURASI
             // ============================================================
             const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec';
@@ -537,46 +579,7 @@
             }
 
             // ============================================================
-            // FORMAT FUNCTIONS
-            // ============================================================
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
-                'November', 'Desember'
-            ];
-
-            function formatDate(dateStr) {
-                if (!dateStr) return '-';
-                // Coba parsing
-                let d = new Date(dateStr);
-                if (isNaN(d.getTime())) {
-                    // Coba format YYYY-MM-DD
-                    const parts = dateStr.split('-');
-                    if (parts.length === 3) {
-                        d = new Date(parts[0], parts[1] - 1, parts[2]);
-                    }
-                    if (isNaN(d.getTime())) return dateStr;
-                }
-                return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-            }
-
-            function formatTime(timeStr) {
-                if (!timeStr) return '-';
-                // Cek apakah sudah HH:MM
-                if (/^\d{2}:\d{2}$/.test(timeStr)) return timeStr;
-                // Coba parsing Date
-                let d = new Date(timeStr);
-                if (!isNaN(d.getTime())) {
-                    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-                }
-                // Coba format HH:MM:SS
-                const parts = timeStr.split(':');
-                if (parts.length >= 2) {
-                    return parts[0].padStart(2, '0') + ':' + parts[1].padStart(2, '0');
-                }
-                return timeStr;
-            }
-
-            // ============================================================
-            // API CALL (SEMUA GET)
+            // API CALL
             // ============================================================
             async function apiCall(action, params = {}) {
                 try {
@@ -604,25 +607,19 @@
                 try {
                     showLoading(true);
 
-                    // Load peminjaman ruang
                     const pr = await apiCall('get_peminjaman_ruang');
                     if (pr.status === 'success') {
                         peminjamanRuang = pr.data || [];
                     }
 
-                    // Load peminjaman inventaris
                     const pi = await apiCall('get_peminjaman_inventaris');
                     if (pi.status === 'success') {
                         peminjamanInventaris = pi.data || [];
                     }
 
-                    // Set default filter dates
                     setDefaultDates();
-
-                    // Render
                     filterData();
 
-                    // Set print date
                     const now = new Date();
                     printDate.textContent = now.toLocaleString('id-ID', {
                         dateStyle: 'full',
@@ -645,7 +642,6 @@
                 const today = new Date();
                 const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
-                // Cari tanggal paling awal dari data
                 let earliest = null;
                 peminjamanRuang.forEach(p => {
                     if (p.tanggal && (!earliest || p.tanggal < earliest)) earliest = p.tanggal;
@@ -672,7 +668,6 @@
                 const jenis = filterJenis.value;
                 const status = filterStatus.value;
 
-                // Filter Ruang
                 filteredRuang = peminjamanRuang.filter(p => {
                     if (startDate && p.tanggal < startDate) return false;
                     if (endDate && p.tanggal > endDate) return false;
@@ -680,7 +675,6 @@
                     return true;
                 });
 
-                // Filter Inventaris
                 filteredInventaris = peminjamanInventaris.filter(p => {
                     if (startDate && p.tanggal_pinjam < startDate) return false;
                     if (endDate && p.tanggal_pinjam > endDate) return false;
@@ -688,7 +682,6 @@
                     return true;
                 });
 
-                // Jika jenis = ruang, sembunyikan inventaris
                 if (jenis === 'ruang') {
                     filteredInventaris = [];
                 } else if (jenis === 'inventaris') {
@@ -750,15 +743,18 @@
                     if (p.status === 'done') { statusClass = 'done';
                         statusText = 'Selesai'; }
 
-                    const tgl = formatDate(p.tanggal);
-                    const jam = formatTime(p.jamMulai) + ' – ' + formatTime(p.jamSelesai);
+                    // FORMAT TANGGAL & JAM
+                    const tanggal = formatTanggal(p.tanggal);
+                    const jamMulai = formatJam(p.jamMulai);
+                    const jamSelesai = formatJam(p.jamSelesai);
+                    const jam = jamMulai + ' – ' + jamSelesai;
 
                     html += `
                         <tr>
                             <td>${index + 1}</td>
                             <td>${p.ruang}</td>
                             <td>${p.peminjam}</td>
-                            <td>${tgl}</td>
+                            <td>${tanggal}</td>
                             <td>${jam}</td>
                             <td>${p.keperluan || '-'}</td>
                             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
@@ -802,8 +798,9 @@
                     if (p.status === 'done') { statusClass = 'done';
                         statusText = 'Dikembalikan'; }
 
-                    const tglPinjam = formatDate(p.tanggal_pinjam);
-                    const tglKembali = formatDate(p.tanggal_kembali);
+                    // FORMAT TANGGAL
+                    const tglPinjam = formatTanggal(p.tanggal_pinjam);
+                    const tglKembali = formatTanggal(p.tanggal_kembali);
 
                     html += `
                         <tr>
@@ -839,12 +836,10 @@
             function exportExcel() {
                 let allData = [];
 
-                // Header
                 allData.push(['Jenis', 'Item/Ruang', 'Peminjam', 'Jumlah', 'Tanggal Pinjam', 'Tanggal Kembali', 'Jam',
                     'Keperluan', 'Status'
                 ]);
 
-                // Data Ruang
                 filteredRuang.forEach(p => {
                     let statusText = p.status;
                     if (p.status === 'approved') statusText = 'Disetujui';
@@ -857,15 +852,14 @@
                         p.ruang,
                         p.peminjam,
                         '-',
-                        formatDate(p.tanggal),
+                        formatTanggal(p.tanggal),
                         '-',
-                        formatTime(p.jamMulai) + ' - ' + formatTime(p.jamSelesai),
+                        formatJam(p.jamMulai) + ' - ' + formatJam(p.jamSelesai),
                         p.keperluan || '-',
                         statusText
                     ]);
                 });
 
-                // Data Inventaris
                 filteredInventaris.forEach(p => {
                     let statusText = p.status;
                     if (p.status === 'approved') statusText = 'Disetujui';
@@ -878,8 +872,8 @@
                         p.nama_item,
                         p.peminjam,
                         p.jumlah,
-                        formatDate(p.tanggal_pinjam),
-                        formatDate(p.tanggal_kembali),
+                        formatTanggal(p.tanggal_pinjam),
+                        formatTanggal(p.tanggal_kembali),
                         '-',
                         p.keperluan || '-',
                         statusText
@@ -891,7 +885,6 @@
                     return;
                 }
 
-                // Buat CSV
                 let csv = allData.map(row => row.join(',')).join('\n');
                 const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
@@ -905,10 +898,9 @@
             }
 
             // ============================================================
-            // EXPORT PDF (menggunakan print)
+            // EXPORT PDF
             // ============================================================
             function exportPDF() {
-                // Cek data
                 if (filteredRuang.length === 0 && filteredInventaris.length === 0) {
                     showToast('⚠️ Tidak ada data untuk dicetak', 'error');
                     return;
@@ -919,11 +911,9 @@
                 const jenis = filterJenis.options[filterJenis.selectedIndex].text;
                 const status = filterStatus.options[filterStatus.selectedIndex].text;
 
-                // Siapkan konten print
                 const printContent = document.createElement('div');
                 printContent.style.cssText = 'padding: 20px; max-width: 1100px; margin: 0 auto;';
 
-                // Header
                 const headerHtml = `
                     <div style="text-align:center; margin-bottom:20px; border-bottom:2px solid #2a7de1; padding-bottom:15px;">
                         <h1 style="font-size:24px; color:#0b2b4a;">LAB ICT SMAN 1 Malang</h1>
@@ -939,15 +929,12 @@
 
                 printContent.innerHTML = headerHtml;
 
-                // Clone tables
                 const ruangCard = document.getElementById('laporanRuang').cloneNode(true);
                 const invCard = document.getElementById('laporanInventaris').cloneNode(true);
 
-                // Hapus elemen yang tidak perlu di print
                 ruangCard.querySelectorAll('.no-print').forEach(el => el.remove());
                 invCard.querySelectorAll('.no-print').forEach(el => el.remove());
 
-                // Bersihkan header card
                 ruangCard.querySelector('.card-header').style.cssText =
                     'margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;';
                 invCard.querySelector('.card-header').style.cssText =
@@ -956,14 +943,12 @@
                 printContent.appendChild(ruangCard);
                 printContent.appendChild(invCard);
 
-                // Footer
                 const footer = document.createElement('div');
                 footer.style.cssText =
                     'text-align:center; font-size:11px; color:#999; border-top:1px solid #ddd; padding-top:15px; margin-top:20px;';
                 footer.innerHTML = '© LAB ICT SMAN 1 Malang · Data dari Google Sheets';
                 printContent.appendChild(footer);
 
-                // Buka window baru untuk print
                 const win = window.open('', '_blank', 'width=1100,height=800');
                 if (!win) {
                     showToast('❌ Mohon izinkan popup untuk export PDF', 'error');
@@ -1022,7 +1007,7 @@
             filterStatus.addEventListener('change', filterData);
 
             // ============================================================
-            // EXPOSE FUNCTIONS KE GLOBAL
+            // EXPOSE FUNCTIONS
             // ============================================================
             window.filterData = filterData;
             window.resetFilter = resetFilter;
