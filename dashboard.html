@@ -620,20 +620,44 @@ function formatDate(dateStr) {
     } catch { return '-'; }
 }
 
-// Format jam: HH:mm
+// Format jam: HH:mm (menangani berbagai format input)
 function formatTime(timeStr) {
     if (!timeStr) return '-';
-    // Jika format sudah HH:mm
-    if (timeStr.match(/^\d{2}:\d{2}$/)) return timeStr;
+    
+    // Jika sudah format HH:mm
+    if (timeStr.match(/^\d{1,2}:\d{2}$/)) {
+        const parts = timeStr.split(':');
+        const hours = String(parseInt(parts[0])).padStart(2, '0');
+        return `${hours}:${parts[1]}`;
+    }
+    
     // Jika format HH:mm:ss
-    if (timeStr.match(/^\d{2}:\d{2}:\d{2}$/)) return timeStr.substring(0, 5);
+    if (timeStr.match(/^\d{1,2}:\d{2}:\d{2}$/)) {
+        const parts = timeStr.split(':');
+        const hours = String(parseInt(parts[0])).padStart(2, '0');
+        return `${hours}:${parts[1]}`;
+    }
+    
+    // Jika format timestamp ISO (1899-12-30T00:52:48.000Z)
+    try {
+        const d = new Date(timeStr);
+        if (!isNaN(d.getTime())) {
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+    } catch {}
+    
     // Jika format dengan AM/PM
     try {
         const d = new Date('2000-01-01T' + timeStr);
         if (!isNaN(d.getTime())) {
-            return d.toTimeString().substring(0, 5);
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
         }
     } catch {}
+    
     return timeStr;
 }
 
