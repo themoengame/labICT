@@ -495,10 +495,19 @@
     (function() {
         'use strict';
 
+        // ============================================================
+        // KONFIGURASI - GANTI DENGAN URL APPS SCRIPT ANDA
+        // ============================================================
         const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec';
 
+        // ============================================================
+        // API WRAPPER - Menggunakan JSONP
+        // ============================================================
         const api = createApiWrapper(GOOGLE_SHEETS_URL);
 
+        // ============================================================
+        // FORMAT FUNCTIONS
+        // ============================================================
         const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
         function formatTanggal(dateStr) {
@@ -529,9 +538,15 @@
             return timeStr;
         }
 
+        // ============================================================
+        // STATE
+        // ============================================================
         let peminjamanRuang = [], peminjamanInventaris = [], masterRuang = [], masterInventaris = [], users = [];
         let isAdmin = false, currentUser = null, calendarInstance = null, crudMode = '', crudData = null;
 
+        // ============================================================
+        // DOM REFS
+        // ============================================================
         const $ = id => document.getElementById(id);
         const loginModal = $('loginModal'), crudModal = $('crudModal');
         const loginToggleBtn = $('loginToggleBtn'), loginBtnText = $('loginBtnText'), roleDisplay = $('roleDisplay');
@@ -547,6 +562,9 @@
         const masterRuangList = $('masterRuangList'), masterInventarisList = $('masterInventarisList');
         const btnTambahInventarisMaster = $('btnTambahInventarisMaster'), btnTambahRuangMaster = $('btnTambahRuangMaster'), btnTambahUser = $('btnTambahUser');
 
+        // ============================================================
+        // TOAST & LOADING
+        // ============================================================
         function showToast(msg, type = '') {
             toast.textContent = msg;
             toast.className = 'toast show ' + type;
@@ -568,6 +586,9 @@
             if (text) loadingStatus.textContent = text;
         }
 
+        // ============================================================
+        // API CALL VIA JSONP
+        // ============================================================
         async function apiCall(action, params = {}) {
             try {
                 const result = await api.call(action, params);
@@ -578,7 +599,9 @@
             }
         }
 
-        // ============ FUNGSI UTAMA ============
+        // ============================================================
+        // LOAD ALL DATA
+        // ============================================================
         async function loadAllData() {
             showLoading('Memuat data...');
             let progress = 0;
@@ -617,6 +640,9 @@
             }
         }
 
+        // ============================================================
+        // RENDER ALL
+        // ============================================================
         function renderAll() {
             updateRuangDropdown();
             updateInventarisDropdown();
@@ -629,6 +655,9 @@
             updateCalendarEvents();
         }
 
+        // ============================================================
+        // GET 20 DATA TERAKHIR
+        // ============================================================
         function getLast20(data, sortField = 'timestamp') {
             if (!data || !data.length) return [];
             const sorted = [...data].sort((a, b) => {
@@ -639,6 +668,9 @@
             return sorted.slice(0, 20);
         }
 
+        // ============================================================
+        // UPDATE DROPDOWNS
+        // ============================================================
         function updateRuangDropdown() {
             ruangSelect.innerHTML = '<option value="">-- Pilih Ruang --</option>';
             if (masterRuang && masterRuang.length) {
@@ -664,6 +696,9 @@
             }
         }
 
+        // ============================================================
+        // RENDER MASTER
+        // ============================================================
         function renderMasterRuang() {
             if (!masterRuang || !masterRuang.length) { 
                 masterRuangList.innerHTML = '<p style="color:#6b7f97;">Belum ada data ruang</p>'; 
@@ -695,6 +730,9 @@
             masterInventarisList.innerHTML = html;
         }
 
+        // ============================================================
+        // RENDER RUANG TABLE
+        // ============================================================
         function renderRuangTable() {
             const last20 = getLast20(peminjamanRuang, 'timestamp');
             if (!last20 || !last20.length) {
@@ -744,6 +782,9 @@
             }
         }
 
+        // ============================================================
+        // RENDER INVENTARIS TABLE
+        // ============================================================
         function renderInventarisTable() {
             const last20 = getLast20(peminjamanInventaris, 'timestamp');
             if (!last20 || !last20.length) {
@@ -788,6 +829,9 @@
             }
         }
 
+        // ============================================================
+        // RENDER USERS
+        // ============================================================
         function renderUsersTable() {
             if (!users || !users.length) { 
                 usersTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#6b7f97;">Belum ada data users</td></tr>`; 
@@ -800,6 +844,9 @@
             usersTableBody.innerHTML = html;
         }
 
+        // ============================================================
+        // UPDATE STATS
+        // ============================================================
         function updateStats() {
             statRuang.textContent = masterRuang.length || 0;
             statInventaris.textContent = masterInventaris.length || 0;
@@ -810,6 +857,9 @@
             pendingCount.textContent = pending;
         }
 
+        // ============================================================
+        // KALENDER
+        // ============================================================
         function updateCalendarEvents() {
             if (!calendarInstance) return;
             const events = [];
@@ -851,6 +901,9 @@
             updateCalendarEvents();
         }
 
+        // ============================================================
+        // HANDLE RUANG ACTIONS
+        // ============================================================
         async function handleRuangAction(action, id) {
             const p = peminjamanRuang.find(x => x.id === id);
             if (!p) return;
@@ -895,6 +948,9 @@
             }
         }
 
+        // ============================================================
+        // HANDLE INVENTARIS ACTIONS
+        // ============================================================
         async function handleInventarisAction(action, id) {
             const p = peminjamanInventaris.find(x => x.id === id);
             if (!p) return;
@@ -942,6 +998,9 @@
             }
         }
 
+        // ============================================================
+        // MASTER & USER CRUD
+        // ============================================================
         function editMaster(sheet, id) {
             const data = sheet === 'ruang' ? masterRuang.find(x => x.id === id) : masterInventaris.find(x => x.id === id);
             if (!data) return;
@@ -969,6 +1028,9 @@
             await loadAllData();
         }
 
+        // ============================================================
+        // MODAL CRUD
+        // ============================================================
         function showModal(sheet, data = null) {
             crudMode = sheet;
             crudData = data;
@@ -1039,6 +1101,9 @@
 
         function closeModal() { crudModal.classList.remove('show'); }
 
+        // ============================================================
+        // CRUD FORM SUBMIT
+        // ============================================================
         document.getElementById('crudForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             let data = {}, sheet = '';
@@ -1091,6 +1156,9 @@
             }
         });
 
+        // ============================================================
+        // FORM PENGAJUAN RUANG
+        // ============================================================
         pinjamRuangForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const nama = document.getElementById('peminjamName').value.trim();
@@ -1148,6 +1216,9 @@
             }
         });
 
+        // ============================================================
+        // FORM PENGAJUAN INVENTARIS
+        // ============================================================
         pinjamInventarisForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const nama = document.getElementById('pinjamInvNama').value.trim();
@@ -1199,6 +1270,9 @@
             }
         });
 
+        // ============================================================
+        // LOGIN
+        // ============================================================
         async function handleLogin(username, password) {
             const user = username.trim(), pass = password.trim();
             if (!user || !pass) {
@@ -1243,6 +1317,9 @@
             renderAll();
         }
 
+        // ============================================================
+        // EVENT LISTENERS
+        // ============================================================
         loginToggleBtn.addEventListener('click', function() {
             if (isAdmin) { handleLogout(); } else {
                 loginModal.classList.add('show');
@@ -1277,6 +1354,9 @@
         btnTambahRuangMaster.addEventListener('click', () => showModal('ruang'));
         btnTambahUser.addEventListener('click', () => showModal('users'));
 
+        // ============================================================
+        // TAB
+        // ============================================================
         const tabButtons = document.querySelectorAll('.tab-btn');
         const panels = { 
             ruang: document.getElementById('ruang'), 
@@ -1295,7 +1375,9 @@
         }
         tabButtons.forEach(btn => { btn.addEventListener('click', function() { activateTab(this.dataset.tab); }); });
 
-        // ============ EXPOSE GLOBAL ============
+        // ============================================================
+        // EXPOSE GLOBAL
+        // ============================================================
         window.loadAllData = loadAllData;
         window.editMaster = editMaster;
         window.deleteMaster = deleteMaster;
@@ -1304,7 +1386,9 @@
         window.showModal = showModal;
         window.closeModal = closeModal;
 
-        // ============ INIT ============
+        // ============================================================
+        // INIT
+        // ============================================================
         async function init() {
             console.log('🚀 Inisialisasi LAB ICT SMAN 1 Malang (JSONP)...');
             const today = new Date().toISOString().split('T')[0];
