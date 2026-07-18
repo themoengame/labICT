@@ -871,9 +871,10 @@ function renderPeminjaman() {
     // ============================================================
 // REJECT WITH REASON (Popup alasan)
 // ============================================================
-function rejectWithReason(id, type) {
+// ✅ BENAR - Dengan async
+async function rejectWithReason(id, type) {
     const alasan = prompt('Masukkan alasan penolakan:');
-    if (alasan === null) return; // Cancel
+    if (alasan === null) return;
     if (!alasan.trim()) {
         showNotification('Harap masukkan alasan penolakan', 'error');
         return;
