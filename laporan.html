@@ -537,6 +537,45 @@
             }
 
             // ============================================================
+            // FORMAT FUNCTIONS
+            // ============================================================
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
+                'November', 'Desember'
+            ];
+
+            function formatDate(dateStr) {
+                if (!dateStr) return '-';
+                // Coba parsing
+                let d = new Date(dateStr);
+                if (isNaN(d.getTime())) {
+                    // Coba format YYYY-MM-DD
+                    const parts = dateStr.split('-');
+                    if (parts.length === 3) {
+                        d = new Date(parts[0], parts[1] - 1, parts[2]);
+                    }
+                    if (isNaN(d.getTime())) return dateStr;
+                }
+                return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+            }
+
+            function formatTime(timeStr) {
+                if (!timeStr) return '-';
+                // Cek apakah sudah HH:MM
+                if (/^\d{2}:\d{2}$/.test(timeStr)) return timeStr;
+                // Coba parsing Date
+                let d = new Date(timeStr);
+                if (!isNaN(d.getTime())) {
+                    return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+                }
+                // Coba format HH:MM:SS
+                const parts = timeStr.split(':');
+                if (parts.length >= 2) {
+                    return parts[0].padStart(2, '0') + ':' + parts[1].padStart(2, '0');
+                }
+                return timeStr;
+            }
+
+            // ============================================================
             // API CALL (SEMUA GET)
             // ============================================================
             async function apiCall(action, params = {}) {
@@ -711,13 +750,16 @@
                     if (p.status === 'done') { statusClass = 'done';
                         statusText = 'Selesai'; }
 
+                    const tgl = formatDate(p.tanggal);
+                    const jam = formatTime(p.jamMulai) + ' – ' + formatTime(p.jamSelesai);
+
                     html += `
                         <tr>
                             <td>${index + 1}</td>
                             <td>${p.ruang}</td>
                             <td>${p.peminjam}</td>
-                            <td>${p.tanggal}</td>
-                            <td>${p.jamMulai} – ${p.jamSelesai}</td>
+                            <td>${tgl}</td>
+                            <td>${jam}</td>
                             <td>${p.keperluan || '-'}</td>
                             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                         </tr>
@@ -760,14 +802,17 @@
                     if (p.status === 'done') { statusClass = 'done';
                         statusText = 'Dikembalikan'; }
 
+                    const tglPinjam = formatDate(p.tanggal_pinjam);
+                    const tglKembali = formatDate(p.tanggal_kembali);
+
                     html += `
                         <tr>
                             <td>${index + 1}</td>
                             <td>${p.nama_item}</td>
                             <td>${p.peminjam}</td>
                             <td>${p.jumlah}</td>
-                            <td>${p.tanggal_pinjam}</td>
-                            <td>${p.tanggal_kembali || '-'}</td>
+                            <td>${tglPinjam}</td>
+                            <td>${tglKembali}</td>
                             <td>${p.keperluan || '-'}</td>
                             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                         </tr>
@@ -812,9 +857,9 @@
                         p.ruang,
                         p.peminjam,
                         '-',
-                        p.tanggal,
+                        formatDate(p.tanggal),
                         '-',
-                        p.jamMulai + ' - ' + p.jamSelesai,
+                        formatTime(p.jamMulai) + ' - ' + formatTime(p.jamSelesai),
                         p.keperluan || '-',
                         statusText
                     ]);
@@ -833,8 +878,8 @@
                         p.nama_item,
                         p.peminjam,
                         p.jumlah,
-                        p.tanggal_pinjam,
-                        p.tanggal_kembali || '-',
+                        formatDate(p.tanggal_pinjam),
+                        formatDate(p.tanggal_kembali),
                         '-',
                         p.keperluan || '-',
                         statusText
