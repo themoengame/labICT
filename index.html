@@ -600,10 +600,6 @@ function renderPeminjaman() {
             <td>${formatDate(item.tanggal_pinjam)}</td>
             <td>${jam}</td>
             <td>${getStatusBadge(item.status)}</td>
-            <td>
-                ${isAdmin && isPending ? `<button class="btn btn-success btn-sm" onclick="openAdminModal(${item.id}, '${item.type}')">⚙️</button>` : ''}
-                ${item.status === 'approved' && item.type === 'Inventaris' ? `<button class="btn btn-warning btn-sm" onclick="returnItem(${item.id})">↩️</button>` : ''}
-            </td>
         </tr>`;
     });
     tbody.innerHTML = html;
