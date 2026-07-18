@@ -45,12 +45,8 @@
             align-items: center;
             gap: 0.6rem;
         }
-        .logo i {
-            color: #2a7de1;
-        }
-        .logo span {
-            color: #1f6d3b;
-        }
+        .logo i { color: #2a7de1; }
+        .logo span { color: #1f6d3b; }
         .user-role {
             display: flex;
             align-items: center;
@@ -85,44 +81,16 @@
             gap: 0.5rem;
             font-size: 0.9rem;
         }
-        .btn-login:hover {
-            background: #134a94;
-            transform: scale(0.97);
-        }
+        .btn-login:hover { background: #134a94; transform: scale(0.97); }
         .btn-login.outline {
             background: transparent;
             border: 1px solid #bccfe0;
             color: #1f4e7a;
         }
-        .btn-login.outline:hover {
-            background: #eef4fb;
-        }
-        .btn-login.logout {
-            background: #b13a3a;
-        }
-        .btn-login.logout:hover {
-            background: #8f2e2e;
-        }
-
-        .btn-laporan {
-            background: #1f8b4d;
-            border: none;
-            color: white;
-            padding: 0.4rem 1.2rem;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            text-decoration: none;
-        }
-        .btn-laporan:hover {
-            background: #16703d;
-            transform: scale(0.97);
-        }
+        .btn-login.outline:hover { background: #eef4fb; }
+        .btn-login.logout { background: #b13a3a; }
+        .btn-login.logout:hover { background: #8f2e2e; }
+        .btn-login .badge { font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 0.05rem 0.5rem; border-radius: 40px; margin-left: 0.3rem; }
 
         /* ===== STATS ===== */
         .stats-grid {
@@ -140,22 +108,9 @@
             align-items: center;
             gap: 0.8rem;
         }
-        .stat-card i {
-            font-size: 1.8rem;
-            color: #2a7de1;
-            width: 2.4rem;
-            text-align: center;
-        }
-        .stat-info h4 {
-            font-size: 0.75rem;
-            color: #4d627a;
-            font-weight: 500;
-        }
-        .stat-info .number {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #0b2b4a;
-        }
+        .stat-card i { font-size: 1.8rem; color: #2a7de1; width: 2.4rem; text-align: center; }
+        .stat-info h4 { font-size: 0.75rem; color: #4d627a; font-weight: 500; }
+        .stat-info .number { font-size: 1.4rem; font-weight: 700; color: #0b2b4a; }
 
         /* ===== TABS ===== */
         .tabs {
@@ -180,10 +135,7 @@
             align-items: center;
             gap: 0.5rem;
         }
-        .tab-btn:hover {
-            background: #eaf1fb;
-            color: #1a4d7a;
-        }
+        .tab-btn:hover { background: #eaf1fb; color: #1a4d7a; }
         .tab-btn.active {
             background: white;
             color: #1a5bb5;
@@ -193,18 +145,10 @@
             display: none;
             animation: fade 0.25s ease;
         }
-        .panel.active {
-            display: block;
-        }
+        .panel.active { display: block; }
         @keyframes fade {
-            0% {
-                opacity: 0.4;
-                transform: translateY(6px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0.4; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== CARDS ===== */
@@ -231,9 +175,7 @@
             align-items: center;
             gap: 0.6rem;
         }
-        .card-header h2 i {
-            color: #2a7de1;
-        }
+        .card-header h2 i { color: #2a7de1; }
         .card-header .badge-sheet {
             font-size: 0.7rem;
             background: #e9edf2;
@@ -256,43 +198,19 @@
             gap: 0.5rem;
             border: 1px solid transparent;
         }
-        .btn-primary:hover {
-            background: #134a94;
-            transform: scale(0.97);
-        }
-        .btn-primary.green {
-            background: #1f8b4d;
-        }
-        .btn-primary.green:hover {
-            background: #16703d;
-        }
-        .btn-primary.red {
-            background: #b13a3a;
-        }
-        .btn-primary.red:hover {
-            background: #8f2e2e;
-        }
-        .btn-primary.gray {
-            background: #6b7f97;
-        }
-        .btn-primary.gray:hover {
-            background: #55677d;
-        }
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+        .btn-primary:hover { background: #134a94; transform: scale(0.97); }
+        .btn-primary.green { background: #1f8b4d; }
+        .btn-primary.green:hover { background: #16703d; }
+        .btn-primary.red { background: #b13a3a; }
+        .btn-primary.red:hover { background: #8f2e2e; }
+        .btn-primary.gray { background: #6b7f97; }
+        .btn-primary.gray:hover { background: #55677d; }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-sm { padding: 0.25rem 1rem; font-size: 0.75rem; }
 
         /* ===== TABLES ===== */
-        .table-wrap {
-            overflow-x: auto;
-            border-radius: 16px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
+        .table-wrap { overflow-x: auto; border-radius: 16px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         th {
             text-align: left;
             padding: 0.7rem 0.8rem;
@@ -306,9 +224,7 @@
             border-bottom: 1px solid #e6eef8;
             vertical-align: middle;
         }
-        tr:last-child td {
-            border-bottom: none;
-        }
+        tr:last-child td { border-bottom: none; }
         .status-badge {
             padding: 0.15rem 1rem;
             border-radius: 40px;
@@ -316,34 +232,10 @@
             font-weight: 500;
             display: inline-block;
         }
-        .status-badge.approved {
-            background: #dff0d8;
-            color: #1f6d3b;
-        }
-        .status-badge.pending {
-            background: #fff3d6;
-            color: #a46b1a;
-        }
-        .status-badge.rejected {
-            background: #fde8e8;
-            color: #b13a3a;
-        }
-        .status-badge.done {
-            background: #e9edf2;
-            color: #4d5c6e;
-        }
-        .status-badge.dipinjam {
-            background: #fff3d6;
-            color: #a46b1a;
-        }
-        .status-badge.tersedia {
-            background: #dff0d8;
-            color: #1f6d3b;
-        }
-        .status-badge.tidak_boleh {
-            background: #fde8e8;
-            color: #b13a3a;
-        }
+        .status-badge.approved { background: #dff0d8; color: #1f6d3b; }
+        .status-badge.pending { background: #fff3d6; color: #a46b1a; }
+        .status-badge.rejected { background: #fde8e8; color: #b13a3a; }
+        .status-badge.done { background: #e9edf2; color: #4d5c6e; }
 
         .action-icons i {
             margin: 0 3px;
@@ -353,51 +245,21 @@
             padding: 4px;
             border-radius: 50%;
         }
-        .action-icons i:hover {
-            transform: scale(1.15);
-        }
-        .action-icons i.fa-check-circle {
-            color: #1f8b4d;
-        }
-        .action-icons i.fa-check-circle:hover {
-            background: #dff0d8;
-        }
-        .action-icons i.fa-times-circle {
-            color: #b13a3a;
-        }
-        .action-icons i.fa-times-circle:hover {
-            background: #fde8e8;
-        }
-        .action-icons i.fa-check-double {
-            color: #6b7f97;
-        }
-        .action-icons i.fa-check-double:hover {
-            background: #e9edf2;
-        }
-        .action-icons i.fa-undo {
-            color: #f39c12;
-        }
-        .action-icons i.fa-undo:hover {
-            background: #fff3d6;
-        }
-        .action-icons i.fa-trash-alt {
-            color: #b13a3a;
-        }
-        .action-icons i.fa-trash-alt:hover {
-            background: #fde8e8;
-        }
-        .action-icons i.fa-edit {
-            color: #2a7de1;
-        }
-        .action-icons i.fa-edit:hover {
-            background: #eaf1fb;
-        }
-        .action-icons i.fa-arrow-left {
-            color: #2a7de1;
-        }
-        .action-icons i.fa-arrow-left:hover {
-            background: #eaf1fb;
-        }
+        .action-icons i:hover { transform: scale(1.15); }
+        .action-icons i.fa-check-circle { color: #1f8b4d; }
+        .action-icons i.fa-check-circle:hover { background: #dff0d8; }
+        .action-icons i.fa-times-circle { color: #b13a3a; }
+        .action-icons i.fa-times-circle:hover { background: #fde8e8; }
+        .action-icons i.fa-check-double { color: #6b7f97; }
+        .action-icons i.fa-check-double:hover { background: #e9edf2; }
+        .action-icons i.fa-undo { color: #f39c12; }
+        .action-icons i.fa-undo:hover { background: #fff3d6; }
+        .action-icons i.fa-trash-alt { color: #b13a3a; }
+        .action-icons i.fa-trash-alt:hover { background: #fde8e8; }
+        .action-icons i.fa-edit { color: #2a7de1; }
+        .action-icons i.fa-edit:hover { background: #eaf1fb; }
+        .action-icons i.fa-arrow-left { color: #2a7de1; }
+        .action-icons i.fa-arrow-left:hover { background: #eaf1fb; }
 
         /* ===== FORMS ===== */
         .form-row {
@@ -469,43 +331,24 @@
             gap: 0.8rem;
             margin-bottom: 0.3rem;
         }
-        .item-card .header i {
-            font-size: 1.6rem;
-            color: #3d7eb9;
-            width: 2.2rem;
-            text-align: center;
-        }
-        .item-card .header .nama {
-            font-weight: 600;
-            color: #0b2b4a;
-            font-size: 0.95rem;
-        }
-        .item-card .detail {
-            font-size: 0.8rem;
-            color: #4d6a89;
-            padding: 2px 0;
-        }
-        .item-card .detail .label {
-            color: #6b7f97;
-        }
+        .item-card .header i { font-size: 1.6rem; color: #3d7eb9; width: 2.2rem; text-align: center; }
+        .item-card .header .nama { font-weight: 600; color: #0b2b4a; font-size: 0.95rem; }
+        .item-card .detail { font-size: 0.8rem; color: #4d6a89; padding: 2px 0; }
+        .item-card .detail .label { color: #6b7f97; }
         .item-card .item-actions {
             position: absolute;
             top: 4px;
             right: 4px;
             display: none;
         }
-        .item-card:hover .item-actions {
-            display: block;
-        }
+        .item-card:hover .item-actions { display: block; }
         .item-card .item-actions i {
             font-size: 0.8rem;
             color: #6b7f97;
             cursor: pointer;
             padding: 2px 4px;
         }
-        .item-card .item-actions i:hover {
-            color: #1a5bb5;
-        }
+        .item-card .item-actions i:hover { color: #1a5bb5; }
 
         /* ===== KALENDER ===== */
         #calendar {
@@ -526,15 +369,9 @@
         .fc .fc-daygrid-day.fc-day-today {
             background: #f0f7ff;
         }
-        .fc-event {
-            cursor: pointer;
-        }
-        .fc-event .fc-event-title {
-            font-size: 0.8rem;
-        }
-        .fc-daygrid-event {
-            white-space: normal !important;
-        }
+        .fc-event { cursor: pointer; }
+        .fc-event .fc-event-title { font-size: 0.8rem; }
+        .fc-daygrid-event { white-space: normal !important; }
 
         /* ===== MODAL ===== */
         .modal-overlay {
@@ -550,9 +387,7 @@
             justify-content: center;
             z-index: 999;
         }
-        .modal-overlay.show {
-            display: flex;
-        }
+        .modal-overlay.show { display: flex; }
         .modal-box {
             background: white;
             border-radius: 32px;
@@ -574,27 +409,18 @@
             margin-bottom: 1.5rem;
             font-size: 0.9rem;
         }
-        .modal-box .form-group {
-            margin-bottom: 1rem;
-        }
-        .modal-box .form-group label {
-            display: block;
-            margin-bottom: 0.2rem;
-        }
+        .modal-box .form-group { margin-bottom: 1rem; }
+        .modal-box .form-group label { display: block; margin-bottom: 0.2rem; }
         .modal-box .form-group input,
         .modal-box .form-group select,
-        .modal-box .form-group textarea {
-            width: 100%;
-        }
+        .modal-box .form-group textarea { width: 100%; }
         .modal-actions {
             display: flex;
             gap: 0.8rem;
             margin-top: 1.5rem;
             justify-content: flex-end;
         }
-        .modal-actions .btn-primary {
-            padding: 0.6rem 2rem;
-        }
+        .modal-actions .btn-primary { padding: 0.6rem 2rem; }
         .modal-actions .btn-outline {
             background: transparent;
             border: 1px solid #bccfe0;
@@ -605,23 +431,13 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .modal-actions .btn-outline:hover {
-            background: #eef4fb;
-        }
+        .modal-actions .btn-outline:hover { background: #eef4fb; }
 
         /* ===== ADMIN ONLY ===== */
-        .admin-only {
-            display: none !important;
-        }
-        body.admin-mode .admin-only {
-            display: inline-flex !important;
-        }
-        body.admin-mode td.admin-only {
-            display: table-cell !important;
-        }
-        body.admin-mode th.admin-only {
-            display: table-cell !important;
-        }
+        .admin-only { display: none !important; }
+        body.admin-mode .admin-only { display: inline-flex !important; }
+        body.admin-mode td.admin-only { display: table-cell !important; }
+        body.admin-mode th.admin-only { display: table-cell !important; }
 
         /* ===== TOAST ===== */
         .toast {
@@ -639,18 +455,10 @@
             animation: fade 0.3s ease;
             max-width: 400px;
         }
-        .toast.error {
-            background: #b13a3a;
-        }
-        .toast.success {
-            background: #1f8b4d;
-        }
-        .toast.warning {
-            background: #d48c1a;
-        }
-        .toast.show {
-            display: block;
-        }
+        .toast.error { background: #b13a3a; }
+        .toast.success { background: #1f8b4d; }
+        .toast.warning { background: #d48c1a; }
+        .toast.show { display: block; }
 
         /* ===== LOADING ===== */
         .loading-overlay {
@@ -667,9 +475,7 @@
             flex-direction: column;
             gap: 1.5rem;
         }
-        .loading-overlay.show {
-            display: flex;
-        }
+        .loading-overlay.show { display: flex; }
         .spinner {
             width: 60px;
             height: 60px;
@@ -678,20 +484,9 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        .loading-text {
-            color: #1f3b5c;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-        .loading-sub {
-            color: #6b7f97;
-            font-size: 0.9rem;
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { color: #1f3b5c; font-weight: 600; font-size: 1.1rem; }
+        .loading-sub { color: #6b7f97; font-size: 0.9rem; }
         .loading-progress {
             width: 300px;
             max-width: 80%;
@@ -742,19 +537,14 @@
             margin-bottom: 0.5rem;
             font-size: 1rem;
         }
-        .master-box h3 i {
-            color: #2a7de1;
-            margin-right: 0.5rem;
-        }
+        .master-box h3 i { color: #2a7de1; margin-right: 0.5rem; }
         .master-item {
             padding: 6px 0;
             border-bottom: 1px solid #eef4f8;
             font-size: 0.85rem;
             color: #4d627a;
         }
-        .master-item strong {
-            color: #0b2b4a;
-        }
+        .master-item strong { color: #0b2b4a; }
         .master-item .badge {
             font-size: 0.65rem;
             background: #e9edf2;
@@ -762,70 +552,41 @@
             border-radius: 40px;
             color: #4d627a;
         }
-
-        /* ===== KATEGORI BADGE ===== */
         .kategori-badge {
             font-size: 0.65rem;
             padding: 0.05rem 0.6rem;
             border-radius: 40px;
             display: inline-block;
         }
-        .kategori-badge.komputer {
-            background: #dff0d8;
-            color: #1f6d3b;
-        }
-        .kategori-badge.furniture {
-            background: #fff3d6;
-            color: #a46b1a;
-        }
-        .kategori-badge.elektronik {
-            background: #fde8e8;
-            color: #b13a3a;
-        }
-        .kategori-badge.aksesoris {
-            background: #e9edf2;
-            color: #4d5c6e;
-        }
+        .kategori-badge.komputer { background: #dff0d8; color: #1f6d3b; }
+        .kategori-badge.furniture { background: #fff3d6; color: #a46b1a; }
+        .kategori-badge.elektronik { background: #fde8e8; color: #b13a3a; }
+        .kategori-badge.aksesoris { background: #e9edf2; color: #4d5c6e; }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 680px) {
-            body {
-                padding: 0.8rem;
-            }
-            .topbar {
-                padding: 0.6rem 1rem;
-                border-radius: 28px;
-            }
-            .logo {
-                font-size: 1rem;
-            }
-            .tab-btn {
-                padding: 0.4rem 1rem;
-                font-size: 0.8rem;
-            }
-            .card {
-                padding: 1rem;
-            }
-            .modal-box {
-                padding: 1.8rem 1.5rem;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            .item-grid {
-                grid-template-columns: 1fr;
-            }
-            .master-grid {
-                grid-template-columns: 1fr;
-            }
-            .btn-laporan {
-                font-size: 0.7rem;
-                padding: 0.3rem 0.8rem;
-            }
+            body { padding: 0.8rem; }
+            .topbar { padding: 0.6rem 1rem; border-radius: 28px; }
+            .logo { font-size: 1rem; }
+            .tab-btn { padding: 0.4rem 1rem; font-size: 0.8rem; }
+            .card { padding: 1rem; }
+            .modal-box { padding: 1.8rem 1.5rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .form-row { grid-template-columns: 1fr; }
+            .item-grid { grid-template-columns: 1fr; }
+            .master-grid { grid-template-columns: 1fr; }
         }
+
+        /* ===== LINK LAPORAN ===== */
+        .link-laporan {
+            color: #2a7de1;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .link-laporan:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -847,7 +608,7 @@
                 LAB <span>ICT</span> · SMAN 1 Malang
             </div>
             <div class="user-role">
-                <a href="laporan.html" class="btn-laporan" target="_blank">
+                <a href="laporan.html" class="link-laporan" style="font-size:0.85rem; margin-right:0.5rem;">
                     <i class="fas fa-file-alt"></i> Laporan
                 </a>
                 <span class="role-badge" id="roleDisplay"><i class="fas fa-user"></i> Pengguna</span>
@@ -921,7 +682,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h2><i class="fas fa-list-ul"></i> Daftar Peminjaman Ruang <span style="font-size:0.7rem; color:#6b7f97;">(20 terakhir)</span></h2>
+                    <h2><i class="fas fa-list-ul"></i> Daftar Peminjaman Ruang (20 Terakhir)</h2>
                     <span style="font-size:0.85rem; color:#4d627a;" id="totalPinjamRuang">Total: 0</span>
                 </div>
                 <div class="table-wrap">
@@ -993,7 +754,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h2><i class="fas fa-list-ul"></i> Daftar Peminjaman Inventaris <span style="font-size:0.7rem; color:#6b7f97;">(20 terakhir)</span></h2>
+                    <h2><i class="fas fa-list-ul"></i> Daftar Peminjaman Inventaris (20 Terakhir)</h2>
                     <span style="font-size:0.85rem; color:#4d627a;" id="totalPinjamInv">Total: 0</span>
                 </div>
                 <div class="table-wrap">
@@ -1054,7 +815,6 @@
                 </div>
 
                 <div class="master-grid">
-                    <!-- Master Ruang -->
                     <div class="master-box">
                         <h3><i class="fas fa-door-open"></i> Ruang Lab <span class="master-badge">master_ruang</span></h3>
                         <div id="masterRuangList">
@@ -1062,13 +822,12 @@
                         </div>
                     </div>
 
-                    <!-- Master Inventaris -->
                     <div class="master-box">
                         <h3><i class="fas fa-boxes"></i> Inventaris & Aset Lab <span class="master-badge">master_inventaris</span></h3>
                         <div style="font-size:0.75rem; color:#6b7f97; margin-bottom:0.5rem;">
-                            <span class="status-badge tersedia">Boleh Dipinjam</span>
-                            <span class="status-badge tidak_boleh">Tidak Boleh</span>
-                            <span class="status-badge dipinjam">Dipinjam</span>
+                            <span class="status-badge approved">Boleh Dipinjam</span>
+                            <span class="status-badge rejected">Tidak Boleh</span>
+                            <span class="status-badge pending">Dipinjam</span>
                         </div>
                         <div id="masterInventarisList">
                             <p style="color:#6b7f97;">Memuat...</p>
@@ -1106,7 +865,7 @@
         </div>
 
         <div class="footer-note">
-            <i class="fas fa-database"></i> Data tersimpan di Google Sheets ·
+            <i class="fas fa-database"></i> Data tersimpan di Google Sheets · 
             <i class="fas fa-github"></i> Hosted on GitHub Pages
         </div>
     </div>
@@ -1160,8 +919,7 @@
     <!-- ============================================================ -->
     <!-- JAVASCRIPT -->
     <!-- ============================================================ -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <script>
         (function() {
             'use strict';
@@ -1186,19 +944,6 @@
             let crudMode = '';
             let crudData = null;
             let isLoading = true;
-
-            // ============================================================
-            // FUNGSI GET 20 DATA TERAKHIR
-            // ============================================================
-            function getLast20(data, sortField = 'timestamp') {
-                if (!data || !data.length) return [];
-                const sorted = [...data].sort((a, b) => {
-                    const aVal = a[sortField] || '';
-                    const bVal = b[sortField] || '';
-                    return bVal.localeCompare(aVal);
-                });
-                return sorted.slice(0, 20);
-            }
 
             // ============================================================
             // DOM REFS
@@ -1261,31 +1006,50 @@
                 if (text) loadingStatus.textContent = text;
             }
 
-// ============================================================
-// API CALLS - SEMUA MENGGUNAKAN GET
-// ============================================================
-async function apiCall(action, data = null, sheet = '', method = 'GET') {
-    try {
-        const params = new URLSearchParams();
-        params.append('action', action);
-        if (sheet) params.append('sheet', sheet);
-        if (authToken) params.append('auth', authToken);
-        
-        // Jika ada data, encode ke JSON dan kirim sebagai parameter
-        if (data) {
-            params.append('data', JSON.stringify(data));
-        }
-        
-        const url = GOOGLE_SHEETS_URL + '?' + params.toString();
-        const response = await fetch(url);
-        const result = await response.json();
-        return result;
-        
-    } catch (error) {
-        console.error('API Error:', error);
-        return { status: 'error', message: error.toString() };
-    }
-}
+            // ============================================================
+            // API CALLS (SEMUA GET)
+            // ============================================================
+            async function apiCall(action, params = {}) {
+                try {
+                    const urlParams = new URLSearchParams();
+                    urlParams.append('action', action);
+                    
+                    // Tambahkan semua parameter
+                    Object.keys(params).forEach(key => {
+                        if (params[key] !== null && params[key] !== undefined) {
+                            if (typeof params[key] === 'object') {
+                                urlParams.append(key, JSON.stringify(params[key]));
+                            } else {
+                                urlParams.append(key, params[key]);
+                            }
+                        }
+                    });
+                    
+                    if (authToken) urlParams.append('auth', authToken);
+                    
+                    const url = GOOGLE_SHEETS_URL + '?' + urlParams.toString();
+                    const response = await fetch(url);
+                    const result = await response.json();
+                    return result;
+                    
+                } catch (error) {
+                    console.error('API Error:', error);
+                    return { status: 'error', message: error.toString() };
+                }
+            }
+
+            // ============================================================
+            // FUNGSI GET 20 DATA TERAKHIR
+            // ============================================================
+            function getLast20(data, sortField = 'timestamp') {
+                if (!data || !data.length) return [];
+                const sorted = [...data].sort((a, b) => {
+                    const aVal = a[sortField] || '';
+                    const bVal = b[sortField] || '';
+                    return bVal.localeCompare(aVal);
+                });
+                return sorted.slice(0, 20);
+            }
 
             // ============================================================
             // LOAD ALL DATA
@@ -1327,7 +1091,6 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
 
                     updateLoading('Merender tampilan...', 85);
 
-                    // Render semua
                     renderAll();
 
                     updateLoading('Selesai!', 100);
@@ -1381,7 +1144,7 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
                         const opt = document.createElement('option');
                         opt.value = item.nama_item || item.nama || item;
                         opt.textContent = (item.nama_item || item.nama || item) + ' (Tersedia: ' + (item
-                            .stok_tersedia || '0') + ')';
+                        .stok_tersedia || '0') + ')';
                         pinjamInvItem.appendChild(opt);
                     });
                 }
@@ -1424,13 +1187,13 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
 
                 let html = '';
                 masterInventaris.forEach(item => {
-                    let statusClass = 'tersedia';
+                    let statusClass = 'approved';
                     let statusText = 'Boleh Dipinjam';
-                    if (item.status_pinjam === 'Tidak Boleh') { statusClass = 'tidak_boleh';
+                    if (item.status_pinjam === 'Tidak Boleh') { statusClass = 'rejected';
                         statusText = 'Tidak Boleh'; }
-                    if (item.status_pinjam === 'Dipinjam') { statusClass = 'dipinjam';
+                    if (item.status_pinjam === 'Dipinjam') { statusClass = 'pending';
                         statusText = 'Dipinjam'; }
-                    if (item.kondisi === 'Rusak') { statusClass = 'tidak_boleh';
+                    if (item.kondisi === 'Rusak') { statusClass = 'rejected';
                         statusText = 'Rusak'; }
 
                     const stokInfo = (item.total_stok || 0) + '/' + (item.stok_tersedia || 0);
@@ -1457,7 +1220,7 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
             // ============================================================
             function renderRuangTable() {
                 const last20 = getLast20(peminjamanRuang, 'timestamp');
-
+                
                 if (!last20 || !last20.length) {
                     ruangTableBody.innerHTML =
                         `<tr><td colspan="6" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman ruang</td></tr>`;
@@ -1540,7 +1303,7 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
             // ============================================================
             function renderInventarisTable() {
                 const last20 = getLast20(peminjamanInventaris, 'timestamp');
-
+                
                 if (!last20 || !last20.length) {
                     invTableBody.innerHTML =
                         `<tr><td colspan="7" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman inventaris</td></tr>`;
@@ -1753,7 +1516,7 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
 
                 switch (action) {
                     case 'approve_ruang':
-                        const result = await apiCall('approve_ruang', p);
+                        const result = await apiCall('approve_ruang', { data: p });
                         if (result.status === 'success') {
                             showToast('✅ Peminjaman ruang ' + p.peminjam + ' disetujui', 'success');
                         } else {
@@ -1763,25 +1526,25 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
                         break;
                     case 'reject':
                         p.status = 'rejected';
-                        await apiCall('update', p, 'peminjaman_ruang', 'POST');
+                        await apiCall('update', { sheet: 'peminjaman_ruang', data: p });
                         showToast('⛔ Peminjaman ' + p.peminjam + ' ditolak', 'error');
                         await loadAllData();
                         break;
                     case 'done':
                         p.status = 'done';
-                        await apiCall('update', p, 'peminjaman_ruang', 'POST');
+                        await apiCall('update', { sheet: 'peminjaman_ruang', data: p });
                         showToast('✅ Peminjaman ' + p.peminjam + ' selesai', 'success');
                         await loadAllData();
                         break;
                     case 'undo':
                         p.status = 'pending';
-                        await apiCall('update', p, 'peminjaman_ruang', 'POST');
+                        await apiCall('update', { sheet: 'peminjaman_ruang', data: p });
                         showToast('↩️ Dikembalikan ke pending', 'warning');
                         await loadAllData();
                         break;
                     case 'delete':
                         if (!confirm('Hapus peminjaman ini?')) return;
-                        await apiCall('delete', { id: id }, 'peminjaman_ruang', 'POST');
+                        await apiCall('delete', { sheet: 'peminjaman_ruang', id: id });
                         showToast('🗑️ Peminjaman dihapus', '');
                         await loadAllData();
                         break;
@@ -1797,7 +1560,7 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
 
                 switch (action) {
                     case 'approve_inventaris':
-                        const result = await apiCall('approve_inventaris', p);
+                        const result = await apiCall('approve_inventaris', { data: p });
                         if (result.status === 'success') {
                             showToast('✅ Peminjaman inventaris ' + p.peminjam + ' disetujui', 'success');
                         } else {
@@ -1807,12 +1570,12 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
                         break;
                     case 'reject_inventaris':
                         p.status = 'rejected';
-                        await apiCall('update', p, 'peminjaman_inventaris', 'POST');
+                        await apiCall('update', { sheet: 'peminjaman_inventaris', data: p });
                         showToast('⛔ Peminjaman ' + p.peminjam + ' ditolak', 'error');
                         await loadAllData();
                         break;
                     case 'return_inventaris':
-                        const ret = await apiCall('return_inventaris', p);
+                        const ret = await apiCall('return_inventaris', { data: p });
                         if (ret.status === 'success') {
                             showToast('✅ Inventaris dikembalikan', 'success');
                         } else {
@@ -1822,13 +1585,13 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
                         break;
                     case 'undo_inventaris':
                         p.status = 'pending';
-                        await apiCall('update', p, 'peminjaman_inventaris', 'POST');
+                        await apiCall('update', { sheet: 'peminjaman_inventaris', data: p });
                         showToast('↩️ Dikembalikan ke pending', 'warning');
                         await loadAllData();
                         break;
                     case 'delete_inventaris':
                         if (!confirm('Hapus peminjaman ini?')) return;
-                        await apiCall('delete', { id: id }, 'peminjaman_inventaris', 'POST');
+                        await apiCall('delete', { sheet: 'peminjaman_inventaris', id: id });
                         showToast('🗑️ Peminjaman dihapus', '');
                         await loadAllData();
                         break;
@@ -1849,7 +1612,7 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
             async function deleteMaster(sheet, id) {
                 if (!confirm('Hapus data ini?')) return;
                 const sheetName = sheet === 'ruang' ? 'master_ruang' : 'master_inventaris';
-                await apiCall('delete', { id: id }, sheetName, 'POST');
+                await apiCall('delete', { sheet: sheetName, id: id });
                 showToast('🗑️ Data dihapus', '');
                 await loadAllData();
             }
@@ -1865,7 +1628,7 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
 
             async function deleteUser(id) {
                 if (!confirm('Hapus user ini?')) return;
-                await apiCall('delete', { id: id }, 'users', 'POST');
+                await apiCall('delete', { sheet: 'users', id: id });
                 showToast('🗑️ User dihapus', '');
                 await loadAllData();
             }
@@ -1950,7 +1713,6 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
                         <div style="font-size:0.8rem; color:#6b7f97; background:#f9fcff; padding:0.5rem; border-radius:8px;">
                             <i class="fas fa-info-circle"></i> 
                             <strong>stok_tersedia</strong> akan otomatis = total_stok saat pertama kali ditambahkan.
-                            <br>Status pinjam akan otomatis berubah jika stok_tersedia = 0.
                         </div>
                     `;
                 } else if (sheet === 'users') {
@@ -2016,7 +1778,7 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
                         total_stok: totalStok,
                         kondisi: document.getElementById('f_kondisi').value,
                         lokasi: document.getElementById('f_lokasi').value || 'Lab ICT A',
-                        keterangan: document.getElementById('f_keterangan').value || '',
+                        keterangan: document.getElementById('f_keterangan').value || ''
                     };
                     if (crudData) data.id = crudData.id;
                 } else if (crudMode === 'users') {
@@ -2032,7 +1794,7 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
 
                 const action = crudData ? 'update' : 'add';
                 showLoading('Menyimpan data...');
-                const result = await apiCall(action, data, sheet, 'POST');
+                const result = await apiCall(action, { sheet: sheet, data: data });
                 showLoading(false);
 
                 if (result.status === 'success') {
@@ -2089,7 +1851,7 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
                 };
 
                 showLoading('Menyimpan pengajuan...');
-                const result = await apiCall('add', newPinjam, 'peminjaman_ruang', 'POST');
+                const result = await apiCall('add', { sheet: 'peminjaman_ruang', data: newPinjam });
                 showLoading(false);
 
                 if (result.status === 'success') {
@@ -2143,7 +1905,7 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
                 };
 
                 showLoading('Menyimpan pengajuan...');
-                const result = await apiCall('add', newPinjam, 'peminjaman_inventaris', 'POST');
+                const result = await apiCall('add', { sheet: 'peminjaman_inventaris', data: newPinjam });
                 showLoading(false);
 
                 if (result.status === 'success') {
@@ -2169,18 +1931,15 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
 
                 try {
                     showLoading('Login...');
-                    const url = GOOGLE_SHEETS_URL + '?action=login&username=' + encodeURIComponent(user) + '&password=' +
-                        encodeURIComponent(pass);
-                    const response = await fetch(url);
-                    const data = await response.json();
+                    const result = await apiCall('login', { username: user, password: pass });
 
-                    if (data.status === 'success') {
-                        currentUser = data.data;
-                        authToken = data.data.token || 'token-' + Date.now();
+                    if (result.status === 'success') {
+                        currentUser = result.data;
+                        authToken = result.data.token || 'token-' + Date.now();
                         isAdmin = true;
                         document.body.classList.add('admin-mode');
-                        roleDisplay.innerHTML = '<i class="fas fa-user-shield"></i> ' + (data.data.nama || data.data
-                            .username);
+                        roleDisplay.innerHTML = '<i class="fas fa-user-shield"></i> ' + (result.data.nama || result.data
+                        .username);
                         roleDisplay.classList.add('admin');
                         loginBtnText.textContent = 'Logout';
                         loginToggleBtn.classList.add('logout');
@@ -2189,7 +1948,7 @@ async function apiCall(action, data = null, sheet = '', method = 'GET') {
                         loginModal.classList.remove('show');
                         await loadAllData();
                     } else {
-                        showToast('❌ ' + (data.message || 'Username atau password salah!'), 'error');
+                        showToast('❌ ' + (result.message || 'Username atau password salah!'), 'error');
                     }
                 } catch (error) {
                     showToast('❌ Gagal login: ' + error.message, 'error');
