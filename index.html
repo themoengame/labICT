@@ -6,6 +6,7 @@
     <title>LAB ICT SMAN 1 Malang</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
+    <script src="jsonp.js"></script>
     <style>
         /* ============================================================
            STYLE - LAB ICT SMAN 1 Malang
@@ -567,6 +568,11 @@
         const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec';
 
         // ============================================================
+        // API WRAPPER - Menggunakan JSONP
+        // ============================================================
+        const api = createApiWrapper(GOOGLE_SHEETS_URL);
+
+        // ============================================================
         // FORMAT FUNCTIONS
         // ============================================================
         const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -638,7 +644,9 @@
             if (loadingProgressBar) loadingProgressBar.style.width = progress + '%';
         }
 
-        function hideLoading() { loadingOverlay.classList.remove('show'); }
+        function hideLoading() { 
+            loadingOverlay.classList.remove('show'); 
+        }
 
         function showLoading(text) {
             loadingOverlay.classList.add('show');
@@ -646,37 +654,65 @@
         }
 
         // ============================================================
-        // API CALL (SEMUA GET - TIDAK ADA CORS)
+        // API CALL VIA JSONP
         // ============================================================
         async function apiCall(action, params = {}) {
-    try {
-        const urlParams = new URLSearchParams();
-        urlParams.append('action', action);
-        Object.keys(params).forEach(key => {
-            if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
-                urlParams.append(key, params[key]);
+            try {
+                const result = await api.call(action, params);
+                return result;
+            } catch (error) {
+                console.error('API Error:', error);
+                return { status: 'error', message: error.toString() };
             }
-        });
-        
-        const url = GOOGLE_SHEETS_URL + '?' + urlParams.toString();
-        
-        // Perbaikan utama: Menggunakan mode 'cors' dengan redirect 'follow'
-        const response = await fetch(url, {
-            method: 'GET',
-            mode: 'cors',
-            redirect: 'follow',
-            headers: {
-                'Content-Type': 'text/plain' // Menghindari preflight request OPTIONS
+        }
+
+        // ============================================================
+        // LOAD ALL DATA - Menggunakan JSONP
+        // ============================================================
+        async function loadAllData() {
+            showLoading('Memuat data...');
+            let progress = 0;
+            
+            try {
+                // Load Ruang
+                updateLoading('Memuat data ruang...', progress += 10);
+                const ruang = await api.getRuang();
+                if (ruang.status === 'success') masterRuang = ruang.data || [];
+                
+                // Load Inventaris
+                updateLoading('Memuat data inventaris...', progress += 10);
+                const inv = await api.getInventaris();
+                if (inv.status === 'success') masterInventaris = inv.data || [];
+                
+                // Load Peminjaman Ruang
+                updateLoading('Memuat peminjaman ruang...', progress += 15);
+                const pr = await api.getPeminjamanRuang();
+                if (pr.status === 'success') peminjamanRuang = pr.data || [];
+                
+                // Load Peminjaman Inventaris
+                updateLoading('Memuat peminjaman inventaris...', progress += 15);
+                const pi = await api.getPeminjamanInventaris();
+                if (pi.status === 'success') peminjamanInventaris = pi.data || [];
+                
+                // Load Users (hanya jika admin)
+                if (isAdmin) {
+                    updateLoading('Memuat data users...', progress += 10);
+                    const usersData = await api.getUsers();
+                    if (usersData.status === 'success') users = usersData.data || [];
+                }
+                
+                updateLoading('Selesai!', 100);
+                
+                // Render semua data
+                renderAll();
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showToast('❌ Gagal memuat data: ' + error.message, 'error');
+                hideLoading();
             }
-        });
-        
-        const result = await response.json();
-        return result;
-    } catch (error) {
-        console.error('API Error:', error);
-        return { status: 'error', message: error.toString() };
-    }
-}
+        }
 
         // ============================================================
         // RENDER ALL
@@ -738,7 +774,10 @@
         // RENDER MASTER
         // ============================================================
         function renderMasterRuang() {
-            if (!masterRuang || !masterRuang.length) { masterRuangList.innerHTML = '<p style="color:#6b7f97;">Belum ada data ruang</p>'; return; }
+            if (!masterRuang || !masterRuang.length) { 
+                masterRuangList.innerHTML = '<p style="color:#6b7f97;">Belum ada data ruang</p>'; 
+                return; 
+            }
             let html = '';
             masterRuang.forEach(r => {
                 html += `<div class="master-item"><strong>${r.nama_ruang || r.nama || r}</strong><span class="badge">${r.kode || ''}</span><span style="font-size:0.8rem;color:#6b7f97;">Kapasitas: ${r.kapasitas || '-'}</span>
@@ -748,7 +787,10 @@
         }
 
         function renderMasterInventaris() {
-            if (!masterInventaris || !masterInventaris.length) { masterInventarisList.innerHTML = '<p style="color:#6b7f97;">Belum ada data inventaris</p>'; return; }
+            if (!masterInventaris || !masterInventaris.length) { 
+                masterInventarisList.innerHTML = '<p style="color:#6b7f97;">Belum ada data inventaris</p>'; 
+                return; 
+            }
             let html = '';
             masterInventaris.forEach(item => {
                 let statusClass = 'approved', statusText = 'Boleh Dipinjam';
@@ -763,7 +805,7 @@
         }
 
         // ============================================================
-        // RENDER RUANG TABLE (20 TERAKHIR)
+        // RENDER RUANG TABLE
         // ============================================================
         function renderRuangTable() {
             const last20 = getLast20(peminjamanRuang, 'timestamp');
@@ -772,16 +814,16 @@
                 totalPinjamRuang.textContent = 'Total: ' + peminjamanRuang.length + ' (20 terakhir)';
                 return;
             }
-            let html = '', active = 0, pending = 0;
+            let html = '';
             const sorted = [...last20].sort((a, b) => {
                 if (a.tanggal !== b.tanggal) return a.tanggal.localeCompare(b.tanggal);
                 return a.jamMulai.localeCompare(b.jamMulai);
             });
             sorted.forEach(p => {
                 let statusClass = 'pending', statusText = 'Menunggu';
-                if (p.status === 'approved') { statusClass = 'approved'; statusText = 'Disetujui'; active++; }
+                if (p.status === 'approved') { statusClass = 'approved'; statusText = 'Disetujui'; }
                 if (p.status === 'rejected') { statusClass = 'rejected'; statusText = 'Ditolak'; }
-                if (p.status === 'done') { statusClass = 'done'; statusText = 'Selesai'; active--; }
+                if (p.status === 'done') { statusClass = 'done'; statusText = 'Selesai'; }
                 const tanggal = formatTanggal(p.tanggal);
                 const jamMulai = formatJam(p.jamMulai);
                 const jamSelesai = formatJam(p.jamSelesai);
@@ -789,10 +831,15 @@
 
                 let aksiHtml = '';
                 if (isAdmin) {
-                    if (p.status === 'pending') { pending++;
-                        aksiHtml = `<i class="fas fa-check-circle" title="Approve" data-action="approve_ruang" data-id="${p.id}"></i><i class="fas fa-times-circle" title="Tolak" data-action="reject" data-id="${p.id}"></i>`; }
-                    else if (p.status === 'approved') { aksiHtml = `<i class="fas fa-check-double" title="Selesaikan" data-action="done" data-id="${p.id}"></i><i class="fas fa-times-circle" title="Batalkan" data-action="reject" data-id="${p.id}"></i>`; }
-                    else { aksiHtml = `<i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo" data-id="${p.id}"></i><i class="fas fa-trash-alt" title="Hapus" data-action="delete" data-id="${p.id}"></i>`; }
+                    if (p.status === 'pending') {
+                        aksiHtml = `<i class="fas fa-check-circle" title="Approve" data-action="approve_ruang" data-id="${p.id}"></i><i class="fas fa-times-circle" title="Tolak" data-action="reject" data-id="${p.id}"></i>`;
+                    }
+                    else if (p.status === 'approved') { 
+                        aksiHtml = `<i class="fas fa-check-double" title="Selesaikan" data-action="done" data-id="${p.id}"></i><i class="fas fa-times-circle" title="Batalkan" data-action="reject" data-id="${p.id}"></i>`;
+                    }
+                    else { 
+                        aksiHtml = `<i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo" data-id="${p.id}"></i><i class="fas fa-trash-alt" title="Hapus" data-action="delete" data-id="${p.id}"></i>`;
+                    }
                 }
                 html += `<tr><td>${p.ruang}</td><td>${p.peminjam}</td><td>${tanggal}</td><td>${jam}</td><td><span class="status-badge ${statusClass}">${statusText}</span></td><td class="admin-only">${aksiHtml}</td></tr>`;
             });
@@ -810,7 +857,7 @@
         }
 
         // ============================================================
-        // RENDER INVENTARIS TABLE (20 TERAKHIR)
+        // RENDER INVENTARIS TABLE
         // ============================================================
         function renderInventarisTable() {
             const last20 = getLast20(peminjamanInventaris, 'timestamp');
@@ -819,7 +866,7 @@
                 totalPinjamInv.textContent = 'Total: ' + peminjamanInventaris.length + ' (20 terakhir)';
                 return;
             }
-            let html = '', pending = 0;
+            let html = '';
             const sorted = [...last20].sort((a, b) => a.tanggal_pinjam.localeCompare(b.tanggal_pinjam));
             sorted.forEach(p => {
                 let statusClass = 'pending', statusText = 'Menunggu';
@@ -831,16 +878,20 @@
 
                 let aksiHtml = '';
                 if (isAdmin) {
-                    if (p.status === 'pending') { pending++;
-                        aksiHtml = `<i class="fas fa-check-circle" title="Setujui" data-action="approve_inventaris" data-id="${p.id}"></i><i class="fas fa-times-circle" title="Tolak" data-action="reject_inventaris" data-id="${p.id}"></i>`; }
-                    else if (p.status === 'approved') { aksiHtml = `<i class="fas fa-arrow-left" title="Kembalikan" data-action="return_inventaris" data-id="${p.id}"></i><i class="fas fa-times-circle" title="Batalkan" data-action="reject_inventaris" data-id="${p.id}"></i>`; }
-                    else { aksiHtml = `<i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo_inventaris" data-id="${p.id}"></i><i class="fas fa-trash-alt" title="Hapus" data-action="delete_inventaris" data-id="${p.id}"></i>`; }
+                    if (p.status === 'pending') {
+                        aksiHtml = `<i class="fas fa-check-circle" title="Setujui" data-action="approve_inventaris" data-id="${p.id}"></i><i class="fas fa-times-circle" title="Tolak" data-action="reject_inventaris" data-id="${p.id}"></i>`;
+                    }
+                    else if (p.status === 'approved') { 
+                        aksiHtml = `<i class="fas fa-arrow-left" title="Kembalikan" data-action="return_inventaris" data-id="${p.id}"></i><i class="fas fa-times-circle" title="Batalkan" data-action="reject_inventaris" data-id="${p.id}"></i>`;
+                    }
+                    else { 
+                        aksiHtml = `<i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo_inventaris" data-id="${p.id}"></i><i class="fas fa-trash-alt" title="Hapus" data-action="delete_inventaris" data-id="${p.id}"></i>`;
+                    }
                 }
                 html += `<tr><td>${p.nama_item}</td><td>${p.peminjam}</td><td>${p.jumlah}</td><td>${tglPinjam}</td><td>${tglKembali}</td><td><span class="status-badge ${statusClass}">${statusText}</span></td><td class="admin-only">${aksiHtml}</td></tr>`;
             });
             invTableBody.innerHTML = html;
             totalPinjamInv.textContent = 'Total: ' + peminjamanInventaris.length + ' (20 terakhir)';
-            pendingCount.textContent = pending;
             if (isAdmin) {
                 invTableBody.querySelectorAll('[data-action]').forEach(el => {
                     el.addEventListener('click', function(e) {
@@ -856,7 +907,10 @@
         // RENDER USERS
         // ============================================================
         function renderUsersTable() {
-            if (!users || !users.length) { usersTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#6b7f97;">Belum ada data users</td></tr>`; return; }
+            if (!users || !users.length) { 
+                usersTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#6b7f97;">Belum ada data users</td></tr>`; 
+                return; 
+            }
             let html = '';
             users.forEach(u => {
                 html += `<tr><td>${u.username}</td><td><span class="status-badge ${u.role === 'admin' ? 'approved' : 'pending'}">${u.role}</span></td><td>${u.nama_lengkap || u.username}</td><td class="admin-only"><i class="fas fa-edit" style="cursor:pointer;color:#2a7de1;" onclick="editUser(${u.id})"></i><i class="fas fa-trash-alt" style="cursor:pointer;color:#b13a3a;" onclick="deleteUser(${u.id})"></i></td></tr>`;
@@ -927,32 +981,44 @@
         async function handleRuangAction(action, id) {
             const p = peminjamanRuang.find(x => x.id === id);
             if (!p) return;
-            switch (action) {
-                case 'approve_ruang':
-                    const result = await apiCall('approve_ruang', { data: JSON.stringify(p) });
-                    if (result.status === 'success') showToast('✅ Peminjaman ruang ' + p.peminjam + ' disetujui', 'success');
-                    else showToast('❌ ' + (result.message || 'Gagal approve'), 'error');
-                    await loadAllData(); break;
-                case 'reject':
-                    p.status = 'rejected';
-                    await apiCall('update', { sheet: 'peminjaman_ruang', data: JSON.stringify(p) });
-                    showToast('⛔ Peminjaman ' + p.peminjam + ' ditolak', 'error');
-                    await loadAllData(); break;
-                case 'done':
-                    p.status = 'done';
-                    await apiCall('update', { sheet: 'peminjaman_ruang', data: JSON.stringify(p) });
-                    showToast('✅ Peminjaman ' + p.peminjam + ' selesai', 'success');
-                    await loadAllData(); break;
-                case 'undo':
-                    p.status = 'pending';
-                    await apiCall('update', { sheet: 'peminjaman_ruang', data: JSON.stringify(p) });
-                    showToast('↩️ Dikembalikan ke pending', 'warning');
-                    await loadAllData(); break;
-                case 'delete':
-                    if (!confirm('Hapus peminjaman ini?')) return;
-                    await apiCall('delete', { sheet: 'peminjaman_ruang', id: id });
-                    showToast('🗑️ Peminjaman dihapus', '');
-                    await loadAllData(); break;
+            
+            try {
+                let result;
+                switch (action) {
+                    case 'approve_ruang':
+                        result = await api.approveRuang(p);
+                        if (result.status === 'success') {
+                            showToast('✅ Peminjaman ruang ' + p.peminjam + ' disetujui', 'success');
+                        } else {
+                            showToast('❌ ' + (result.message || 'Gagal approve'), 'error');
+                        }
+                        break;
+                    case 'reject':
+                        p.status = 'rejected';
+                        result = await api.update('peminjaman_ruang', p);
+                        showToast('⛔ Peminjaman ' + p.peminjam + ' ditolak', 'error');
+                        break;
+                    case 'done':
+                        p.status = 'done';
+                        result = await api.update('peminjaman_ruang', p);
+                        showToast('✅ Peminjaman ' + p.peminjam + ' selesai', 'success');
+                        break;
+                    case 'undo':
+                        p.status = 'pending';
+                        result = await api.update('peminjaman_ruang', p);
+                        showToast('↩️ Dikembalikan ke pending', 'warning');
+                        break;
+                    case 'delete':
+                        if (!confirm('Hapus peminjaman ini?')) return;
+                        result = await api.remove('peminjaman_ruang', id);
+                        showToast('🗑️ Peminjaman dihapus', '');
+                        break;
+                }
+                if (result && result.status === 'success') {
+                    await loadAllData();
+                }
+            } catch (error) {
+                showToast('❌ Error: ' + error.message, 'error');
             }
         }
 
@@ -962,32 +1028,47 @@
         async function handleInventarisAction(action, id) {
             const p = peminjamanInventaris.find(x => x.id === id);
             if (!p) return;
-            switch (action) {
-                case 'approve_inventaris':
-                    const result = await apiCall('approve_inventaris', { data: JSON.stringify(p) });
-                    if (result.status === 'success') showToast('✅ Peminjaman inventaris ' + p.peminjam + ' disetujui', 'success');
-                    else showToast('❌ ' + (result.message || 'Gagal approve'), 'error');
-                    await loadAllData(); break;
-                case 'reject_inventaris':
-                    p.status = 'rejected';
-                    await apiCall('update', { sheet: 'peminjaman_inventaris', data: JSON.stringify(p) });
-                    showToast('⛔ Peminjaman ' + p.peminjam + ' ditolak', 'error');
-                    await loadAllData(); break;
-                case 'return_inventaris':
-                    const ret = await apiCall('return_inventaris', { data: JSON.stringify(p) });
-                    if (ret.status === 'success') showToast('✅ Inventaris dikembalikan', 'success');
-                    else showToast('❌ ' + (ret.message || 'Gagal mengembalikan'), 'error');
-                    await loadAllData(); break;
-                case 'undo_inventaris':
-                    p.status = 'pending';
-                    await apiCall('update', { sheet: 'peminjaman_inventaris', data: JSON.stringify(p) });
-                    showToast('↩️ Dikembalikan ke pending', 'warning');
-                    await loadAllData(); break;
-                case 'delete_inventaris':
-                    if (!confirm('Hapus peminjaman ini?')) return;
-                    await apiCall('delete', { sheet: 'peminjaman_inventaris', id: id });
-                    showToast('🗑️ Peminjaman dihapus', '');
-                    await loadAllData(); break;
+            
+            try {
+                let result;
+                switch (action) {
+                    case 'approve_inventaris':
+                        result = await api.approveInventaris(p);
+                        if (result.status === 'success') {
+                            showToast('✅ Peminjaman inventaris ' + p.peminjam + ' disetujui', 'success');
+                        } else {
+                            showToast('❌ ' + (result.message || 'Gagal approve'), 'error');
+                        }
+                        break;
+                    case 'reject_inventaris':
+                        p.status = 'rejected';
+                        result = await api.update('peminjaman_inventaris', p);
+                        showToast('⛔ Peminjaman ' + p.peminjam + ' ditolak', 'error');
+                        break;
+                    case 'return_inventaris':
+                        result = await api.returnInventaris(p);
+                        if (result.status === 'success') {
+                            showToast('✅ Inventaris dikembalikan', 'success');
+                        } else {
+                            showToast('❌ ' + (result.message || 'Gagal mengembalikan'), 'error');
+                        }
+                        break;
+                    case 'undo_inventaris':
+                        p.status = 'pending';
+                        result = await api.update('peminjaman_inventaris', p);
+                        showToast('↩️ Dikembalikan ke pending', 'warning');
+                        break;
+                    case 'delete_inventaris':
+                        if (!confirm('Hapus peminjaman ini?')) return;
+                        result = await api.remove('peminjaman_inventaris', id);
+                        showToast('🗑️ Peminjaman dihapus', '');
+                        break;
+                }
+                if (result && result.status === 'success') {
+                    await loadAllData();
+                }
+            } catch (error) {
+                showToast('❌ Error: ' + error.message, 'error');
             }
         }
 
@@ -1003,7 +1084,7 @@
         async function deleteMaster(sheet, id) {
             if (!confirm('Hapus data ini?')) return;
             const sheetName = sheet === 'ruang' ? 'master_ruang' : 'master_inventaris';
-            await apiCall('delete', { sheet: sheetName, id: id });
+            await api.remove(sheetName, id);
             showToast('🗑️ Data dihapus', '');
             await loadAllData();
         }
@@ -1016,7 +1097,7 @@
 
         async function deleteUser(id) {
             if (!confirm('Hapus user ini?')) return;
-            await apiCall('delete', { sheet: 'users', id: id });
+            await api.remove('users', id);
             showToast('🗑️ User dihapus', '');
             await loadAllData();
         }
@@ -1094,12 +1175,20 @@
 
         function closeModal() { crudModal.classList.remove('show'); }
 
+        // ============================================================
+        // CRUD FORM SUBMIT
+        // ============================================================
         document.getElementById('crudForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             let data = {}, sheet = '';
             if (crudMode === 'ruang') {
                 sheet = 'master_ruang';
-                data = { nama_ruang: document.getElementById('f_nama').value, kode: document.getElementById('f_kode').value, kapasitas: document.getElementById('f_kapasitas').value, keterangan: document.getElementById('f_keterangan').value };
+                data = { 
+                    nama_ruang: document.getElementById('f_nama').value, 
+                    kode: document.getElementById('f_kode').value, 
+                    kapasitas: document.getElementById('f_kapasitas').value, 
+                    keterangan: document.getElementById('f_keterangan').value 
+                };
                 if (crudData) data.id = crudData.id;
             } else if (crudMode === 'inventaris') {
                 sheet = 'master_inventaris';
@@ -1115,24 +1204,34 @@
                 if (crudData) data.id = crudData.id;
             } else if (crudMode === 'users') {
                 sheet = 'users';
-                data = { username: document.getElementById('f_username').value, password: document.getElementById('f_password').value || crudData?.password || '', role: document.getElementById('f_role').value, nama_lengkap: document.getElementById('f_nama').value };
+                data = { 
+                    username: document.getElementById('f_username').value, 
+                    password: document.getElementById('f_password').value || crudData?.password || '', 
+                    role: document.getElementById('f_role').value, 
+                    nama_lengkap: document.getElementById('f_nama').value 
+                };
                 if (crudData) data.id = crudData.id;
             }
             const action = crudData ? 'update' : 'add';
             showLoading('Menyimpan data...');
-            const result = await apiCall(action, { sheet: sheet, data: JSON.stringify(data) });
-            showLoading(false);
-            if (result.status === 'success') {
-                showToast('✅ Data berhasil disimpan', 'success');
-                closeModal();
-                await loadAllData();
-            } else {
-                showToast('❌ ' + (result.message || 'Gagal menyimpan data'), 'error');
+            try {
+                const result = await api[action](sheet, data);
+                showLoading(false);
+                if (result.status === 'success') {
+                    showToast('✅ Data berhasil disimpan', 'success');
+                    closeModal();
+                    await loadAllData();
+                } else {
+                    showToast('❌ ' + (result.message || 'Gagal menyimpan data'), 'error');
+                }
+            } catch (error) {
+                showLoading(false);
+                showToast('❌ Error: ' + error.message, 'error');
             }
         });
 
         // ============================================================
-        // FORM PENGAJUAN
+        // FORM PENGAJUAN RUANG
         // ============================================================
         pinjamRuangForm.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -1142,24 +1241,58 @@
             const jamMulai = document.getElementById('jamMulai').value;
             const jamSelesai = document.getElementById('jamSelesai').value;
             const keperluan = document.getElementById('keperluanRuang').value.trim() || '-';
-            if (!nama || !ruang || !tanggal || !jamMulai || !jamSelesai) { showToast('⚠️ Semua field wajib diisi!', 'error'); return; }
-            if (jamMulai >= jamSelesai) { showToast('⚠️ Jam mulai harus lebih awal dari jam selesai!', 'error'); return; }
-            const hasConflict = peminjamanRuang.some(p => { if (p.ruang !== ruang) return false; if (p.tanggal !== tanggal) return false; if (p.status !== 'approved' && p.status !== 'pending') return false; return (jamMulai < p.jamSelesai && jamSelesai > p.jamMulai); });
-            if (hasConflict) { showToast('❌ Ruang sudah dipakai pada jam tersebut!', 'error'); return; }
-            const newPinjam = { ruang: ruang, peminjam: nama, tanggal: tanggal, jamMulai: jamMulai, jamSelesai: jamSelesai, status: 'pending', keperluan: keperluan };
+            
+            if (!nama || !ruang || !tanggal || !jamMulai || !jamSelesai) { 
+                showToast('⚠️ Semua field wajib diisi!', 'error'); 
+                return; 
+            }
+            if (jamMulai >= jamSelesai) { 
+                showToast('⚠️ Jam mulai harus lebih awal dari jam selesai!', 'error'); 
+                return; 
+            }
+            
+            const hasConflict = peminjamanRuang.some(p => { 
+                if (p.ruang !== ruang) return false; 
+                if (p.tanggal !== tanggal) return false; 
+                if (p.status !== 'approved' && p.status !== 'pending') return false; 
+                return (jamMulai < p.jamSelesai && jamSelesai > p.jamMulai); 
+            });
+            if (hasConflict) { 
+                showToast('❌ Ruang sudah dipakai pada jam tersebut!', 'error'); 
+                return; 
+            }
+            
+            const newPinjam = { 
+                ruang: ruang, 
+                peminjam: nama, 
+                tanggal: tanggal, 
+                jamMulai: jamMulai, 
+                jamSelesai: jamSelesai, 
+                status: 'pending', 
+                keperluan: keperluan 
+            };
+            
             showLoading('Menyimpan pengajuan...');
-            const result = await apiCall('add', { sheet: 'peminjaman_ruang', data: JSON.stringify(newPinjam) });
-            showLoading(false);
-            if (result.status === 'success') {
-                showToast('📩 Pengajuan berhasil dikirim!', 'success');
-                pinjamRuangForm.reset();
-                document.getElementById('tanggalPinjam').value = new Date().toISOString().split('T')[0];
-                await loadAllData();
-            } else {
-                showToast('❌ ' + (result.message || 'Gagal mengirim'), 'error');
+            try {
+                const result = await api.add('peminjaman_ruang', newPinjam);
+                showLoading(false);
+                if (result.status === 'success') {
+                    showToast('📩 Pengajuan berhasil dikirim!', 'success');
+                    pinjamRuangForm.reset();
+                    document.getElementById('tanggalPinjam').value = new Date().toISOString().split('T')[0];
+                    await loadAllData();
+                } else {
+                    showToast('❌ ' + (result.message || 'Gagal mengirim'), 'error');
+                }
+            } catch (error) {
+                showLoading(false);
+                showToast('❌ Error: ' + error.message, 'error');
             }
         });
 
+        // ============================================================
+        // FORM PENGAJUAN INVENTARIS
+        // ============================================================
         pinjamInventarisForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const nama = document.getElementById('pinjamInvNama').value.trim();
@@ -1168,20 +1301,46 @@
             const tanggalPinjam = document.getElementById('pinjamInvTanggal').value;
             const tanggalKembali = document.getElementById('pinjamInvKembali').value;
             const keperluan = document.getElementById('pinjamInvKeperluan').value.trim() || '-';
-            if (!nama || !item || !tanggalPinjam || !tanggalKembali) { showToast('⚠️ Semua field wajib diisi!', 'error'); return; }
-            if (new Date(tanggalKembali) < new Date(tanggalPinjam)) { showToast('⚠️ Tanggal kembali harus setelah tanggal pinjam!', 'error'); return; }
+            
+            if (!nama || !item || !tanggalPinjam || !tanggalKembali) { 
+                showToast('⚠️ Semua field wajib diisi!', 'error'); 
+                return; 
+            }
+            if (new Date(tanggalKembali) < new Date(tanggalPinjam)) { 
+                showToast('⚠️ Tanggal kembali harus setelah tanggal pinjam!', 'error'); 
+                return; 
+            }
+            
             const masterItem = masterInventaris.find(m => m.nama_item === item);
-            if (masterItem && parseInt(masterItem.stok_tersedia || 0) < jumlah) { showToast('❌ Stok tidak mencukupi! Tersedia: ' + (masterItem.stok_tersedia || 0) + ', Diminta: ' + jumlah, 'error'); return; }
-            const newPinjam = { nama_item: item, peminjam: nama, jumlah: jumlah, tanggal_pinjam: tanggalPinjam, tanggal_kembali: tanggalKembali, status: 'pending', keperluan: keperluan };
+            if (masterItem && parseInt(masterItem.stok_tersedia || 0) < jumlah) { 
+                showToast('❌ Stok tidak mencukupi! Tersedia: ' + (masterItem.stok_tersedia || 0) + ', Diminta: ' + jumlah, 'error'); 
+                return; 
+            }
+            
+            const newPinjam = { 
+                nama_item: item, 
+                peminjam: nama, 
+                jumlah: jumlah, 
+                tanggal_pinjam: tanggalPinjam, 
+                tanggal_kembali: tanggalKembali, 
+                status: 'pending', 
+                keperluan: keperluan 
+            };
+            
             showLoading('Menyimpan pengajuan...');
-            const result = await apiCall('add', { sheet: 'peminjaman_inventaris', data: JSON.stringify(newPinjam) });
-            showLoading(false);
-            if (result.status === 'success') {
-                showToast('📩 Pengajuan berhasil dikirim!', 'success');
-                pinjamInventarisForm.reset();
-                await loadAllData();
-            } else {
-                showToast('❌ ' + (result.message || 'Gagal mengirim'), 'error');
+            try {
+                const result = await api.add('peminjaman_inventaris', newPinjam);
+                showLoading(false);
+                if (result.status === 'success') {
+                    showToast('📩 Pengajuan berhasil dikirim!', 'success');
+                    pinjamInventarisForm.reset();
+                    await loadAllData();
+                } else {
+                    showToast('❌ ' + (result.message || 'Gagal mengirim'), 'error');
+                }
+            } catch (error) {
+                showLoading(false);
+                showToast('❌ Error: ' + error.message, 'error');
             }
         });
 
@@ -1190,10 +1349,13 @@
         // ============================================================
         async function handleLogin(username, password) {
             const user = username.trim(), pass = password.trim();
-            if (!user || !pass) { showToast('⚠️ Username dan password harus diisi!', 'error'); return; }
+            if (!user || !pass) {
+                showToast('⚠️ Username dan password harus diisi!', 'error');
+                return;
+            }
             try {
                 showLoading('Login...');
-                const result = await apiCall('login', { username: user, password: pass });
+                const result = await api.login(user, pass);
                 if (result.status === 'success') {
                     currentUser = result.data;
                     isAdmin = true;
@@ -1209,8 +1371,11 @@
                 } else {
                     showToast('❌ ' + (result.message || 'Username atau password salah!'), 'error');
                 }
-            } catch (error) { showToast('❌ Gagal login: ' + error.message, 'error'); }
-            finally { showLoading(false); }
+            } catch (error) {
+                showToast('❌ Gagal login: ' + error.message, 'error');
+            } finally {
+                showLoading(false);
+            }
         }
 
         function handleLogout() {
@@ -1240,12 +1405,24 @@
 
         modalCancelBtn.addEventListener('click', () => loginModal.classList.remove('show'));
         modalLoginBtn.addEventListener('click', () => handleLogin(usernameInput.value, passwordInput.value));
-        passwordInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault();
-                handleLogin(usernameInput.value, passwordInput.value); } });
-        usernameInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault();
-                passwordInput.focus(); } });
-        loginModal.addEventListener('click', function(e) { if (e.target === loginModal) loginModal.classList.remove('show'); });
-        crudModal.addEventListener('click', function(e) { if (e.target === crudModal) closeModal(); });
+        passwordInput.addEventListener('keydown', function(e) { 
+            if (e.key === 'Enter') { 
+                e.preventDefault();
+                handleLogin(usernameInput.value, passwordInput.value); 
+            } 
+        });
+        usernameInput.addEventListener('keydown', function(e) { 
+            if (e.key === 'Enter') { 
+                e.preventDefault();
+                passwordInput.focus(); 
+            } 
+        });
+        loginModal.addEventListener('click', function(e) { 
+            if (e.target === loginModal) loginModal.classList.remove('show'); 
+        });
+        crudModal.addEventListener('click', function(e) { 
+            if (e.target === crudModal) closeModal(); 
+        });
         document.getElementById('crudCancelBtn').addEventListener('click', closeModal);
         btnTambahInventarisMaster.addEventListener('click', () => showModal('inventaris'));
         btnTambahRuangMaster.addEventListener('click', () => showModal('ruang'));
@@ -1255,7 +1432,13 @@
         // TAB
         // ============================================================
         const tabButtons = document.querySelectorAll('.tab-btn');
-        const panels = { ruang: document.getElementById('ruang'), pinjam_inventaris: document.getElementById('pinjam_inventaris'), kalender: document.getElementById('kalender'), master: document.getElementById('master'), users: document.getElementById('users') };
+        const panels = { 
+            ruang: document.getElementById('ruang'), 
+            pinjam_inventaris: document.getElementById('pinjam_inventaris'), 
+            kalender: document.getElementById('kalender'), 
+            master: document.getElementById('master'), 
+            users: document.getElementById('users') 
+        };
 
         function activateTab(tabId) {
             Object.keys(panels).forEach(key => panels[key].classList.remove('active'));
@@ -1270,7 +1453,7 @@
         // EXPOSE
         // ============================================================
         window.editMaster = editMaster;
-        window.loadAllData = loadAllData; 
+        window.loadAllData = loadAllData;
         window.deleteMaster = deleteMaster;
         window.editUser = editUser;
         window.deleteUser = deleteUser;
@@ -1281,7 +1464,7 @@
         // INIT
         // ============================================================
         async function init() {
-            console.log('🚀 Inisialisasi LAB ICT SMAN 1 Malang...');
+            console.log('🚀 Inisialisasi LAB ICT SMAN 1 Malang (JSONP)...');
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tanggalPinjam').value = today;
             document.getElementById('pinjamInvTanggal').value = today;
