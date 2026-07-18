@@ -45,8 +45,12 @@
             align-items: center;
             gap: 0.6rem;
         }
-        .logo i { color: #2a7de1; }
-        .logo span { color: #1f6d3b; }
+        .logo i {
+            color: #2a7de1;
+        }
+        .logo span {
+            color: #1f6d3b;
+        }
         .user-role {
             display: flex;
             align-items: center;
@@ -81,15 +85,44 @@
             gap: 0.5rem;
             font-size: 0.9rem;
         }
-        .btn-login:hover { background: #134a94; transform: scale(0.97); }
+        .btn-login:hover {
+            background: #134a94;
+            transform: scale(0.97);
+        }
         .btn-login.outline {
             background: transparent;
             border: 1px solid #bccfe0;
             color: #1f4e7a;
         }
-        .btn-login.outline:hover { background: #eef4fb; }
-        .btn-login.logout { background: #b13a3a; }
-        .btn-login.logout:hover { background: #8f2e2e; }
+        .btn-login.outline:hover {
+            background: #eef4fb;
+        }
+        .btn-login.logout {
+            background: #b13a3a;
+        }
+        .btn-login.logout:hover {
+            background: #8f2e2e;
+        }
+
+        .btn-laporan {
+            background: #1f8b4d;
+            border: none;
+            color: white;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        .btn-laporan:hover {
+            background: #16703d;
+            transform: scale(0.97);
+        }
 
         /* ===== STATS ===== */
         .stats-grid {
@@ -107,9 +140,22 @@
             align-items: center;
             gap: 0.8rem;
         }
-        .stat-card i { font-size: 1.8rem; color: #2a7de1; width: 2.4rem; text-align: center; }
-        .stat-info h4 { font-size: 0.75rem; color: #4d627a; font-weight: 500; }
-        .stat-info .number { font-size: 1.4rem; font-weight: 700; color: #0b2b4a; }
+        .stat-card i {
+            font-size: 1.8rem;
+            color: #2a7de1;
+            width: 2.4rem;
+            text-align: center;
+        }
+        .stat-info h4 {
+            font-size: 0.75rem;
+            color: #4d627a;
+            font-weight: 500;
+        }
+        .stat-info .number {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0b2b4a;
+        }
 
         /* ===== TABS ===== */
         .tabs {
@@ -134,7 +180,10 @@
             align-items: center;
             gap: 0.5rem;
         }
-        .tab-btn:hover { background: #eaf1fb; color: #1a4d7a; }
+        .tab-btn:hover {
+            background: #eaf1fb;
+            color: #1a4d7a;
+        }
         .tab-btn.active {
             background: white;
             color: #1a5bb5;
@@ -144,10 +193,18 @@
             display: none;
             animation: fade 0.25s ease;
         }
-        .panel.active { display: block; }
+        .panel.active {
+            display: block;
+        }
         @keyframes fade {
-            0% { opacity: 0.4; transform: translateY(6px); }
-            100% { opacity: 1; transform: translateY(0); }
+            0% {
+                opacity: 0.4;
+                transform: translateY(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ===== CARDS ===== */
@@ -174,7 +231,9 @@
             align-items: center;
             gap: 0.6rem;
         }
-        .card-header h2 i { color: #2a7de1; }
+        .card-header h2 i {
+            color: #2a7de1;
+        }
         .card-header .badge-sheet {
             font-size: 0.7rem;
             background: #e9edf2;
@@ -197,18 +256,43 @@
             gap: 0.5rem;
             border: 1px solid transparent;
         }
-        .btn-primary:hover { background: #134a94; transform: scale(0.97); }
-        .btn-primary.green { background: #1f8b4d; }
-        .btn-primary.green:hover { background: #16703d; }
-        .btn-primary.red { background: #b13a3a; }
-        .btn-primary.red:hover { background: #8f2e2e; }
-        .btn-primary.gray { background: #6b7f97; }
-        .btn-primary.gray:hover { background: #55677d; }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-primary:hover {
+            background: #134a94;
+            transform: scale(0.97);
+        }
+        .btn-primary.green {
+            background: #1f8b4d;
+        }
+        .btn-primary.green:hover {
+            background: #16703d;
+        }
+        .btn-primary.red {
+            background: #b13a3a;
+        }
+        .btn-primary.red:hover {
+            background: #8f2e2e;
+        }
+        .btn-primary.gray {
+            background: #6b7f97;
+        }
+        .btn-primary.gray:hover {
+            background: #55677d;
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
         /* ===== TABLES ===== */
-        .table-wrap { overflow-x: auto; border-radius: 16px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
         th {
             text-align: left;
             padding: 0.7rem 0.8rem;
@@ -222,7 +306,9 @@
             border-bottom: 1px solid #e6eef8;
             vertical-align: middle;
         }
-        tr:last-child td { border-bottom: none; }
+        tr:last-child td {
+            border-bottom: none;
+        }
         .status-badge {
             padding: 0.15rem 1rem;
             border-radius: 40px;
@@ -230,13 +316,34 @@
             font-weight: 500;
             display: inline-block;
         }
-        .status-badge.approved { background: #dff0d8; color: #1f6d3b; }
-        .status-badge.pending { background: #fff3d6; color: #a46b1a; }
-        .status-badge.rejected { background: #fde8e8; color: #b13a3a; }
-        .status-badge.done { background: #e9edf2; color: #4d5c6e; }
-        .status-badge.dipinjam { background: #fff3d6; color: #a46b1a; }
-        .status-badge.tersedia { background: #dff0d8; color: #1f6d3b; }
-        .status-badge.tidak_boleh { background: #fde8e8; color: #b13a3a; }
+        .status-badge.approved {
+            background: #dff0d8;
+            color: #1f6d3b;
+        }
+        .status-badge.pending {
+            background: #fff3d6;
+            color: #a46b1a;
+        }
+        .status-badge.rejected {
+            background: #fde8e8;
+            color: #b13a3a;
+        }
+        .status-badge.done {
+            background: #e9edf2;
+            color: #4d5c6e;
+        }
+        .status-badge.dipinjam {
+            background: #fff3d6;
+            color: #a46b1a;
+        }
+        .status-badge.tersedia {
+            background: #dff0d8;
+            color: #1f6d3b;
+        }
+        .status-badge.tidak_boleh {
+            background: #fde8e8;
+            color: #b13a3a;
+        }
 
         .action-icons i {
             margin: 0 3px;
@@ -246,21 +353,51 @@
             padding: 4px;
             border-radius: 50%;
         }
-        .action-icons i:hover { transform: scale(1.15); }
-        .action-icons i.fa-check-circle { color: #1f8b4d; }
-        .action-icons i.fa-check-circle:hover { background: #dff0d8; }
-        .action-icons i.fa-times-circle { color: #b13a3a; }
-        .action-icons i.fa-times-circle:hover { background: #fde8e8; }
-        .action-icons i.fa-check-double { color: #6b7f97; }
-        .action-icons i.fa-check-double:hover { background: #e9edf2; }
-        .action-icons i.fa-undo { color: #f39c12; }
-        .action-icons i.fa-undo:hover { background: #fff3d6; }
-        .action-icons i.fa-trash-alt { color: #b13a3a; }
-        .action-icons i.fa-trash-alt:hover { background: #fde8e8; }
-        .action-icons i.fa-edit { color: #2a7de1; }
-        .action-icons i.fa-edit:hover { background: #eaf1fb; }
-        .action-icons i.fa-arrow-left { color: #2a7de1; }
-        .action-icons i.fa-arrow-left:hover { background: #eaf1fb; }
+        .action-icons i:hover {
+            transform: scale(1.15);
+        }
+        .action-icons i.fa-check-circle {
+            color: #1f8b4d;
+        }
+        .action-icons i.fa-check-circle:hover {
+            background: #dff0d8;
+        }
+        .action-icons i.fa-times-circle {
+            color: #b13a3a;
+        }
+        .action-icons i.fa-times-circle:hover {
+            background: #fde8e8;
+        }
+        .action-icons i.fa-check-double {
+            color: #6b7f97;
+        }
+        .action-icons i.fa-check-double:hover {
+            background: #e9edf2;
+        }
+        .action-icons i.fa-undo {
+            color: #f39c12;
+        }
+        .action-icons i.fa-undo:hover {
+            background: #fff3d6;
+        }
+        .action-icons i.fa-trash-alt {
+            color: #b13a3a;
+        }
+        .action-icons i.fa-trash-alt:hover {
+            background: #fde8e8;
+        }
+        .action-icons i.fa-edit {
+            color: #2a7de1;
+        }
+        .action-icons i.fa-edit:hover {
+            background: #eaf1fb;
+        }
+        .action-icons i.fa-arrow-left {
+            color: #2a7de1;
+        }
+        .action-icons i.fa-arrow-left:hover {
+            background: #eaf1fb;
+        }
 
         /* ===== FORMS ===== */
         .form-row {
@@ -332,24 +469,43 @@
             gap: 0.8rem;
             margin-bottom: 0.3rem;
         }
-        .item-card .header i { font-size: 1.6rem; color: #3d7eb9; width: 2.2rem; text-align: center; }
-        .item-card .header .nama { font-weight: 600; color: #0b2b4a; font-size: 0.95rem; }
-        .item-card .detail { font-size: 0.8rem; color: #4d6a89; padding: 2px 0; }
-        .item-card .detail .label { color: #6b7f97; }
+        .item-card .header i {
+            font-size: 1.6rem;
+            color: #3d7eb9;
+            width: 2.2rem;
+            text-align: center;
+        }
+        .item-card .header .nama {
+            font-weight: 600;
+            color: #0b2b4a;
+            font-size: 0.95rem;
+        }
+        .item-card .detail {
+            font-size: 0.8rem;
+            color: #4d6a89;
+            padding: 2px 0;
+        }
+        .item-card .detail .label {
+            color: #6b7f97;
+        }
         .item-card .item-actions {
             position: absolute;
             top: 4px;
             right: 4px;
             display: none;
         }
-        .item-card:hover .item-actions { display: block; }
+        .item-card:hover .item-actions {
+            display: block;
+        }
         .item-card .item-actions i {
             font-size: 0.8rem;
             color: #6b7f97;
             cursor: pointer;
             padding: 2px 4px;
         }
-        .item-card .item-actions i:hover { color: #1a5bb5; }
+        .item-card .item-actions i:hover {
+            color: #1a5bb5;
+        }
 
         /* ===== KALENDER ===== */
         #calendar {
@@ -370,9 +526,15 @@
         .fc .fc-daygrid-day.fc-day-today {
             background: #f0f7ff;
         }
-        .fc-event { cursor: pointer; }
-        .fc-event .fc-event-title { font-size: 0.8rem; }
-        .fc-daygrid-event { white-space: normal !important; }
+        .fc-event {
+            cursor: pointer;
+        }
+        .fc-event .fc-event-title {
+            font-size: 0.8rem;
+        }
+        .fc-daygrid-event {
+            white-space: normal !important;
+        }
 
         /* ===== MODAL ===== */
         .modal-overlay {
@@ -388,7 +550,9 @@
             justify-content: center;
             z-index: 999;
         }
-        .modal-overlay.show { display: flex; }
+        .modal-overlay.show {
+            display: flex;
+        }
         .modal-box {
             background: white;
             border-radius: 32px;
@@ -410,18 +574,27 @@
             margin-bottom: 1.5rem;
             font-size: 0.9rem;
         }
-        .modal-box .form-group { margin-bottom: 1rem; }
-        .modal-box .form-group label { display: block; margin-bottom: 0.2rem; }
+        .modal-box .form-group {
+            margin-bottom: 1rem;
+        }
+        .modal-box .form-group label {
+            display: block;
+            margin-bottom: 0.2rem;
+        }
         .modal-box .form-group input,
         .modal-box .form-group select,
-        .modal-box .form-group textarea { width: 100%; }
+        .modal-box .form-group textarea {
+            width: 100%;
+        }
         .modal-actions {
             display: flex;
             gap: 0.8rem;
             margin-top: 1.5rem;
             justify-content: flex-end;
         }
-        .modal-actions .btn-primary { padding: 0.6rem 2rem; }
+        .modal-actions .btn-primary {
+            padding: 0.6rem 2rem;
+        }
         .modal-actions .btn-outline {
             background: transparent;
             border: 1px solid #bccfe0;
@@ -432,13 +605,23 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .modal-actions .btn-outline:hover { background: #eef4fb; }
+        .modal-actions .btn-outline:hover {
+            background: #eef4fb;
+        }
 
         /* ===== ADMIN ONLY ===== */
-        .admin-only { display: none !important; }
-        body.admin-mode .admin-only { display: inline-flex !important; }
-        body.admin-mode td.admin-only { display: table-cell !important; }
-        body.admin-mode th.admin-only { display: table-cell !important; }
+        .admin-only {
+            display: none !important;
+        }
+        body.admin-mode .admin-only {
+            display: inline-flex !important;
+        }
+        body.admin-mode td.admin-only {
+            display: table-cell !important;
+        }
+        body.admin-mode th.admin-only {
+            display: table-cell !important;
+        }
 
         /* ===== TOAST ===== */
         .toast {
@@ -456,10 +639,18 @@
             animation: fade 0.3s ease;
             max-width: 400px;
         }
-        .toast.error { background: #b13a3a; }
-        .toast.success { background: #1f8b4d; }
-        .toast.warning { background: #d48c1a; }
-        .toast.show { display: block; }
+        .toast.error {
+            background: #b13a3a;
+        }
+        .toast.success {
+            background: #1f8b4d;
+        }
+        .toast.warning {
+            background: #d48c1a;
+        }
+        .toast.show {
+            display: block;
+        }
 
         /* ===== LOADING ===== */
         .loading-overlay {
@@ -476,7 +667,9 @@
             flex-direction: column;
             gap: 1.5rem;
         }
-        .loading-overlay.show { display: flex; }
+        .loading-overlay.show {
+            display: flex;
+        }
         .spinner {
             width: 60px;
             height: 60px;
@@ -485,9 +678,20 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { color: #1f3b5c; font-weight: 600; font-size: 1.1rem; }
-        .loading-sub { color: #6b7f97; font-size: 0.9rem; }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .loading-text {
+            color: #1f3b5c;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .loading-sub {
+            color: #6b7f97;
+            font-size: 0.9rem;
+        }
         .loading-progress {
             width: 300px;
             max-width: 80%;
@@ -538,14 +742,19 @@
             margin-bottom: 0.5rem;
             font-size: 1rem;
         }
-        .master-box h3 i { color: #2a7de1; margin-right: 0.5rem; }
+        .master-box h3 i {
+            color: #2a7de1;
+            margin-right: 0.5rem;
+        }
         .master-item {
             padding: 6px 0;
             border-bottom: 1px solid #eef4f8;
             font-size: 0.85rem;
             color: #4d627a;
         }
-        .master-item strong { color: #0b2b4a; }
+        .master-item strong {
+            color: #0b2b4a;
+        }
         .master-item .badge {
             font-size: 0.65rem;
             background: #e9edf2;
@@ -561,23 +770,61 @@
             border-radius: 40px;
             display: inline-block;
         }
-        .kategori-badge.komputer { background: #dff0d8; color: #1f6d3b; }
-        .kategori-badge.furniture { background: #fff3d6; color: #a46b1a; }
-        .kategori-badge.elektronik { background: #fde8e8; color: #b13a3a; }
-        .kategori-badge.aksesoris { background: #e9edf2; color: #4d5c6e; }
+        .kategori-badge.komputer {
+            background: #dff0d8;
+            color: #1f6d3b;
+        }
+        .kategori-badge.furniture {
+            background: #fff3d6;
+            color: #a46b1a;
+        }
+        .kategori-badge.elektronik {
+            background: #fde8e8;
+            color: #b13a3a;
+        }
+        .kategori-badge.aksesoris {
+            background: #e9edf2;
+            color: #4d5c6e;
+        }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 680px) {
-            body { padding: 0.8rem; }
-            .topbar { padding: 0.6rem 1rem; border-radius: 28px; }
-            .logo { font-size: 1rem; }
-            .tab-btn { padding: 0.4rem 1rem; font-size: 0.8rem; }
-            .card { padding: 1rem; }
-            .modal-box { padding: 1.8rem 1.5rem; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .form-row { grid-template-columns: 1fr; }
-            .item-grid { grid-template-columns: 1fr; }
-            .master-grid { grid-template-columns: 1fr; }
+            body {
+                padding: 0.8rem;
+            }
+            .topbar {
+                padding: 0.6rem 1rem;
+                border-radius: 28px;
+            }
+            .logo {
+                font-size: 1rem;
+            }
+            .tab-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+            .card {
+                padding: 1rem;
+            }
+            .modal-box {
+                padding: 1.8rem 1.5rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .item-grid {
+                grid-template-columns: 1fr;
+            }
+            .master-grid {
+                grid-template-columns: 1fr;
+            }
+            .btn-laporan {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.8rem;
+            }
         }
     </style>
 </head>
@@ -600,6 +847,9 @@
                 LAB <span>ICT</span> · SMAN 1 Malang
             </div>
             <div class="user-role">
+                <a href="laporan.html" class="btn-laporan" target="_blank">
+                    <i class="fas fa-file-alt"></i> Laporan
+                </a>
                 <span class="role-badge" id="roleDisplay"><i class="fas fa-user"></i> Pengguna</span>
                 <button class="btn-login outline" id="loginToggleBtn"><i class="fas fa-sign-in-alt"></i> <span id="loginBtnText">Login</span></button>
             </div>
@@ -671,7 +921,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h2><i class="fas fa-list-ul"></i> Daftar Peminjaman Ruang</h2>
+                    <h2><i class="fas fa-list-ul"></i> Daftar Peminjaman Ruang <span style="font-size:0.7rem; color:#6b7f97;">(20 terakhir)</span></h2>
                     <span style="font-size:0.85rem; color:#4d627a;" id="totalPinjamRuang">Total: 0</span>
                 </div>
                 <div class="table-wrap">
@@ -743,7 +993,7 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h2><i class="fas fa-list-ul"></i> Daftar Peminjaman Inventaris</h2>
+                    <h2><i class="fas fa-list-ul"></i> Daftar Peminjaman Inventaris <span style="font-size:0.7rem; color:#6b7f97;">(20 terakhir)</span></h2>
                     <span style="font-size:0.85rem; color:#4d627a;" id="totalPinjamInv">Total: 0</span>
                 </div>
                 <div class="table-wrap">
@@ -785,7 +1035,7 @@
         </div>
 
         <!-- ============================================================ -->
-        <!-- PANEL 4: MASTER DATA (GABUNGAN) -->
+        <!-- PANEL 4: MASTER DATA -->
         <!-- ============================================================ -->
         <div id="master" class="panel">
             <div class="card">
@@ -812,7 +1062,7 @@
                         </div>
                     </div>
 
-                    <!-- Master Inventaris (GABUNGAN: master + aset) -->
+                    <!-- Master Inventaris -->
                     <div class="master-box">
                         <h3><i class="fas fa-boxes"></i> Inventaris & Aset Lab <span class="master-badge">master_inventaris</span></h3>
                         <div style="font-size:0.75rem; color:#6b7f97; margin-bottom:0.5rem;">
@@ -856,7 +1106,7 @@
         </div>
 
         <div class="footer-note">
-            <i class="fas fa-database"></i> Data tersimpan di Google Sheets · 
+            <i class="fas fa-database"></i> Data tersimpan di Google Sheets ·
             <i class="fas fa-github"></i> Hosted on GitHub Pages
         </div>
     </div>
@@ -910,7 +1160,8 @@
     <!-- ============================================================ -->
     <!-- JAVASCRIPT -->
     <!-- ============================================================ -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js">
+    </script>
     <script>
         (function() {
             'use strict';
@@ -926,7 +1177,7 @@
             let peminjamanRuang = [];
             let peminjamanInventaris = [];
             let masterRuang = [];
-            let masterInventaris = []; // GABUNGAN: master + aset
+            let masterInventaris = [];
             let users = [];
             let isAdmin = false;
             let authToken = '';
@@ -935,6 +1186,19 @@
             let crudMode = '';
             let crudData = null;
             let isLoading = true;
+
+            // ============================================================
+            // FUNGSI GET 20 DATA TERAKHIR
+            // ============================================================
+            function getLast20(data, sortField = 'timestamp') {
+                if (!data || !data.length) return [];
+                const sorted = [...data].sort((a, b) => {
+                    const aVal = a[sortField] || '';
+                    const bVal = b[sortField] || '';
+                    return bVal.localeCompare(aVal);
+                });
+                return sorted.slice(0, 20);
+            }
 
             // ============================================================
             // DOM REFS
@@ -1044,7 +1308,7 @@
                 try {
                     updateLoading('Mengambil data master...', 10);
 
-                    // 1. Get masters (ruang + inventaris)
+                    // 1. Get masters
                     const masters = await apiCall('get_masters');
                     if (masters.status === 'success') {
                         masterRuang = masters.data.ruang || [];
@@ -1095,16 +1359,16 @@
             // RENDER ALL
             // ============================================================
             function renderAll() {
-    updateRuangDropdown();
-    updateInventarisDropdown();
-    renderRuangTable();      // Sekarang menampilkan 20 terakhir
-    renderInventarisTable(); // Sekarang menampilkan 20 terakhir
-    renderMasterRuang();
-    renderMasterInventaris();
-    if (isAdmin) renderUsersTable();
-    updateStats();
-    updateCalendarEvents();
-}
+                updateRuangDropdown();
+                updateInventarisDropdown();
+                renderRuangTable();
+                renderInventarisTable();
+                renderMasterRuang();
+                renderMasterInventaris();
+                if (isAdmin) renderUsersTable();
+                updateStats();
+                updateCalendarEvents();
+            }
 
             // ============================================================
             // UPDATE DROPDOWNS
@@ -1124,7 +1388,6 @@
             function updateInventarisDropdown() {
                 pinjamInvItem.innerHTML = '<option value="">-- Pilih Item --</option>';
                 if (masterInventaris && masterInventaris.length) {
-                    // Filter hanya yang status_pinjam = "Boleh Dipinjam" dan stok_tersedia > 0
                     const available = masterInventaris.filter(item => {
                         return item.status_pinjam === 'Boleh Dipinjam' && parseInt(item.stok_tersedia || 0) > 0;
                     });
@@ -1132,7 +1395,7 @@
                         const opt = document.createElement('option');
                         opt.value = item.nama_item || item.nama || item;
                         opt.textContent = (item.nama_item || item.nama || item) + ' (Tersedia: ' + (item
-                        .stok_tersedia || '0') + ')';
+                            .stok_tersedia || '0') + ')';
                         pinjamInvItem.appendChild(opt);
                     });
                 }
@@ -1165,7 +1428,7 @@
             }
 
             // ============================================================
-            // RENDER MASTER INVENTARIS (GABUNGAN)
+            // RENDER MASTER INVENTARIS
             // ============================================================
             function renderMasterInventaris() {
                 if (!masterInventaris || !masterInventaris.length) {
@@ -1203,169 +1466,167 @@
                 masterInventarisList.innerHTML = html;
             }
 
-// ============================================================
-// RENDER RUANG TABLE (20 TERAKHIR)
-// ============================================================
-function renderRuangTable() {
-    // Ambil 20 data terakhir berdasarkan timestamp
-    const last20 = getLast20(peminjamanRuang, 'timestamp');
-    
-    if (!last20 || !last20.length) {
-        ruangTableBody.innerHTML =
-            `<tr><td colspan="6" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman ruang</td></tr>`;
-        totalPinjamRuang.textContent = 'Total: ' + peminjamanRuang.length + ' (20 terakhir)';
-        return;
-    }
+            // ============================================================
+            // RENDER RUANG TABLE (20 TERAKHIR)
+            // ============================================================
+            function renderRuangTable() {
+                const last20 = getLast20(peminjamanRuang, 'timestamp');
 
-    let html = '';
-    let active = 0;
-    let pending = 0;
+                if (!last20 || !last20.length) {
+                    ruangTableBody.innerHTML =
+                        `<tr><td colspan="6" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman ruang</td></tr>`;
+                    totalPinjamRuang.textContent = 'Total: ' + peminjamanRuang.length + ' (20 terakhir)';
+                    return;
+                }
 
-    const sorted = [...last20].sort((a, b) => {
-        if (a.tanggal !== b.tanggal) return a.tanggal.localeCompare(b.tanggal);
-        return a.jamMulai.localeCompare(b.jamMulai);
-    });
+                let html = '';
+                let active = 0;
+                let pending = 0;
 
-    sorted.forEach(p => {
-        let statusClass = 'pending';
-        let statusText = 'Menunggu';
-        if (p.status === 'approved') { statusClass = 'approved';
-            statusText = 'Disetujui';
-            active++; }
-        if (p.status === 'rejected') { statusClass = 'rejected';
-            statusText = 'Ditolak'; }
-        if (p.status === 'done') { statusClass = 'done';
-            statusText = 'Selesai';
-            active--; }
+                const sorted = [...last20].sort((a, b) => {
+                    if (a.tanggal !== b.tanggal) return a.tanggal.localeCompare(b.tanggal);
+                    return a.jamMulai.localeCompare(b.jamMulai);
+                });
 
-        const jam = p.jamMulai + ' – ' + p.jamSelesai;
+                sorted.forEach(p => {
+                    let statusClass = 'pending';
+                    let statusText = 'Menunggu';
+                    if (p.status === 'approved') { statusClass = 'approved';
+                        statusText = 'Disetujui';
+                        active++; }
+                    if (p.status === 'rejected') { statusClass = 'rejected';
+                        statusText = 'Ditolak'; }
+                    if (p.status === 'done') { statusClass = 'done';
+                        statusText = 'Selesai';
+                        active--; }
 
-        let aksiHtml = '';
-        if (isAdmin) {
-            if (p.status === 'pending') {
-                pending++;
-                aksiHtml = `
-                    <i class="fas fa-check-circle" title="Approve" data-action="approve_ruang" data-id="${p.id}"></i>
-                    <i class="fas fa-times-circle" title="Tolak" data-action="reject" data-id="${p.id}"></i>
-                `;
-            } else if (p.status === 'approved') {
-                aksiHtml = `
-                    <i class="fas fa-check-double" title="Selesaikan" data-action="done" data-id="${p.id}"></i>
-                    <i class="fas fa-times-circle" title="Batalkan" data-action="reject" data-id="${p.id}"></i>
-                `;
-            } else {
-                aksiHtml = `
-                    <i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo" data-id="${p.id}"></i>
-                    <i class="fas fa-trash-alt" title="Hapus" data-action="delete" data-id="${p.id}"></i>
-                `;
+                    const jam = p.jamMulai + ' – ' + p.jamSelesai;
+
+                    let aksiHtml = '';
+                    if (isAdmin) {
+                        if (p.status === 'pending') {
+                            pending++;
+                            aksiHtml = `
+                                <i class="fas fa-check-circle" title="Approve" data-action="approve_ruang" data-id="${p.id}"></i>
+                                <i class="fas fa-times-circle" title="Tolak" data-action="reject" data-id="${p.id}"></i>
+                            `;
+                        } else if (p.status === 'approved') {
+                            aksiHtml = `
+                                <i class="fas fa-check-double" title="Selesaikan" data-action="done" data-id="${p.id}"></i>
+                                <i class="fas fa-times-circle" title="Batalkan" data-action="reject" data-id="${p.id}"></i>
+                            `;
+                        } else {
+                            aksiHtml = `
+                                <i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo" data-id="${p.id}"></i>
+                                <i class="fas fa-trash-alt" title="Hapus" data-action="delete" data-id="${p.id}"></i>
+                            `;
+                        }
+                    }
+
+                    html += `
+                        <tr>
+                            <td>${p.ruang}</td>
+                            <td>${p.peminjam}</td>
+                            <td>${p.tanggal}</td>
+                            <td>${jam}</td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td class="admin-only">${aksiHtml}</td>
+                        </tr>
+                    `;
+                });
+
+                ruangTableBody.innerHTML = html;
+                totalPinjamRuang.textContent = 'Total: ' + peminjamanRuang.length + ' (20 terakhir)';
+
+                if (isAdmin) {
+                    ruangTableBody.querySelectorAll('[data-action]').forEach(el => {
+                        el.addEventListener('click', function(e) {
+                            const action = this.dataset.action;
+                            const id = parseInt(this.dataset.id);
+                            handleRuangAction(action, id);
+                        });
+                    });
+                }
             }
-        }
 
-        html += `
-            <tr>
-                <td>${p.ruang}</td>
-                <td>${p.peminjam}</td>
-                <td>${p.tanggal}</td>
-                <td>${jam}</td>
-                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                <td class="admin-only">${aksiHtml}</td>
-            </tr>
-        `;
-    });
+            // ============================================================
+            // RENDER INVENTARIS TABLE (20 TERAKHIR)
+            // ============================================================
+            function renderInventarisTable() {
+                const last20 = getLast20(peminjamanInventaris, 'timestamp');
 
-    ruangTableBody.innerHTML = html;
-    totalPinjamRuang.textContent = 'Total: ' + peminjamanRuang.length + ' (20 terakhir)';
+                if (!last20 || !last20.length) {
+                    invTableBody.innerHTML =
+                        `<tr><td colspan="7" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman inventaris</td></tr>`;
+                    totalPinjamInv.textContent = 'Total: ' + peminjamanInventaris.length + ' (20 terakhir)';
+                    return;
+                }
 
-    if (isAdmin) {
-        ruangTableBody.querySelectorAll('[data-action]').forEach(el => {
-            el.addEventListener('click', function(e) {
-                const action = this.dataset.action;
-                const id = parseInt(this.dataset.id);
-                handleRuangAction(action, id);
-            });
-        });
-    }
-}
+                let html = '';
+                let pending = 0;
 
-// ============================================================
-// RENDER INVENTARIS TABLE (20 TERAKHIR)
-// ============================================================
-function renderInventarisTable() {
-    // Ambil 20 data terakhir berdasarkan timestamp
-    const last20 = getLast20(peminjamanInventaris, 'timestamp');
-    
-    if (!last20 || !last20.length) {
-        invTableBody.innerHTML =
-            `<tr><td colspan="7" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman inventaris</td></tr>`;
-        totalPinjamInv.textContent = 'Total: ' + peminjamanInventaris.length + ' (20 terakhir)';
-        return;
-    }
+                const sorted = [...last20].sort((a, b) => {
+                    return a.tanggal_pinjam.localeCompare(b.tanggal_pinjam);
+                });
 
-    let html = '';
-    let pending = 0;
+                sorted.forEach(p => {
+                    let statusClass = 'pending';
+                    let statusText = 'Menunggu';
+                    if (p.status === 'approved') { statusClass = 'approved';
+                        statusText = 'Disetujui'; }
+                    if (p.status === 'rejected') { statusClass = 'rejected';
+                        statusText = 'Ditolak'; }
+                    if (p.status === 'done') { statusClass = 'done';
+                        statusText = 'Dikembalikan'; }
 
-    const sorted = [...last20].sort((a, b) => {
-        return a.tanggal_pinjam.localeCompare(b.tanggal_pinjam);
-    });
+                    let aksiHtml = '';
+                    if (isAdmin) {
+                        if (p.status === 'pending') {
+                            pending++;
+                            aksiHtml = `
+                                <i class="fas fa-check-circle" title="Setujui" data-action="approve_inventaris" data-id="${p.id}"></i>
+                                <i class="fas fa-times-circle" title="Tolak" data-action="reject_inventaris" data-id="${p.id}"></i>
+                            `;
+                        } else if (p.status === 'approved') {
+                            aksiHtml = `
+                                <i class="fas fa-arrow-left" title="Kembalikan" data-action="return_inventaris" data-id="${p.id}"></i>
+                                <i class="fas fa-times-circle" title="Batalkan" data-action="reject_inventaris" data-id="${p.id}"></i>
+                            `;
+                        } else {
+                            aksiHtml = `
+                                <i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo_inventaris" data-id="${p.id}"></i>
+                                <i class="fas fa-trash-alt" title="Hapus" data-action="delete_inventaris" data-id="${p.id}"></i>
+                            `;
+                        }
+                    }
 
-    sorted.forEach(p => {
-        let statusClass = 'pending';
-        let statusText = 'Menunggu';
-        if (p.status === 'approved') { statusClass = 'approved';
-            statusText = 'Disetujui'; }
-        if (p.status === 'rejected') { statusClass = 'rejected';
-            statusText = 'Ditolak'; }
-        if (p.status === 'done') { statusClass = 'done';
-            statusText = 'Dikembalikan'; }
+                    html += `
+                        <tr>
+                            <td>${p.nama_item}</td>
+                            <td>${p.peminjam}</td>
+                            <td>${p.jumlah}</td>
+                            <td>${p.tanggal_pinjam}</td>
+                            <td>${p.tanggal_kembali || '-'}</td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td class="admin-only">${aksiHtml}</td>
+                        </tr>
+                    `;
+                });
 
-        let aksiHtml = '';
-        if (isAdmin) {
-            if (p.status === 'pending') {
-                pending++;
-                aksiHtml = `
-                    <i class="fas fa-check-circle" title="Setujui" data-action="approve_inventaris" data-id="${p.id}"></i>
-                    <i class="fas fa-times-circle" title="Tolak" data-action="reject_inventaris" data-id="${p.id}"></i>
-                `;
-            } else if (p.status === 'approved') {
-                aksiHtml = `
-                    <i class="fas fa-arrow-left" title="Kembalikan" data-action="return_inventaris" data-id="${p.id}"></i>
-                    <i class="fas fa-times-circle" title="Batalkan" data-action="reject_inventaris" data-id="${p.id}"></i>
-                `;
-            } else {
-                aksiHtml = `
-                    <i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo_inventaris" data-id="${p.id}"></i>
-                    <i class="fas fa-trash-alt" title="Hapus" data-action="delete_inventaris" data-id="${p.id}"></i>
-                `;
+                invTableBody.innerHTML = html;
+                totalPinjamInv.textContent = 'Total: ' + peminjamanInventaris.length + ' (20 terakhir)';
+                if (pendingCount) pendingCount.textContent = pending;
+
+                if (isAdmin) {
+                    invTableBody.querySelectorAll('[data-action]').forEach(el => {
+                        el.addEventListener('click', function(e) {
+                            const action = this.dataset.action;
+                            const id = parseInt(this.dataset.id);
+                            handleInventarisAction(action, id);
+                        });
+                    });
+                }
             }
-        }
-
-        html += `
-            <tr>
-                <td>${p.nama_item}</td>
-                <td>${p.peminjam}</td>
-                <td>${p.jumlah}</td>
-                <td>${p.tanggal_pinjam}</td>
-                <td>${p.tanggal_kembali || '-'}</td>
-                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                <td class="admin-only">${aksiHtml}</td>
-            </tr>
-        `;
-    });
-
-    invTableBody.innerHTML = html;
-    totalPinjamInv.textContent = 'Total: ' + peminjamanInventaris.length + ' (20 terakhir)';
-    if (pendingCount) pendingCount.textContent = pending;
-
-    if (isAdmin) {
-        invTableBody.querySelectorAll('[data-action]').forEach(el => {
-            el.addEventListener('click', function(e) {
-                const action = this.dataset.action;
-                const id = parseInt(this.dataset.id);
-                handleInventarisAction(action, id);
-            });
-        });
-    }
-}
 
             // ============================================================
             // RENDER USERS TABLE
@@ -1425,7 +1686,6 @@ function renderInventarisTable() {
 
                 const events = [];
 
-                // Peminjaman Ruang
                 peminjamanRuang.forEach(p => {
                     if (p.status === 'approved' || p.status === 'pending') {
                         const start = p.tanggal + 'T' + p.jamMulai + ':00';
@@ -1442,7 +1702,6 @@ function renderInventarisTable() {
                     }
                 });
 
-                // Peminjaman Inventaris
                 peminjamanInventaris.forEach(p => {
                     if (p.status === 'approved' || p.status === 'pending') {
                         const start = p.tanggal_pinjam + 'T09:00:00';
@@ -1591,7 +1850,7 @@ function renderInventarisTable() {
             }
 
             // ============================================================
-            // MASTER CRUD (Ruang & Inventaris)
+            // MASTER CRUD
             // ============================================================
             function editMaster(sheet, id) {
                 const data = sheet === 'ruang' ?
@@ -1638,7 +1897,6 @@ function renderInventarisTable() {
 
                 let fieldsHtml = '';
 
-                // RUANG MASTER
                 if (sheet === 'ruang') {
                     const isEdit = data !== null;
                     title.textContent = isEdit ? 'Edit Ruang Lab' : 'Tambah Ruang Lab';
@@ -1661,9 +1919,7 @@ function renderInventarisTable() {
                             <input type="text" id="f_keterangan" value="${data?.keterangan || ''}" />
                         </div>
                     `;
-                }
-                // INVENTARIS MASTER (GABUNGAN)
-                else if (sheet === 'inventaris') {
+                } else if (sheet === 'inventaris') {
                     const isEdit = data !== null;
                     title.textContent = isEdit ? 'Edit Item Inventaris' : 'Tambah Item Inventaris';
                     subtitle.textContent = isEdit ? 'Edit data item yang sudah ada' : 'Isi data item inventaris baru';
@@ -1711,9 +1967,7 @@ function renderInventarisTable() {
                             <br>Status pinjam akan otomatis berubah jika stok_tersedia = 0.
                         </div>
                     `;
-                }
-                // USERS
-                else if (sheet === 'users') {
+                } else if (sheet === 'users') {
                     const isEdit = data !== null;
                     title.textContent = isEdit ? 'Edit User' : 'Tambah User';
                     subtitle.textContent = isEdit ? 'Edit data user yang sudah ada' : 'Isi data user baru';
@@ -1757,7 +2011,6 @@ function renderInventarisTable() {
                 let data = {};
                 let sheet = '';
 
-                // RUANG
                 if (crudMode === 'ruang') {
                     sheet = 'master_ruang';
                     data = {
@@ -1767,9 +2020,7 @@ function renderInventarisTable() {
                         keterangan: document.getElementById('f_keterangan').value
                     };
                     if (crudData) data.id = crudData.id;
-                }
-                // INVENTARIS
-                else if (crudMode === 'inventaris') {
+                } else if (crudMode === 'inventaris') {
                     sheet = 'master_inventaris';
                     const totalStok = parseInt(document.getElementById('f_total_stok').value) || 1;
                     data = {
@@ -1777,16 +2028,12 @@ function renderInventarisTable() {
                         kategori: document.getElementById('f_kategori').value,
                         satuan: document.getElementById('f_satuan').value || 'unit',
                         total_stok: totalStok,
-                        // stok_tersedia otomatis = total_stok di Apps Script
                         kondisi: document.getElementById('f_kondisi').value,
                         lokasi: document.getElementById('f_lokasi').value || 'Lab ICT A',
                         keterangan: document.getElementById('f_keterangan').value || '',
-                        // status_pinjam otomatis di set di Apps Script
                     };
                     if (crudData) data.id = crudData.id;
-                }
-                // USERS
-                else if (crudMode === 'users') {
+                } else if (crudMode === 'users') {
                     sheet = 'users';
                     data = {
                         username: document.getElementById('f_username').value,
@@ -1833,7 +2080,6 @@ function renderInventarisTable() {
                     return;
                 }
 
-                // Cek konflik
                 const hasConflict = peminjamanRuang.some(p => {
                     if (p.ruang !== ruang) return false;
                     if (p.tanggal !== tanggal) return false;
@@ -1893,7 +2139,6 @@ function renderInventarisTable() {
                     return;
                 }
 
-                // Cek stok dari master_inventaris
                 const masterItem = masterInventaris.find(m => m.nama_item === item);
                 if (masterItem && parseInt(masterItem.stok_tersedia || 0) < jumlah) {
                     showToast('❌ Stok tidak mencukupi! Tersedia: ' + (masterItem.stok_tersedia || 0) + ', Diminta: ' +
@@ -1949,7 +2194,7 @@ function renderInventarisTable() {
                         isAdmin = true;
                         document.body.classList.add('admin-mode');
                         roleDisplay.innerHTML = '<i class="fas fa-user-shield"></i> ' + (data.data.nama || data.data
-                        .username);
+                            .username);
                         roleDisplay.classList.add('admin');
                         loginBtnText.textContent = 'Logout';
                         loginToggleBtn.classList.add('logout');
@@ -2027,7 +2272,6 @@ function renderInventarisTable() {
 
             document.getElementById('crudCancelBtn').addEventListener('click', closeModal);
 
-            // Tombol Tambah
             btnTambahInventarisMaster.addEventListener('click', function() {
                 showModal('inventaris');
             });
