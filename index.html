@@ -649,60 +649,31 @@
         // API CALL (SEMUA GET - TIDAK ADA CORS)
         // ============================================================
         async function apiCall(action, params = {}) {
-            try {
-                const urlParams = new URLSearchParams();
-                urlParams.append('action', action);
-                Object.keys(params).forEach(key => {
-                    if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
-                        urlParams.append(key, params[key]);
-                    }
-                });
-                const url = GOOGLE_SHEETS_URL + '?' + urlParams.toString();
-                const response = await fetch(url);
-                const result = await response.json();
-                return result;
-            } catch (error) {
-                console.error('API Error:', error);
-                return { status: 'error', message: error.toString() };
+    try {
+        const urlParams = new URLSearchParams();
+        urlParams.append('action', action);
+        Object.keys(params).forEach(key => {
+            if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+                urlParams.append(key, params[key]);
             }
-        }
-
-        // ============================================================
-        // LOAD ALL DATA
-        // ============================================================
-        async function loadAllData() {
-            try {
-                updateLoading('Mengambil data master...', 10);
-                const masters = await apiCall('get_masters');
-                if (masters.status === 'success') {
-                    masterRuang = masters.data.ruang || [];
-                    masterInventaris = masters.data.inventaris || [];
-                    updateLoading('Data master loaded...', 25);
-                }
-
-                const pr = await apiCall('get_peminjaman_ruang');
-                if (pr.status === 'success') { peminjamanRuang = pr.data || []; updateLoading('Data peminjaman ruang loaded...', 40); }
-
-                const pi = await apiCall('get_peminjaman_inventaris');
-                if (pi.status === 'success') { peminjamanInventaris = pi.data || []; updateLoading('Data peminjaman inventaris loaded...', 55); }
-
-                if (isAdmin) {
-                    const u = await apiCall('get_users');
-                    if (u.status === 'success') { users = u.data || []; }
-                    updateLoading('Data users loaded...', 70);
-                }
-
-                updateLoading('Merender tampilan...', 85);
-                renderAll();
-                updateLoading('Selesai!', 100);
-                setTimeout(hideLoading, 500);
-
-            } catch (error) {
-                console.error('Error loading data:', error);
-                showToast('Error: ' + error.message, 'error');
-                hideLoading();
-            }
-        }
+        });
+        
+        const url = GOOGLE_SHEETS_URL + '?' + urlParams.toString();
+        
+        // Tambahkan batasan redirect manual jika diperlukan, 
+        // namun fetch default di browser modern biasanya langsung mengikuti redirect Apps Script.
+        const response = await fetch(url, {
+            method: 'GET',
+            redirect: 'follow' // Memastikan browser mengikuti redirect Google Apps Script
+        });
+        
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('API Error:', error);
+        return { status: 'error', message: error.toString() };
+    }
+}
 
         // ============================================================
         // RENDER ALL
