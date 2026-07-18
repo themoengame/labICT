@@ -1095,16 +1095,16 @@
             // RENDER ALL
             // ============================================================
             function renderAll() {
-                updateRuangDropdown();
-                updateInventarisDropdown();
-                renderRuangTable();
-                renderInventarisTable();
-                renderMasterRuang();
-                renderMasterInventaris();
-                if (isAdmin) renderUsersTable();
-                updateStats();
-                updateCalendarEvents();
-            }
+    updateRuangDropdown();
+    updateInventarisDropdown();
+    renderRuangTable();      // Sekarang menampilkan 20 terakhir
+    renderInventarisTable(); // Sekarang menampilkan 20 terakhir
+    renderMasterRuang();
+    renderMasterInventaris();
+    if (isAdmin) renderUsersTable();
+    updateStats();
+    updateCalendarEvents();
+}
 
             // ============================================================
             // UPDATE DROPDOWNS
