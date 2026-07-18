@@ -280,12 +280,37 @@
     </div>
 
     <!-- STATS -->
-    <div class="stats-grid" id="statsContainer">
-        <div class="stat-item"><div class="number" id="statRuang">-</div><div class="label">🏢 Ruang</div></div>
-        <div class="stat-item"><div class="number" id="statInventaris">-</div><div class="label">📦 Inventaris</div></div>
-        <div class="stat-item"><div class="number" id="statPeminjaman">-</div><div class="label">📋 Total Peminjaman</div></div>
-        <div class="stat-item"><div class="number" id="statMenunggu">-</div><div class="label">⏳ Menunggu Approve</div></div>
+<div class="stats-grid" id="statsContainer">
+    <div class="stat-item">
+        <div class="number" id="statRuang">-</div>
+        <div class="label">🏢 Ruang</div>
     </div>
+    <div class="stat-item">
+        <div class="number" id="statInventaris">-</div>
+        <div class="label">📦 Inventaris</div>
+    </div>
+    <div class="stat-item">
+        <div class="number" id="statPeminjaman">-</div>
+        <div class="label">📋 Total Peminjaman</div>
+    </div>
+    <div class="stat-item">
+        <div class="number" id="statMenunggu">-</div>
+        <div class="label">⏳ Menunggu Approve</div>
+    </div>
+    <!-- STATISTIK BARU -->
+    <div class="stat-item" style="background:#e8f5e9;">
+        <div class="number" id="statAktif">-</div>
+        <div class="label">🔄 Sedang Berlangsung</div>
+    </div>
+    <div class="stat-item" style="background:#e3f2fd;">
+        <div class="number" id="statSelesai">-</div>
+        <div class="label">✅ Selesai</div>
+    </div>
+    <div class="stat-item" style="background:#ffebee;">
+        <div class="number" id="statDitolak">-</div>
+        <div class="label">❌ Ditolak</div>
+    </div>
+</div>
 
     <!-- NOTIFICATION -->
     <div id="notification" class="notification"></div>
@@ -703,18 +728,21 @@ async function loadAllData() {
     showLoading('⏳ Memuat data admin...', 'Menghubungi server...', 10);
     
     try {
-        // Step 1: Stats
-        updateLoading('📊 Memuat statistik...', 'Mengambil data statistik', 20);
-        const stats = await API.getStats();
+        // Step 1: Full Stats (termasuk riwayat)
+        updateLoading('📊 Memuat statistik...', 'Mengambil data statistik', 15);
+        const stats = await API.getFullStats();
         if (stats.status === 'success') {
             document.getElementById('statRuang').textContent = stats.data.totalRuang || 0;
             document.getElementById('statInventaris').textContent = stats.data.totalInventaris || 0;
             document.getElementById('statPeminjaman').textContent = stats.data.totalPeminjaman || 0;
             document.getElementById('statMenunggu').textContent = stats.data.menungguApprove || 0;
+            document.getElementById('statAktif').textContent = stats.data.aktifBerlangsung || 0;
+            document.getElementById('statSelesai').textContent = stats.data.selesai || 0;
+            document.getElementById('statDitolak').textContent = stats.data.ditolak || 0;
         }
         
         // Step 2: Users
-        updateLoading('👤 Memuat data users...', 'Mengambil data users', 35);
+        updateLoading('👤 Memuat data users...', 'Mengambil data users', 30);
         const users = await API.getUsers();
         if (users.status === 'success') {
             allData.users = users.data || [];
@@ -723,7 +751,7 @@ async function loadAllData() {
         }
         
         // Step 3: Ruang
-        updateLoading('🏢 Memuat data ruang...', 'Mengambil data master ruang', 50);
+        updateLoading('🏢 Memuat data ruang...', 'Mengambil data master ruang', 45);
         const ruang = await API.getRuang();
         if (ruang.status === 'success') {
             allData.ruang = ruang.data || [];
@@ -731,18 +759,23 @@ async function loadAllData() {
         }
         
         // Step 4: Inventaris
-        updateLoading('📦 Memuat data inventaris...', 'Mengambil data master inventaris', 65);
+        updateLoading('📦 Memuat data inventaris...', 'Mengambil data master inventaris', 60);
         const inventaris = await API.getInventaris();
         if (inventaris.status === 'success') {
             allData.inventaris = inventaris.data || [];
             renderInventaris();
         }
         
-        // Step 5: Peminjaman
-        updateLoading('📋 Memuat data peminjaman...', 'Mengambil data peminjaman', 80);
+        // Step 5: Peminjaman (hanya pending & approved untuk dashboard aktif)
+        updateLoading('📋 Memuat data peminjaman...', 'Mengambil data peminjaman aktif', 75);
         const peminjaman = await API.getAllPeminjaman();
         if (peminjaman.status === 'success') {
-            allData.peminjaman = peminjaman.data || [];
+            // Filter hanya pending dan approved untuk dashboard aktif
+            allData.peminjaman = peminjaman.data.filter(d => 
+                d.status === 'pending' || d.status === 'approved'
+            );
+            // Simpan semua data untuk filter
+            allData.allPeminjaman = peminjaman.data;
             filteredData = [...allData.peminjaman];
             renderPeminjaman();
             document.getElementById('totalPeminjamanBadge').textContent = allData.peminjaman.length;
@@ -761,6 +794,29 @@ async function loadAllData() {
     }
 }
 
+    // ============================================================
+// COMPLETE RUANG (Tandai Selesai)
+// ============================================================
+async function completeRuang(id) {
+    if (!confirm('Tandai peminjaman ruang ini sebagai selesai?')) return;
+    
+    showLoading('⏳ Memproses...', 'Menandai peminjaman selesai', 50);
+    
+    try {
+        const result = await API.completeRuang(id);
+        hideLoading();
+        if (result.status === 'success') {
+            showNotification('✅ ' + result.message, 'success');
+            await loadAllData();
+        } else {
+            showNotification('❌ ' + result.message, 'error');
+        }
+    } catch (error) {
+        hideLoading();
+        showNotification('❌ Error: ' + error.message, 'error');
+    }
+}
+
 // ============================================================
 // RENDER FUNCTIONS
 // ============================================================
@@ -771,15 +827,15 @@ function renderPeminjaman() {
     const data = filteredData.length > 0 ? filteredData : allData.peminjaman;
     
     if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">Belum ada data peminjaman</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">Tidak ada peminjaman aktif</td></tr>';
         return;
     }
     
     let html = '';
     data.slice(0, 50).forEach((item, index) => {
         const isPending = item.status === 'pending';
+        const isApproved = item.status === 'approved';
         const itemName = item.nama_ruang || item.nama_item || '-';
-        // GABUNGKAN JAM MULAI DAN JAM SELESAI DENGAN FORMAT BARU
         const jamMulai = formatTime(item.jam_mulai);
         const jamSelesai = formatTime(item.jam_selesai);
         const jam = (jamMulai !== '-' && jamSelesai !== '-') ? `${jamMulai} - ${jamSelesai}` : '-';
@@ -796,15 +852,46 @@ function renderPeminjaman() {
             <td>
                 ${isPending ? `
                     <button class="btn btn-success btn-xs" onclick="openAdminModal(${item.id}, '${item.type}')">✅ Approve</button>
-                    <button class="btn btn-danger btn-xs" onclick="rejectItem(${item.id}, '${item.type}')">❌ Tolak</button>
+                    <button class="btn btn-danger btn-xs" onclick="rejectWithReason(${item.id}, '${item.type}')">❌ Tolak</button>
                 ` : ''}
-                ${item.status === 'approved' && item.type === 'Inventaris' ? `
+                ${isApproved && item.type === 'Ruang' ? `
+                    <button class="btn btn-success btn-xs" onclick="completeRuang(${item.id})">✅ Selesai</button>
+                ` : ''}
+                ${isApproved && item.type === 'Inventaris' ? `
                     <button class="btn btn-warning btn-xs" onclick="returnItem(${item.id})">↩️ Kembali</button>
                 ` : ''}
             </td>
         </tr>`;
     });
     tbody.innerHTML = html;
+}
+
+    // ============================================================
+// REJECT WITH REASON (Popup alasan)
+// ============================================================
+function rejectWithReason(id, type) {
+    const alasan = prompt('Masukkan alasan penolakan:');
+    if (alasan === null) return; // Cancel
+    if (!alasan.trim()) {
+        showNotification('Harap masukkan alasan penolakan', 'error');
+        return;
+    }
+    
+    showLoading('⏳ Memproses...', 'Menolak peminjaman', 50);
+    
+    try {
+        const result = await API.rejectWithNote(id, type, alasan.trim());
+        hideLoading();
+        if (result.status === 'success') {
+            showNotification('✅ ' + result.message, 'success');
+            await loadAllData();
+        } else {
+            showNotification('❌ ' + result.message, 'error');
+        }
+    } catch (error) {
+        hideLoading();
+        showNotification('❌ Error: ' + error.message, 'error');
+    }
 }
 
 // --- RENDER RUANG ---
@@ -1191,17 +1278,17 @@ document.getElementById('modalRejectBtn').addEventListener('click', async functi
     const { id, type } = adminTarget;
     if (!id) return;
     
-    if (!confirm('Yakin ingin menolak peminjaman ini?')) return;
+    const alasan = prompt('Masukkan alasan penolakan:');
+    if (alasan === null) return;
+    if (!alasan.trim()) {
+        showNotification('Harap masukkan alasan penolakan', 'error');
+        return;
+    }
     
     showLoading('⏳ Memproses...', 'Menolak peminjaman', 50);
     
     try {
-        let result;
-        if (type === 'Ruang') {
-            result = await API.rejectRuang(id);
-        } else {
-            result = await API.rejectInventaris(id);
-        }
+        const result = await API.rejectWithNote(id, type, alasan.trim());
         hideLoading();
         if (result.status === 'success') {
             showNotification('✅ ' + result.message, 'success');
