@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB ICT · SMAN 1 Malang - Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, 'Segoe UI', sans-serif; }
+        body { background: #f0f4f8; }
+        .sidebar { width: 260px; height: 100vh; background: #1a2a3a; color: white; position: fixed; padding: 20px 0; overflow-y: auto; }
+        .sidebar .logo { padding: 0 24px 30px; font-size: 1.2rem; font-weight: 700; border-bottom: 1px solid #2a3a4a; }
+        .sidebar .logo span { color: #64b5f6; }
+        .sidebar .menu-item { padding: 12px 24px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 12px; border-left: 3px solid transparent; }
+        .sidebar .menu-item:hover, .sidebar .menu-item.active { background: #2a3a4a; border-left-color: #64b5f6; }
+        .sidebar .menu-item .badge { background: #e74c3c; color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 12px; margin-left: auto; }
+        .main-content { margin-left: 260px; padding: 30px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { font-size: 1.8rem; color: #1a2a3a; }
+        .header .user-info { background: white; padding: 8px 16px; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .stat-card .number { font-size: 2rem; font-weight: 700; color: #1a2a3a; }
+        .stat-card .label { color: #6b7a8a; font-size: 0.85rem; }
+        .stat-card .icon { font-size: 2rem; float: right; opacity: 0.3; }
+        .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .card h2 { font-size: 1.2rem; margin-bottom: 16px; color: #1a2a3a; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #eef2f5; }
+        th { background: #f8fafc; font-weight: 600; color: #4a5a6a; }
+        .btn { padding: 6px 16px; border: none; border-radius: 20px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+        .btn-primary { background: #64b5f6; color: white; }
+        .btn-success { background: #66bb6a; color: white; }
+        .btn-danger { background: #ef5350; color: white; }
+        .btn-warning { background: #ffa726; color: white; }
+        .btn-sm { padding: 4px 12px; font-size: 0.75rem; }
+        .btn:hover { transform: translateY(-1px); opacity: 0.9; }
+        .status-badge { padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+        .status-pending { background: #fff3e0; color: #e65100; }
+        .status-approved { background: #e8f5e9; color: #2e7d32; }
+        .status-rejected { background: #ffebee; color: #c62828; }
+        .status-returned { background: #e3f2fd; color: #0d47a1; }
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 16px; padding: 30px; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        .modal-content h2 { margin-bottom: 20px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; color: #4a5a6a; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #dde4ec; border-radius: 10px; font-size: 0.95rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">LAB <span>ICT</span> · SMAN 1 Malang</div>
+        <div class="menu-item active" data-tab="dashboard">
+            <span>📊</span> Dashboard
+        </div>
+        <div class="menu-item" data-tab="ruang">
+            <span>🏢</span> Ruang Lab
+            <span class="badge" id="ruangBadge">0</span>
+        </div>
+        <div class="menu-item" data-tab="inventaris">
+            <span>📦</span> Item Inventaris
+            <span class="badge" id="inventarisBadge">0</span>
+        </div>
+        <div class="menu-item" data-tab="peminjaman_ruang">
+            <span>📅</span> Peminjaman Ruang
+            <span class="badge" id="peminjamanRuangBadge">0</span>
+        </div>
+        <div class="menu-item" data-tab="peminjaman_inventaris">
+            <span>🛠️</span> Peminjaman Inventaris
+            <span class="badge" id="peminjamanInventarisBadge">0</span>
+        </div>
+        <div class="menu-item" data-tab="menunggu">
+            <span>⏳</span> Menunggu Approve
+            <span class="badge" id="menungguBadge">0</span>
+        </div>
+        <div style="border-top: 1px solid #2a3a4a; margin-top: 20px; padding-top: 20px;">
+            <div class="menu-item" id="logoutBtn">
+                <span>🚪</span> Logout
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1 id="pageTitle">Dashboard</h1>
+            <div class="user-info">
+                👤 <span id="userName">Admin</span>
+            </div>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="tab-dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number" id="statRuang">0</div>
+                    <div class="label">🏢 Ruang Lab</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="statInventaris">0</div>
+                    <div class="label">📦 Item Inventaris</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="statPeminjamanAktif">0</div>
+                    <div class="label">📋 Peminjaman Aktif</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="statMenunggu">0</div>
+                    <div class="label">⏳ Menunggu Approve</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📋 Peminjaman Terakhir</h2>
+                <div id="recentPeminjaman">
+                    <p style="color: #6b7a8a;">Memuat data...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ruang Tab -->
+        <div id="tab-ruang" class="tab-content">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h2>🏢 Data Ruang Lab</h2>
+                    <button class="btn btn-primary" onclick="openModal('ruang')">+ Tambah Ruang</button>
+                </div>
+                <div id="ruangList">
+                    <p style="color: #6b7a8a;">Memuat data...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventaris Tab -->
+        <div id="tab-inventaris" class="tab-content">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h2>📦 Data Inventaris</h2>
+                    <button class="btn btn-primary" onclick="openModal('inventaris')">+ Tambah Inventaris</button>
+                </div>
+                <div id="inventarisList">
+                    <p style="color: #6b7a8a;">Memuat data...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Peminjaman Ruang Tab -->
+        <div id="tab-peminjaman_ruang" class="tab-content">
+            <div class="card">
+                <h2>📅 Peminjaman Ruang</h2>
+                <div id="peminjamanRuangList">
+                    <p style="color: #6b7a8a;">Memuat data...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Peminjaman Inventaris Tab -->
+        <div id="tab-peminjaman_inventaris" class="tab-content">
+            <div class="card">
+                <h2>🛠️ Peminjaman Inventaris</h2>
+                <div id="peminjamanInventarisList">
+                    <p style="color: #6b7a8a;">Memuat data...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menunggu Approve Tab -->
+        <div id="tab-menunggu" class="tab-content">
+            <div class="card">
+                <h2>⏳ Menunggu Persetujuan</h2>
+                <div id="menungguList">
+                    <p style="color: #6b7a8a;">Memuat data...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Tambah Data</h2>
+            <form id="modalForm">
+                <div id="modalFields"></div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-danger" onclick="closeModal()">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // KONFIGURASI
+        // ============================================================
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxGoxq_XsXGifT4wWWvDbwnNmJUUbg4G9ag2rZGotjzwSpw0GjSuhr1dTcOnBUABAqM/exec";
+
+        // ============================================================
+        // JSONP HELPER
+        // ============================================================
+        const JSONP = {
+            _callbackId: 0,
+            _pending: {},
+            
+            request(url, params = {}, timeout = 30000) {
+                return new Promise((resolve, reject) => {
+                    const callbackName = 'jsonp_callback_' + (++this._callbackId);
+                    const script = document.createElement('script');
+                    
+                    const timer = setTimeout(() => {
+                        this._cleanup(callbackName);
+                        reject(new Error('Request timeout after ' + timeout + 'ms'));
+                    }, timeout);
+                    
+                    this._pending[callbackName] = {
+                        resolve: (data) => {
+                            clearTimeout(timer);
+                            this._cleanup(callbackName);
+                            resolve(data);
+                        },
+                        reject: (error) => {
+                            clearTimeout(timer);
+                            this._cleanup(callbackName);
+                            reject(error);
+                        }
+                    };
+                    
+                    const urlParams = new URLSearchParams(params);
+                    urlParams.append('callback', callbackName);
+                    urlParams.append('_t', Date.now());
+                    
+                    window[callbackName] = function(data) {
+                        if (this._pending[callbackName]) {
+                            this._pending[callbackName].resolve(data);
+                        }
+                    }.bind(this);
+                    
+                    script.onerror = function() {
+                        if (this._pending[callbackName]) {
+                            this._pending[callbackName].reject(new Error('Network error'));
+                        }
+                    }.bind(this);
+                    
+                    script.src = url + '?' + urlParams.toString();
+                    document.head.appendChild(script);
+                });
+            },
+            
+            _cleanup(callbackName) {
+                delete window[callbackName];
+                delete this._pending[callbackName];
+                document.querySelectorAll('script[src*="' + callbackName + '"]').forEach(el => el.remove());
+            }
+        };
+
+        const API = {
+            call(action, params = {}) {
+                return JSONP.request(SCRIPT_URL, { action, ...params });
+            },
+            
+            getMasters() { return this.call('get_masters'); },
+            getRuang() { return this.call('get_ruang'); },
+            getInventaris() { return this.call('get_inventaris'); },
+            getPeminjamanRuang() { return this.call('get_peminjaman_ruang'); },
+            getPeminjamanInventaris() { return this.call('get_peminjaman_inventaris'); },
+            
+            add(sheet, data) { return this.call('add', { sheet, data: JSON.stringify(data) }); },
+            update(sheet, data) { return this.call('update', { sheet, data: JSON.stringify(data) }); },
+            delete(sheet, id) { return this.call('delete', { sheet, id }); },
+            
+            approveRuang(data) { return this.call('approve_ruang', { data: JSON.stringify(data) }); },
+            approveInventaris(data) { return this.call('approve_inventaris', { data: JSON.stringify(data) }); },
+            returnInventaris(data) { return this.call('return_inventaris', { data: JSON.stringify(data) }); }
+        };
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        let currentUser = JSON.parse(sessionStorage.getItem('user') || '{"name":"Admin"}');
+        let dataCache = {
+            ruang: [],
+            inventaris: [],
+            peminjamanRuang: [],
+            peminjamanInventaris: []
+        };
+
+        // ============================================================
+        // UTILITY FUNCTIONS
+        // ============================================================
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                if (m === '"') return '&quot;';
+                return m;
+            });
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            try {
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return '-';
+                return d.toLocaleDateString('id-ID');
+            } catch { return '-'; }
+        }
+
+        function getStatusBadge(status) {
+            const classes = {
+                'pending': 'status-pending',
+                'approved': 'status-approved',
+                'rejected': 'status-rejected',
+                'returned': 'status-returned'
+            };
+            const labels = {
+                'pending': '⏳ Menunggu',
+                'approved': '✅ Disetujui',
+                'rejected': '❌ Ditolak',
+                'returned': '↩️ Dikembalikan'
+            };
+            return `<span class="status-badge ${classes[status] || 'status-pending'}">${labels[status] || status}</span>`;
+        }
+
+        // ============================================================
+        // LOAD DATA
+        // ============================================================
+        async function loadAllData() {
+            try {
+                const result = await API.getMasters();
+                if (result.status === 'success') {
+                    dataCache = result.data;
+                    updateDashboard();
+                    updateAllLists();
+                    updateBadges();
+                } else {
+                    console.error('Error loading data:', result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function updateDashboard() {
+            const totalRuang = dataCache.ruang.length;
+            const totalInventaris = dataCache.inventaris.length;
+            const totalPeminjamanAktif = dataCache.peminjamanRuang.filter(p => p.Status === 'approved').length +
+                                       dataCache.peminjamanInventaris.filter(p => p.Status === 'approved').length;
+            const totalMenunggu = dataCache.peminjamanRuang.filter(p => p.Status === 'pending').length +
+                                 dataCache.peminjamanInventaris.filter(p => p.Status === 'pending').length;
+
+            document.getElementById('statRuang').textContent = totalRuang;
+            document.getElementById('statInventaris').textContent = totalInventaris;
+            document.getElementById('statPeminjamanAktif').textContent = totalPeminjamanAktif;
+            document.getElementById('statMenunggu').textContent = totalMenunggu;
+
+            // Recent peminjaman
+            const allPeminjaman = [
+                ...dataCache.peminjamanRuang.map(p => ({ ...p, type: 'Ruang' })),
+                ...dataCache.peminjamanInventaris.map(p => ({ ...p, type: 'Inventaris' }))
+            ];
+            allPeminjaman.sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt));
+            const recent = allPeminjaman.slice(0, 5);
+
+            const container = document.getElementById('recentPeminjaman');
+            if (recent.length === 0) {
+                container.innerHTML = '<p style="color: #6b7a8a;">Belum ada peminjaman</p>';
+            } else {
+                let html = '<table><thead><tr><th>Jenis</th><th>Item/Ruang</th><th>Peminjam</th><th>Status</th><th>Tanggal</th></tr></thead><tbody>';
+                recent.forEach(p => {
+                    html += `<tr>
+                        <td>${p.type}</td>
+                        <td>${escapeHtml(p.ItemName || p.RuangName || '-')}</td>
+                        <td>${escapeHtml(p.Peminjam || '-')}</td>
+                        <td>${getStatusBadge(p.Status)}</td>
+                        <td>${formatDate(p.CreatedAt)}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            }
+        }
+
+        function updateBadges() {
+            const menunggu = dataCache.peminjamanRuang.filter(p => p.Status === 'pending').length +
+                            dataCache.peminjamanInventaris.filter(p => p.Status === 'pending').length;
+            document.getElementById('menungguBadge').textContent = menunggu;
+            document.getElementById('ruangBadge').textContent = dataCache.ruang.length;
+            document.getElementById('inventarisBadge').textContent = dataCache.inventaris.length;
+            document.getElementById('peminjamanRuangBadge').textContent = dataCache.peminjamanRuang.length;
+            document.getElementById('peminjamanInventarisBadge').textContent = dataCache.peminjamanInventaris.length;
+        }
+
+        // ============================================================
+        // RENDER LISTS
+        // ============================================================
+        function updateAllLists() {
+            renderRuangList();
+            renderInventarisList();
+            renderPeminjamanRuangList();
+            renderPeminjamanInventarisList();
+            renderMenungguList();
+        }
+
+        function renderRuangList() {
+            const container = document.getElementById('ruangList');
+            const data = dataCache.ruang;
+            if (data.length === 0) {
+                container.innerHTML = '<p style="color: #6b7a8a;">Belum ada data ruang</p>';
+                return;
+            }
+            let html = '<table><thead><tr><th>ID</th><th>Nama Ruang</th><th>Kapasitas</th><th>Aksi</th></tr></thead><tbody>';
+            data.forEach(item => {
+                html += `<tr>
+                    <td>${item.ID}</td>
+                    <td>${escapeHtml(item.Nama)}</td>
+                    <td>${item.Kapasitas || '-'}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editData('ruang', ${item.ID})">✏️</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteData('ruang', ${item.ID})">🗑️</button>
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function renderInventarisList() {
+            const container = document.getElementById('inventarisList');
+            const data = dataCache.inventaris;
+            if (data.length === 0) {
+                container.innerHTML = '<p style="color: #6b7a8a;">Belum ada data inventaris</p>';
+                return;
+            }
+            let html = '<table><thead><tr><th>ID</th><th>Nama Item</th><th>Stok</th><th>Status</th><th>Aksi</th></tr></thead><tbody>';
+            data.forEach(item => {
+                const status = parseInt(item.Stok) > 0 ? '✅ Tersedia' : '❌ Habis';
+                html += `<tr>
+                    <td>${item.ID}</td>
+                    <td>${escapeHtml(item.Nama)}</td>
+                    <td>${item.Stok || 0}</td>
+                    <td>${status}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editData('inventaris', ${item.ID})">✏️</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteData('inventaris', ${item.ID})">🗑️</button>
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function renderPeminjamanRuangList() {
+            const container = document.getElementById('peminjamanRuangList');
+            const data = dataCache.peminjamanRuang;
+            if (data.length === 0) {
+                container.innerHTML = '<p style="color: #6b7a8a;">Belum ada peminjaman ruang</p>';
+                return;
+            }
+            let html = '<table><thead><tr><th>ID</th><th>Ruang</th><th>Peminjam</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead><tbody>';
+            data.forEach(item => {
+                html += `<tr>
+                    <td>${item.ID}</td>
+                    <td>${escapeHtml(item.RuangName)}</td>
+                    <td>${escapeHtml(item.Peminjam)}</td>
+                    <td>${formatDate(item.TanggalPinjam)}</td>
+                    <td>${getStatusBadge(item.Status)}</td>
+                    <td>
+                        ${item.Status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="approveRuang(${item.ID})">✅ Approve</button>` : ''}
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function renderPeminjamanInventarisList() {
+            const container = document.getElementById('peminjamanInventarisList');
+            const data = dataCache.peminjamanInventaris;
+            if (data.length === 0) {
+                container.innerHTML = '<p style="color: #6b7a8a;">Belum ada peminjaman inventaris</p>';
+                return;
+            }
+            let html = '<table><thead><tr><th>ID</th><th>Item</th><th>Peminjam</th><th>Jumlah</th><th>Tanggal</th><th>Status</th><th>Aksi</th></tr></thead><tbody>';
+            data.forEach(item => {
+                html += `<tr>
+                    <td>${item.ID}</td>
+                    <td>${escapeHtml(item.ItemName)}</td>
+                    <td>${escapeHtml(item.Peminjam)}</td>
+                    <td>${item.Jumlah || 1}</td>
+                    <td>${formatDate(item.TanggalPinjam)}</td>
+                    <td>${getStatusBadge(item.Status)}</td>
+                    <td>
+                        ${item.Status === 'pending' ? `<button class="btn btn-success btn-sm" onclick="approveInventaris(${item.ID})">✅ Approve</button>` : ''}
+                        ${item.Status === 'approved' ? `<button class="btn btn-warning btn-sm" onclick="returnInventaris(${item.ID})">↩️ Kembali</button>` : ''}
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function renderMenungguList() {
+            const container = document.getElementById('menungguList');
+            const menunggu = [
+                ...dataCache.peminjamanRuang.filter(p => p.Status === 'pending').map(p => ({ ...p, type: 'Ruang' })),
+                ...dataCache.peminjamanInventaris.filter(p => p.Status === 'pending').map(p => ({ ...p, type: 'Inventaris' }))
+            ];
+            if (menunggu.length === 0) {
+                container.innerHTML = '<p style="color: #6b7a8a;">Tidak ada permintaan menunggu persetujuan</p>';
+                return;
+            }
+            let html = '<table><thead><tr><th>Jenis</th><th>Item/Ruang</th><th>Peminjam</th><th>Tanggal</th><th>Aksi</th></tr></thead><tbody>';
+            menunggu.forEach(item => {
+                html += `<tr>
+                    <td>${item.type}</td>
+                    <td>${escapeHtml(item.ItemName || item.RuangName)}</td>
+                    <td>${escapeHtml(item.Peminjam)}</td>
+                    <td>${formatDate(item.CreatedAt)}</td>
+                    <td>
+                        ${item.type === 'Ruang' ? `<button class="btn btn-success btn-sm" onclick="approveRuang(${item.ID})">✅ Approve</button>` : `<button class="btn btn-success btn-sm" onclick="approveInventaris(${item.ID})">✅ Approve</button>`}
+                    </td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // ============================================================
+        // CRUD OPERATIONS
+        // ============================================================
+        function openModal(type, editData = null) {
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modalTitle');
+            const fields = document.getElementById('modalFields');
+            
+            const isEdit = editData !== null;
+            title.textContent = isEdit ? `Edit ${type}` : `Tambah ${type}`;
+            
+            let html = '';
+            if (type === 'ruang') {
+                html += `
+                    <input type="hidden" id="field_id" value="${isEdit ? editData.ID : ''}">
+                    <div class="form-group">
+                        <label>Nama Ruang</label>
+                        <input type="text" id="field_nama" value="${isEdit ? escapeHtml(editData.Nama) : ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kapasitas</label>
+                        <input type="number" id="field_kapasitas" value="${isEdit ? editData.Kapasitas : ''}">
+                    </div>
+                `;
+            } else if (type === 'inventaris') {
+                html += `
+                    <input type="hidden" id="field_id" value="${isEdit ? editData.ID : ''}">
+                    <div class="form-group">
+                        <label>Nama Item</label>
+                        <input type="text" id="field_nama" value="${isEdit ? escapeHtml(editData.Nama) : ''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Stok</label>
+                        <input type="number" id="field_stok" value="${isEdit ? editData.Stok : 0}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="field_status">
+                            <option value="tersedia" ${isEdit && editData.Status === 'tersedia' ? 'selected' : ''}>Tersedia</option>
+                            <option value="tidak_tersedia" ${isEdit && editData.Status === 'tidak_tersedia' ? 'selected' : ''}>Tidak Tersedia</option>
+                        </select>
+                    </div>
+                `;
+            }
+            
+            fields.innerHTML = html;
+            modal.classList.add('active');
+            
+            // Store current operation
+            modal.dataset.type = type;
+            modal.dataset.edit = isEdit ? 'true' : 'false';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        document.getElementById('modalForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const modal = document.getElementById('modal');
+            const type = modal.dataset.type;
+            const isEdit = modal.dataset.edit === 'true';
+            
+            try {
+                const data = {
+                    ID: parseInt(document.getElementById('field_id').value) || 0,
+                    Nama: document.getElementById('field_nama').value.trim()
+                };
+                
+                if (type === 'ruang') {
+                    data.Kapasitas = parseInt(document.getElementById('field_kapasitas').value) || 0;
+                } else if (type === 'inventaris') {
+                    data.Stok = parseInt(document.getElementById('field_stok').value) || 0;
+                    data.Status = document.getElementById('field_status').value;
+                }
+                
+                let result;
+                if (isEdit) {
+                    result = await API.update(type === 'ruang' ? 'MasterRuang' : 'MasterInventaris', data);
+                } else {
+                    result = await API.add(type === 'ruang' ? 'MasterRuang' : 'MasterInventaris', data);
+                }
+                
+                if (result.status === 'success') {
+                    closeModal();
+                    await loadAllData();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        async function deleteData(type, id) {
+            if (!confirm(`Yakin ingin menghapus data ini?`)) return;
+            
+            try {
+                const sheetName = type === 'ruang' ? 'MasterRuang' : 'MasterInventaris';
+                const result = await API.delete(sheetName, id);
+                if (result.status === 'success') {
+                    await loadAllData();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        function editData(type, id) {
+            const data = type === 'ruang' ? dataCache.ruang : dataCache.inventaris;
+            const item = data.find(d => d.ID === id);
+            if (item) {
+                openModal(type, item);
+            }
+        }
+
+        // ============================================================
+        // APPROVE & RETURN OPERATIONS
+        // ============================================================
+        async function approveRuang(id) {
+            if (!confirm('Setujui peminjaman ruang ini?')) return;
+            try {
+                const result = await API.approveRuang({ ID: id });
+                if (result.status === 'success') {
+                    await loadAllData();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function approveInventaris(id) {
+            if (!confirm('Setujui peminjaman inventaris ini?')) return;
+            try {
+                const result = await API.approveInventaris({ ID: id });
+                if (result.status === 'success') {
+                    await loadAllData();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function returnInventaris(id) {
+            if (!confirm('Konfirmasi pengembalian inventaris?')) return;
+            try {
+                const result = await API.returnInventaris({ ID: id });
+                if (result.status === 'success') {
+                    await loadAllData();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // ============================================================
+        // UI NAVIGATION
+        // ============================================================
+        document.querySelectorAll('.menu-item[data-tab]').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+                this.classList.add('active');
+                
+                const tab = this.dataset.tab;
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.getElementById('tab-' + tab).classList.add('active');
+                
+                const titles = {
+                    'dashboard': 'Dashboard',
+                    'ruang': '🏢 Ruang Lab',
+                    'inventaris': '📦 Item Inventaris',
+                    'peminjaman_ruang': '📅 Peminjaman Ruang',
+                    'peminjaman_inventaris': '🛠️ Peminjaman Inventaris',
+                    'menunggu': '⏳ Menunggu Approve'
+                };
+                document.getElementById('pageTitle').textContent = titles[tab] || tab;
+            });
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Yakin ingin logout?')) {
+                sessionStorage.removeItem('user');
+                window.location.href = 'login.html';
+            }
+        });
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        document.getElementById('userName').textContent = currentUser.name || 'Admin';
+        loadAllData();
+
+        // Refresh data every 30 seconds
+        setInterval(loadAllData, 30000);
+    </script>
+</body>
+</html>
