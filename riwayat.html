@@ -550,33 +550,42 @@ function updateTotalLabel() {
 // FILTER FUNCTIONS
 // ============================================================
 function applyFilter() {
-    const tglMulai = document.getElementById('filterTglMulai').value;
-    const tglSelesai = document.getElementById('filterTglSelesai').value;
-    const status = document.getElementById('filterStatus').value;
-    const jenis = document.getElementById('filterJenis').value;
-    const search = document.getElementById('filterSearch').value.toLowerCase().trim();
+    var tglMulai = document.getElementById('filterTglMulai').value;
+    var tglSelesai = document.getElementById('filterTglSelesai').value;
+    var status = document.getElementById('filterStatus').value;
+    var jenis = document.getElementById('filterJenis').value;
+    var search = document.getElementById('filterSearch').value.toLowerCase().trim();
     
-    filteredData = allData.filter(item => {
+    filteredData = allData.filter(function(item) {
+        // Filter status
         if (status !== 'ALL' && item.status !== status) return false;
+        
+        // Filter jenis
         if (jenis !== 'ALL' && item.type !== jenis) return false;
         
+        // Filter tanggal mulai
         if (tglMulai) {
-            const tgl = new Date(item.tanggal_pinjam);
-            const mulai = new Date(tglMulai);
+            var tgl = new Date(item.tanggal_pinjam);
+            var mulai = new Date(tglMulai);
             mulai.setHours(0, 0, 0, 0);
             if (tgl < mulai) return false;
         }
+        
+        // Filter tanggal selesai
         if (tglSelesai) {
-            const tgl = new Date(item.tanggal_pinjam);
-            const selesai = new Date(tglSelesai);
+            var tgl2 = new Date(item.tanggal_pinjam);
+            var selesai = new Date(tglSelesai);
             selesai.setHours(23, 59, 59, 999);
-            if (tgl > selesai) return false;
+            if (tgl2 > selesai) return false;
         }
         
+        // 🔍 Filter pencarian - jika search kosong, lewati filter ini
         if (search) {
-            const peminjam = (item.peminjam || '').toLowerCase();
-            const itemName = (item.nama_ruang || item.nama_item || '').toLowerCase();
-            if (!peminjam.includes(search) && !itemName.includes(search)) return false;
+            var peminjam = (item.peminjam || '').toLowerCase();
+            var itemName = (item.nama_ruang || item.nama_item || '').toLowerCase();
+            if (!peminjam.includes(search) && !itemName.includes(search)) {
+                return false;
+            }
         }
         
         return true;
@@ -585,7 +594,7 @@ function applyFilter() {
     renderRiwayat();
     updateStats();
     updateTotalLabel();
-    showNotification(`✅ Menampilkan ${filteredData.length} data`, 'success');
+    showNotification('✅ Menampilkan ' + filteredData.length + ' data', 'success');
 }
 
 function resetFilter() {
@@ -593,9 +602,9 @@ function resetFilter() {
     document.getElementById('filterTglSelesai').value = '';
     document.getElementById('filterStatus').value = 'ALL';
     document.getElementById('filterJenis').value = 'ALL';
-    document.getElementById('filterSearch').value = '';
+    document.getElementById('filterSearch').value = ''; // ← Harus ada ini
     
-    filteredData = [...allData];
+    filteredData = allData.slice(); // ← Semua data
     renderRiwayat();
     updateStats();
     updateTotalLabel();
