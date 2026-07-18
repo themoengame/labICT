@@ -1203,163 +1203,169 @@
                 masterInventarisList.innerHTML = html;
             }
 
-            // ============================================================
-            // RENDER RUANG TABLE
-            // ============================================================
-            function renderRuangTable() {
-                if (!peminjamanRuang || !peminjamanRuang.length) {
-                    ruangTableBody.innerHTML =
-                        `<tr><td colspan="6" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman ruang</td></tr>`;
-                    totalPinjamRuang.textContent = 'Total: 0';
-                    return;
-                }
+// ============================================================
+// RENDER RUANG TABLE (20 TERAKHIR)
+// ============================================================
+function renderRuangTable() {
+    // Ambil 20 data terakhir berdasarkan timestamp
+    const last20 = getLast20(peminjamanRuang, 'timestamp');
+    
+    if (!last20 || !last20.length) {
+        ruangTableBody.innerHTML =
+            `<tr><td colspan="6" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman ruang</td></tr>`;
+        totalPinjamRuang.textContent = 'Total: ' + peminjamanRuang.length + ' (20 terakhir)';
+        return;
+    }
 
-                let html = '';
-                let active = 0;
-                let pending = 0;
+    let html = '';
+    let active = 0;
+    let pending = 0;
 
-                const sorted = [...peminjamanRuang].sort((a, b) => {
-                    if (a.tanggal !== b.tanggal) return a.tanggal.localeCompare(b.tanggal);
-                    return a.jamMulai.localeCompare(b.jamMulai);
-                });
+    const sorted = [...last20].sort((a, b) => {
+        if (a.tanggal !== b.tanggal) return a.tanggal.localeCompare(b.tanggal);
+        return a.jamMulai.localeCompare(b.jamMulai);
+    });
 
-                sorted.forEach(p => {
-                    let statusClass = 'pending';
-                    let statusText = 'Menunggu';
-                    if (p.status === 'approved') { statusClass = 'approved';
-                        statusText = 'Disetujui';
-                        active++; }
-                    if (p.status === 'rejected') { statusClass = 'rejected';
-                        statusText = 'Ditolak'; }
-                    if (p.status === 'done') { statusClass = 'done';
-                        statusText = 'Selesai';
-                        active--; }
+    sorted.forEach(p => {
+        let statusClass = 'pending';
+        let statusText = 'Menunggu';
+        if (p.status === 'approved') { statusClass = 'approved';
+            statusText = 'Disetujui';
+            active++; }
+        if (p.status === 'rejected') { statusClass = 'rejected';
+            statusText = 'Ditolak'; }
+        if (p.status === 'done') { statusClass = 'done';
+            statusText = 'Selesai';
+            active--; }
 
-                    const jam = p.jamMulai + ' – ' + p.jamSelesai;
+        const jam = p.jamMulai + ' – ' + p.jamSelesai;
 
-                    let aksiHtml = '';
-                    if (isAdmin) {
-                        if (p.status === 'pending') {
-                            pending++;
-                            aksiHtml = `
-                                <i class="fas fa-check-circle" title="Approve" data-action="approve_ruang" data-id="${p.id}"></i>
-                                <i class="fas fa-times-circle" title="Tolak" data-action="reject" data-id="${p.id}"></i>
-                            `;
-                        } else if (p.status === 'approved') {
-                            aksiHtml = `
-                                <i class="fas fa-check-double" title="Selesaikan" data-action="done" data-id="${p.id}"></i>
-                                <i class="fas fa-times-circle" title="Batalkan" data-action="reject" data-id="${p.id}"></i>
-                            `;
-                        } else {
-                            aksiHtml = `
-                                <i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo" data-id="${p.id}"></i>
-                                <i class="fas fa-trash-alt" title="Hapus" data-action="delete" data-id="${p.id}"></i>
-                            `;
-                        }
-                    }
-
-                    html += `
-                        <tr>
-                            <td>${p.ruang}</td>
-                            <td>${p.peminjam}</td>
-                            <td>${p.tanggal}</td>
-                            <td>${jam}</td>
-                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                            <td class="admin-only">${aksiHtml}</td>
-                        </tr>
-                    `;
-                });
-
-                ruangTableBody.innerHTML = html;
-                totalPinjamRuang.textContent = 'Total: ' + peminjamanRuang.length;
-
-                if (isAdmin) {
-                    ruangTableBody.querySelectorAll('[data-action]').forEach(el => {
-                        el.addEventListener('click', function(e) {
-                            const action = this.dataset.action;
-                            const id = parseInt(this.dataset.id);
-                            handleRuangAction(action, id);
-                        });
-                    });
-                }
+        let aksiHtml = '';
+        if (isAdmin) {
+            if (p.status === 'pending') {
+                pending++;
+                aksiHtml = `
+                    <i class="fas fa-check-circle" title="Approve" data-action="approve_ruang" data-id="${p.id}"></i>
+                    <i class="fas fa-times-circle" title="Tolak" data-action="reject" data-id="${p.id}"></i>
+                `;
+            } else if (p.status === 'approved') {
+                aksiHtml = `
+                    <i class="fas fa-check-double" title="Selesaikan" data-action="done" data-id="${p.id}"></i>
+                    <i class="fas fa-times-circle" title="Batalkan" data-action="reject" data-id="${p.id}"></i>
+                `;
+            } else {
+                aksiHtml = `
+                    <i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo" data-id="${p.id}"></i>
+                    <i class="fas fa-trash-alt" title="Hapus" data-action="delete" data-id="${p.id}"></i>
+                `;
             }
+        }
 
-            // ============================================================
-            // RENDER INVENTARIS TABLE
-            // ============================================================
-            function renderInventarisTable() {
-                if (!peminjamanInventaris || !peminjamanInventaris.length) {
-                    invTableBody.innerHTML =
-                        `<tr><td colspan="7" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman inventaris</td></tr>`;
-                    totalPinjamInv.textContent = 'Total: 0';
-                    return;
-                }
+        html += `
+            <tr>
+                <td>${p.ruang}</td>
+                <td>${p.peminjam}</td>
+                <td>${p.tanggal}</td>
+                <td>${jam}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td class="admin-only">${aksiHtml}</td>
+            </tr>
+        `;
+    });
 
-                let html = '';
-                let pending = 0;
+    ruangTableBody.innerHTML = html;
+    totalPinjamRuang.textContent = 'Total: ' + peminjamanRuang.length + ' (20 terakhir)';
 
-                const sorted = [...peminjamanInventaris].sort((a, b) => {
-                    return a.tanggal_pinjam.localeCompare(b.tanggal_pinjam);
-                });
+    if (isAdmin) {
+        ruangTableBody.querySelectorAll('[data-action]').forEach(el => {
+            el.addEventListener('click', function(e) {
+                const action = this.dataset.action;
+                const id = parseInt(this.dataset.id);
+                handleRuangAction(action, id);
+            });
+        });
+    }
+}
 
-                sorted.forEach(p => {
-                    let statusClass = 'pending';
-                    let statusText = 'Menunggu';
-                    if (p.status === 'approved') { statusClass = 'approved';
-                        statusText = 'Disetujui'; }
-                    if (p.status === 'rejected') { statusClass = 'rejected';
-                        statusText = 'Ditolak'; }
-                    if (p.status === 'done') { statusClass = 'done';
-                        statusText = 'Dikembalikan'; }
+// ============================================================
+// RENDER INVENTARIS TABLE (20 TERAKHIR)
+// ============================================================
+function renderInventarisTable() {
+    // Ambil 20 data terakhir berdasarkan timestamp
+    const last20 = getLast20(peminjamanInventaris, 'timestamp');
+    
+    if (!last20 || !last20.length) {
+        invTableBody.innerHTML =
+            `<tr><td colspan="7" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman inventaris</td></tr>`;
+        totalPinjamInv.textContent = 'Total: ' + peminjamanInventaris.length + ' (20 terakhir)';
+        return;
+    }
 
-                    let aksiHtml = '';
-                    if (isAdmin) {
-                        if (p.status === 'pending') {
-                            pending++;
-                            aksiHtml = `
-                                <i class="fas fa-check-circle" title="Setujui" data-action="approve_inventaris" data-id="${p.id}"></i>
-                                <i class="fas fa-times-circle" title="Tolak" data-action="reject_inventaris" data-id="${p.id}"></i>
-                            `;
-                        } else if (p.status === 'approved') {
-                            aksiHtml = `
-                                <i class="fas fa-arrow-left" title="Kembalikan" data-action="return_inventaris" data-id="${p.id}"></i>
-                                <i class="fas fa-times-circle" title="Batalkan" data-action="reject_inventaris" data-id="${p.id}"></i>
-                            `;
-                        } else {
-                            aksiHtml = `
-                                <i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo_inventaris" data-id="${p.id}"></i>
-                                <i class="fas fa-trash-alt" title="Hapus" data-action="delete_inventaris" data-id="${p.id}"></i>
-                            `;
-                        }
-                    }
+    let html = '';
+    let pending = 0;
 
-                    html += `
-                        <tr>
-                            <td>${p.nama_item}</td>
-                            <td>${p.peminjam}</td>
-                            <td>${p.jumlah}</td>
-                            <td>${p.tanggal_pinjam}</td>
-                            <td>${p.tanggal_kembali || '-'}</td>
-                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                            <td class="admin-only">${aksiHtml}</td>
-                        </tr>
-                    `;
-                });
+    const sorted = [...last20].sort((a, b) => {
+        return a.tanggal_pinjam.localeCompare(b.tanggal_pinjam);
+    });
 
-                invTableBody.innerHTML = html;
-                totalPinjamInv.textContent = 'Total: ' + peminjamanInventaris.length;
-                if (pendingCount) pendingCount.textContent = pending;
+    sorted.forEach(p => {
+        let statusClass = 'pending';
+        let statusText = 'Menunggu';
+        if (p.status === 'approved') { statusClass = 'approved';
+            statusText = 'Disetujui'; }
+        if (p.status === 'rejected') { statusClass = 'rejected';
+            statusText = 'Ditolak'; }
+        if (p.status === 'done') { statusClass = 'done';
+            statusText = 'Dikembalikan'; }
 
-                if (isAdmin) {
-                    invTableBody.querySelectorAll('[data-action]').forEach(el => {
-                        el.addEventListener('click', function(e) {
-                            const action = this.dataset.action;
-                            const id = parseInt(this.dataset.id);
-                            handleInventarisAction(action, id);
-                        });
-                    });
-                }
+        let aksiHtml = '';
+        if (isAdmin) {
+            if (p.status === 'pending') {
+                pending++;
+                aksiHtml = `
+                    <i class="fas fa-check-circle" title="Setujui" data-action="approve_inventaris" data-id="${p.id}"></i>
+                    <i class="fas fa-times-circle" title="Tolak" data-action="reject_inventaris" data-id="${p.id}"></i>
+                `;
+            } else if (p.status === 'approved') {
+                aksiHtml = `
+                    <i class="fas fa-arrow-left" title="Kembalikan" data-action="return_inventaris" data-id="${p.id}"></i>
+                    <i class="fas fa-times-circle" title="Batalkan" data-action="reject_inventaris" data-id="${p.id}"></i>
+                `;
+            } else {
+                aksiHtml = `
+                    <i class="fas fa-undo" title="Kembalikan ke pending" data-action="undo_inventaris" data-id="${p.id}"></i>
+                    <i class="fas fa-trash-alt" title="Hapus" data-action="delete_inventaris" data-id="${p.id}"></i>
+                `;
             }
+        }
+
+        html += `
+            <tr>
+                <td>${p.nama_item}</td>
+                <td>${p.peminjam}</td>
+                <td>${p.jumlah}</td>
+                <td>${p.tanggal_pinjam}</td>
+                <td>${p.tanggal_kembali || '-'}</td>
+                <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                <td class="admin-only">${aksiHtml}</td>
+            </tr>
+        `;
+    });
+
+    invTableBody.innerHTML = html;
+    totalPinjamInv.textContent = 'Total: ' + peminjamanInventaris.length + ' (20 terakhir)';
+    if (pendingCount) pendingCount.textContent = pending;
+
+    if (isAdmin) {
+        invTableBody.querySelectorAll('[data-action]').forEach(el => {
+            el.addEventListener('click', function(e) {
+                const action = this.dataset.action;
+                const id = parseInt(this.dataset.id);
+                handleInventarisAction(action, id);
+            });
+        });
+    }
+}
 
             // ============================================================
             // RENDER USERS TABLE
