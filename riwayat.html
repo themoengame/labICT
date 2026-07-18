@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Peminjaman - LAB ICT SMAN 1 Malang</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, 'Segoe UI', sans-serif; }
+        body { background: #eef2f5; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        .header {
+            background: white;
+            border-radius: 24px;
+            padding: 20px 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .header h1 { font-size: 1.4rem; color: #1a2a3a; }
+        .header h1 span { color: #2c7da0; }
+        .header .right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .btn-back { background: #6b7a8a; color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-weight: 600; text-decoration: none; }
+        .btn-back:hover { background: #5a6a7a; }
+        
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .card h2 { font-size: 1.2rem; color: #1a2a3a; }
+        
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+            padding: 16px 18px;
+            background: #f8fafc;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 130px;
+        }
+        .filter-group label {
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #4a5a6a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .filter-group select, .filter-group input {
+            padding: 8px 14px;
+            border: 1.5px solid #dde4ec;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #2c7da0;
+        }
+        .filter-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .btn { padding: 8px 20px; border: none; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
+        .btn-primary { background: #2c7da0; color: white; }
+        .btn-primary:hover { background: #1a6a8a; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-success:hover { background: #1e8449; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-danger:hover { background: #c0392b; }
+        .btn-warning { background: #f39c12; color: white; }
+        .btn-warning:hover { background: #d68910; }
+        .btn-secondary { background: #dde4ec; color: #4a5a6a; }
+        .btn-secondary:hover { background: #c8d1db; }
+        .btn-sm { padding: 4px 14px; font-size: 0.75rem; }
+        
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #eef2f5; }
+        th { background: #f8fafc; font-weight: 600; color: #4a5a6a; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { font-size: 0.9rem; }
+        .text-center { text-align: center; }
+        .text-muted { color: #8a9aa8; }
+        
+        .status-badge { padding: 3px 12px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
+        .status-completed { background: #e8f5e9; color: #2e7d32; }
+        .status-returned { background: #e3f2fd; color: #0d47a1; }
+        .status-rejected { background: #ffebee; color: #c62828; }
+        
+        .stats-riwayat {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .stat-item {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-item .number { font-size: 1.4rem; font-weight: 700; color: #1a2a3a; }
+        .stat-item .label { font-size: 0.7rem; color: #6b7a8a; text-transform: uppercase; }
+        
+        .notification {
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .notification.success { background: #e8f5e9; color: #2e7d32; display: block; }
+        .notification.error { background: #ffebee; color: #c62828; display: block; }
+        .notification.info { background: #e3f2fd; color: #0d47a1; display: block; }
+        
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .loading-overlay.active { display: flex; }
+        .loading-box {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 50px;
+            text-align: center;
+            min-width: 280px;
+        }
+        .loading-spinner {
+            border: 4px solid #eef2f5;
+            border-top: 4px solid #2c7da0;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-box p { color: #4a5a6a; font-size: 0.95rem; }
+        .loading-box .sub { color: #8a9aa8; font-size: 0.8rem; margin-top: 4px; }
+        
+        .note-cell {
+            max-width: 200px;
+            white-space: normal;
+            word-wrap: break-word;
+            font-size: 0.8rem;
+            color: #4a5a6a;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-bar { flex-direction: column; align-items: stretch; }
+            .filter-actions { flex-wrap: wrap; }
+            .filter-actions .btn { flex: 1; min-width: 100px; }
+        }
+        
+        @media print {
+            .header, .filter-bar, .btn, .no-print { display: none !important; }
+            .card { box-shadow: none !important; border: 1px solid #ddd; }
+            body { background: white !important; padding: 10px !important; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-box">
+        <div class="loading-spinner"></div>
+        <p id="loadingText">⏳ Memuat riwayat...</p>
+        <p class="sub" id="loadingSub">Mohon tunggu sebentar</p>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>📜 Riwayat <span>Peminjaman</span> · LAB ICT SMAN 1 Malang</h1>
+        <div class="right">
+            <a href="dashboard.html" class="btn-back">← Kembali ke Dashboard</a>
+            <button class="btn btn-success" onclick="exportExcel()">📊 Export Excel</button>
+            <button class="btn btn-danger" onclick="exportPDF()">📄 Export PDF</button>
+        </div>
+    </div>
+
+    <!-- CARD RIWAYAT -->
+    <div class="card">
+        <div class="card-header">
+            <h2>📋 Riwayat Peminjaman</h2>
+            <span id="totalDataLabel" style="font-size:0.85rem;color:#6b7a8a;">Total: 0 data</span>
+        </div>
+
+        <div id="notification" class="notification"></div>
+
+        <!-- FILTER -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label>📅 Tanggal Mulai</label>
+                <input type="date" id="filterTglMulai">
+            </div>
+            <div class="filter-group">
+                <label>📅 Tanggal Selesai</label>
+                <input type="date" id="filterTglSelesai">
+            </div>
+            <div class="filter-group">
+                <label>🏷️ Status</label>
+                <select id="filterStatus">
+                    <option value="ALL">Semua Status</option>
+                    <option value="completed">✅ Selesai</option>
+                    <option value="returned">↩️ Dikembalikan</option>
+                    <option value="rejected">❌ Ditolak</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>📦 Jenis</label>
+                <select id="filterJenis">
+                    <option value="ALL">Semua Jenis</option>
+                    <option value="Ruang">🏢 Ruang</option>
+                    <option value="Inventaris">📦 Inventaris</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>🔍 Cari</label>
+                <input type="text" id="filterSearch" placeholder="Nama peminjam...">
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-primary" onclick="applyFilter()">🔍 Tampilkan</button>
+                <button class="btn btn-secondary" onclick="resetFilter()">↺ Reset</button>
+            </div>
+        </div>
+
+        <!-- STATS RIWAYAT -->
+        <div class="stats-riwayat" id="statsRiwayat">
+            <div class="stat-item"><div class="number" id="statTotal">0</div><div class="label">Total Riwayat</div></div>
+            <div class="stat-item" style="background:#e8f5e9;"><div class="number" id="statCompleted">0</div><div class="label">✅ Selesai</div></div>
+            <div class="stat-item" style="background:#e3f2fd;"><div class="number" id="statReturned">0</div><div class="label">↩️ Dikembalikan</div></div>
+            <div class="stat-item" style="background:#ffebee;"><div class="number" id="statRejected">0</div><div class="label">❌ Ditolak</div></div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-wrapper">
+            <table id="riwayatTable">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>ID</th>
+                        <th>Jenis</th>
+                        <th>Item/Ruang</th>
+                        <th>Peminjam</th>
+                        <th>Jumlah</th>
+                        <th>Tanggal Pinjam</th>
+                        <th>Jam</th>
+                        <th>Status</th>
+                        <th>Catatan</th>
+                    </tr>
+                </thead>
+                <tbody id="riwayatTableBody">
+                    <tr><td colspan="10" class="text-center text-muted">⏳ Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ============================================================
+// KONFIGURASI
+// ============================================================
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec";
+
+// ============================================================
+// CEK SESSION
+// ============================================================
+(function checkAuth() {
+    const userData = sessionStorage.getItem('user');
+    if (!userData) {
+        window.location.href = 'login.html?redirect=riwayat.html';
+        return;
+    }
+    try {
+        const user = JSON.parse(userData);
+        if (!user.name) {
+            window.location.href = 'login.html?redirect=riwayat.html';
+        }
+    } catch (e) {
+        window.location.href = 'login.html?redirect=riwayat.html';
+    }
+})();
+
+// ============================================================
+// FORMAT TANGGAL & JAM
+// ============================================================
+function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return '-';
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = months[d.getMonth()];
+        const year = d.getFullYear();
+        return `${day} ${month} ${year}`;
+    } catch { return '-'; }
+}
+
+function formatTime(timeStr) {
+    if (!timeStr) return '-';
+    if (timeStr.match(/^\d{1,2}:\d{2}$/)) {
+        const parts = timeStr.split(':');
+        const hours = String(parseInt(parts[0])).padStart(2, '0');
+        return `${hours}:${parts[1]}`;
+    }
+    if (timeStr.match(/^\d{1,2}:\d{2}:\d{2}$/)) {
+        const parts = timeStr.split(':');
+        const hours = String(parseInt(parts[0])).padStart(2, '0');
+        return `${hours}:${parts[1]}`;
+    }
+    try {
+        const d = new Date(timeStr);
+        if (!isNaN(d.getTime())) {
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+    } catch {}
+    return timeStr;
+}
+
+function getStatusBadge(status) {
+    const map = {
+        'completed': ['status-completed', '✅ Selesai'],
+        'returned': ['status-returned', '↩️ Dikembalikan'],
+        'rejected': ['status-rejected', '❌ Ditolak']
+    };
+    const [cls, label] = map[status] || ['status-completed', status];
+    return `<span class="status-badge ${cls}">${label}</span>`;
+}
+
+function getStatusText(status) {
+    const map = {
+        'completed': 'Selesai',
+        'returned': 'Dikembalikan',
+        'rejected': 'Ditolak'
+    };
+    return map[status] || status;
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        if (m === '"') return '&quot;';
+        return m;
+    });
+}
+
+function showNotification(message, type = 'info') {
+    const el = document.getElementById('notification');
+    el.textContent = message;
+    el.className = 'notification ' + type;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+// ============================================================
+// LOADING
+// ============================================================
+function showLoading(text = '⏳ Memuat riwayat...', sub = 'Mohon tunggu sebentar') {
+    document.getElementById('loadingText').textContent = text;
+    document.getElementById('loadingSub').textContent = sub;
+    document.getElementById('loadingOverlay').classList.add('active');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
+
+// ============================================================
+// JSONP HELPER
+// ============================================================
+function jsonpRequest(url, params = {}, timeout = 30000) {
+    return new Promise((resolve, reject) => {
+        const callbackName = 'jsonp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+        const script = document.createElement('script');
+        
+        const timer = setTimeout(() => {
+            cleanup();
+            reject(new Error('Request timeout'));
+        }, timeout);
+        
+        function cleanup() {
+            clearTimeout(timer);
+            delete window[callbackName];
+            if (script.parentNode) script.parentNode.removeChild(script);
+        }
+        
+        window[callbackName] = function(data) {
+            cleanup();
+            resolve(data);
+        };
+        
+        script.onerror = function() {
+            cleanup();
+            reject(new Error('Network error'));
+        };
+        
+        const urlParams = new URLSearchParams(params);
+        urlParams.append('callback', callbackName);
+        urlParams.append('_t', Date.now());
+        
+        script.src = url + '?' + urlParams.toString();
+        document.head.appendChild(script);
+    });
+}
+
+// ============================================================
+// API WRAPPER
+// ============================================================
+const API = {
+    call(action, params = {}) {
+        return jsonpRequest(SCRIPT_URL, { action, ...params });
+    },
+    getRiwayat() { return this.call('get_riwayat'); }
+};
+
+// ============================================================
+// STATE
+// ============================================================
+let allData = [];
+let filteredData = [];
+
+// ============================================================
+// LOAD DATA
+// ============================================================
+async function loadRiwayat() {
+    showLoading('⏳ Memuat riwayat...', 'Mengambil data dari server');
+    
+    try {
+        const result = await API.getRiwayat();
+        if (result.status === 'success') {
+            allData = result.data || [];
+            filteredData = [...allData];
+            renderRiwayat();
+            updateStats();
+            updateTotalLabel();
+            hideLoading();
+        } else {
+            hideLoading();
+            showNotification('❌ Gagal memuat data: ' + result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        hideLoading();
+        showNotification('❌ Gagal terhubung ke server: ' + error.message, 'error');
+    }
+}
+
+// ============================================================
+// RENDER RIWAYAT
+// ============================================================
+function renderRiwayat() {
+    const tbody = document.getElementById('riwayatTableBody');
+    const data = filteredData;
+    
+    if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted">Tidak ada riwayat peminjaman</td></tr>';
+        return;
+    }
+    
+    let html = '';
+    data.forEach((item, index) => {
+        const itemName = item.nama_ruang || item.nama_item || '-';
+        const jamMulai = formatTime(item.jam_mulai);
+        const jamSelesai = formatTime(item.jam_selesai);
+        const jam = (jamMulai !== '-' && jamSelesai !== '-') ? `${jamMulai} - ${jamSelesai}` : '-';
+        const catatan = item.catatan || item.keperluan || '-';
+        
+        html += `<tr>
+            <td>${index + 1}</td>
+            <td>${item.id}</td>
+            <td>${item.type === 'Ruang' ? '🏢 Ruang' : '📦 Inventaris'}</td>
+            <td>${escapeHtml(itemName)}</td>
+            <td>${escapeHtml(item.peminjam || '-')}</td>
+            <td>${item.jumlah || '-'}</td>
+            <td>${formatDate(item.tanggal_pinjam)}</td>
+            <td>${jam}</td>
+            <td>${getStatusBadge(item.status)}</td>
+            <td class="note-cell">${escapeHtml(catatan)}</td>
+        </tr>`;
+    });
+    tbody.innerHTML = html;
+}
+
+// ============================================================
+// UPDATE STATS
+// ============================================================
+function updateStats() {
+    const data = filteredData;
+    const total = data.length;
+    const completed = data.filter(d => d.status === 'completed').length;
+    const returned = data.filter(d => d.status === 'returned').length;
+    const rejected = data.filter(d => d.status === 'rejected').length;
+    
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statCompleted').textContent = completed;
+    document.getElementById('statReturned').textContent = returned;
+    document.getElementById('statRejected').textContent = rejected;
+}
+
+function updateTotalLabel() {
+    document.getElementById('totalDataLabel').textContent = `Total: ${filteredData.length} data`;
+}
+
+// ============================================================
+// FILTER FUNCTIONS
+// ============================================================
+function applyFilter() {
+    const tglMulai = document.getElementById('filterTglMulai').value;
+    const tglSelesai = document.getElementById('filterTglSelesai').value;
+    const status = document.getElementById('filterStatus').value;
+    const jenis = document.getElementById('filterJenis').value;
+    const search = document.getElementById('filterSearch').value.toLowerCase().trim();
+    
+    filteredData = allData.filter(item => {
+        if (status !== 'ALL' && item.status !== status) return false;
+        if (jenis !== 'ALL' && item.type !== jenis) return false;
+        
+        if (tglMulai) {
+            const tgl = new Date(item.tanggal_pinjam);
+            const mulai = new Date(tglMulai);
+            mulai.setHours(0, 0, 0, 0);
+            if (tgl < mulai) return false;
+        }
+        if (tglSelesai) {
+            const tgl = new Date(item.tanggal_pinjam);
+            const selesai = new Date(tglSelesai);
+            selesai.setHours(23, 59, 59, 999);
+            if (tgl > selesai) return false;
+        }
+        
+        if (search) {
+            const peminjam = (item.peminjam || '').toLowerCase();
+            const itemName = (item.nama_ruang || item.nama_item || '').toLowerCase();
+            if (!peminjam.includes(search) && !itemName.includes(search)) return false;
+        }
+        
+        return true;
+    });
+    
+    renderRiwayat();
+    updateStats();
+    updateTotalLabel();
+    showNotification(`✅ Menampilkan ${filteredData.length} data`, 'success');
+}
+
+function resetFilter() {
+    document.getElementById('filterTglMulai').value = '';
+    document.getElementById('filterTglSelesai').value = '';
+    document.getElementById('filterStatus').value = 'ALL';
+    document.getElementById('filterJenis').value = 'ALL';
+    document.getElementById('filterSearch').value = '';
+    
+    filteredData = [...allData];
+    renderRiwayat();
+    updateStats();
+    updateTotalLabel();
+    showNotification('✅ Filter direset', 'info');
+}
+
+// ============================================================
+// EXPORT FUNCTIONS
+// ============================================================
+
+function exportExcel() {
+    const data = filteredData;
+    if (!data || data.length === 0) {
+        showNotification('❌ Tidak ada data untuk diexport', 'error');
+        return;
+    }
+    
+    showLoading('📊 Generating Excel...', 'Mohon tunggu sebentar');
+    
+    try {
+        let csv = 'No,ID,Jenis,Item/Ruang,Peminjam,Jumlah,Tanggal Pinjam,Jam Mulai,Jam Selesai,Status,Catatan\n';
+        
+        data.forEach((item, index) => {
+            const itemName = item.nama_ruang || item.nama_item || '-';
+            const jamMulai = formatTime(item.jam_mulai);
+            const jamSelesai = formatTime(item.jam_selesai);
+            const catatan = item.catatan || item.keperluan || '-';
+            
+            csv += `${index + 1},${item.id},${item.type},${itemName},${item.peminjam || '-'},${item.jumlah || '-'},${formatDate(item.tanggal_pinjam)},${jamMulai},${jamSelesai},${getStatusText(item.status)},${catatan}\n`;
+        });
+        
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `riwayat_peminjaman_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        hideLoading();
+        showNotification('✅ Excel berhasil diexport', 'success');
+    } catch (error) {
+        hideLoading();
+        showNotification('❌ Gagal export Excel: ' + error.message, 'error');
+    }
+}
+
+function exportPDF() {
+    const data = filteredData;
+    if (!data || data.length === 0) {
+        showNotification('❌ Tidak ada data untuk diexport', 'error');
+        return;
+    }
+    
+    showLoading('📄 Generating PDF...', 'Mohon tunggu sebentar');
+    
+    try {
+        const printWindow = window.open('', '_blank', 'width=1200,height=800');
+        if (!printWindow) {
+            showNotification('❌ Popup diblokir. Izinkan popup.', 'error');
+            hideLoading();
+            return;
+        }
+        
+        const date = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        const time = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        
+        let tableRows = '';
+        data.forEach((item, index) => {
+            const itemName = item.nama_ruang || item.nama_item || '-';
+            const jamMulai = formatTime(item.jam_mulai);
+            const jamSelesai = formatTime(item.jam_selesai);
+            const jam = (jamMulai !== '-' && jamSelesai !== '-') ? `${jamMulai} - ${jamSelesai}` : '-';
+            const catatan = item.catatan || item.keperluan || '-';
+            
+            tableRows += `
+                <tr>
+                    <td style="text-align:center;">${index + 1}</td>
+                    <td style="text-align:center;">${item.id}</td>
+                    <td>${item.type}</td>
+                    <td>${escapeHtml(itemName)}</td>
+                    <td>${escapeHtml(item.peminjam || '-')}</td>
+                    <td style="text-align:center;">${item.jumlah || '-'}</td>
+                    <td style="text-align:center;">${formatDate(item.tanggal_pinjam)}</td>
+                    <td style="text-align:center;">${jam}</td>
+                    <td style="text-align:center;">${getStatusText(item.status)}</td>
+                    <td>${escapeHtml(catatan)}</td>
+                </tr>
+            `;
+        });
+        
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Riwayat Peminjaman LAB ICT</title>
+                <style>
+                    * { font-family: system-ui, 'Segoe UI', sans-serif; }
+                    body { padding: 30px; }
+                    h1 { text-align: center; color: #1a2a3a; font-size: 20px; margin-bottom: 4px; }
+                    .sub { text-align: center; color: #6b7a8a; font-size: 14px; margin-bottom: 20px; }
+                    table { width: 100%; border-collapse: collapse; font-size: 10px; }
+                    th { background: #f0f2f5; padding: 6px; text-align: left; border: 1px solid #ddd; }
+                    td { padding: 5px; border: 1px solid #ddd; }
+                    .footer { text-align: center; color: #8a9aa8; font-size: 11px; margin-top: 20px; }
+                    .note-cell { max-width: 150px; word-wrap: break-word; }
+                </style>
+            </head>
+            <body>
+                <h1>📜 RIWAYAT PEMINJAMAN LAB ICT</h1>
+                <div class="sub">SMAN 1 Malang · Dicetak: ${date} ${time} | Total: ${data.length} data</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>ID</th>
+                            <th>Jenis</th>
+                            <th>Item/Ruang</th>
+                            <th>Peminjam</th>
+                            <th>Jumlah</th>
+                            <th>Tgl Pinjam</th>
+                            <th>Jam</th>
+                            <th>Status</th>
+                            <th>Catatan</th>
+                        </tr>
+                    </thead>
+                    <tbody>${tableRows}</tbody>
+                </table>
+                <div class="footer">
+                    Dicetak dari LAB ICT · SMAN 1 Malang
+                </div>
+            </body>
+            </html>
+        `;
+        
+        printWindow.document.write(html);
+        printWindow.document.close();
+        
+        setTimeout(() => {
+            printWindow.print();
+            hideLoading();
+        }, 500);
+        
+        printWindow.onafterprint = function() {
+            printWindow.close();
+        };
+        
+    } catch (error) {
+        hideLoading();
+        showNotification('❌ Gagal export PDF: ' + error.message, 'error');
+    }
+}
+
+// ============================================================
+// SET DEFAULT DATE
+// ============================================================
+function setDefaultDate() {
+    const today = new Date();
+    const monthAgo = new Date();
+    monthAgo.setMonth(monthAgo.getMonth() - 1);
+    document.getElementById('filterTglMulai').value = monthAgo.toISOString().slice(0, 10);
+    document.getElementById('filterTglSelesai').value = today.toISOString().slice(0, 10);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadRiwayat();
+</script>
+</body>
+</html>
