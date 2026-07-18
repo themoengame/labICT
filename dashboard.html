@@ -285,7 +285,6 @@
         <div class="stat-item"><div class="number" id="statInventaris">-</div><div class="label">📦 Inventaris</div></div>
         <div class="stat-item"><div class="number" id="statPeminjaman">-</div><div class="label">📋 Total Peminjaman</div></div>
         <div class="stat-item"><div class="number" id="statMenunggu">-</div><div class="label">⏳ Menunggu Approve</div></div>
-        <div class="stat-item"><div class="number" id="statUsers">-</div><div class="label">👤 Users</div></div>
     </div>
 
     <!-- NOTIFICATION -->
@@ -296,7 +295,6 @@
         <button class="tab-btn active" data-tab="peminjaman">📋 Peminjaman</button>
         <button class="tab-btn" data-tab="ruang">🏢 Ruang Lab</button>
         <button class="tab-btn" data-tab="inventaris">📦 Inventaris</button>
-        <button class="tab-btn" data-tab="users">👤 Users</button>
     </div>
 
     <!-- TAB: PEMINJAMAN -->
@@ -1243,7 +1241,7 @@ function logout() {
 loadAllData();
 
 // Auto refresh setiap 30 detik
-setInterval(loadAllData, 30000);
+setInterval(loadAllData, 120000);
 </script>
 </body>
 </html>
