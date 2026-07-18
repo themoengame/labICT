@@ -8,14 +8,9 @@
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
     <script src="jsonp.js"></script>
     <style>
-        /* ============================================================
-           STYLE - LAB ICT SMAN 1 Malang
-           ============================================================ */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
         body { background: #f0f4fa; min-height: 100vh; padding: 1.2rem; }
         .container { max-width: 1400px; margin: 0 auto; }
-
-        /* TOPBAR */
         .topbar {
             display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
             background: white; padding: 0.8rem 1.8rem; border-radius: 40px;
@@ -49,8 +44,6 @@
             text-decoration: none;
         }
         .btn-laporan:hover { background: #16703d; transform: scale(0.97); }
-
-        /* STATS */
         .stats-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 1rem; margin-bottom: 1.8rem;
@@ -62,8 +55,6 @@
         .stat-card i { font-size: 1.8rem; color: #2a7de1; width: 2.4rem; text-align: center; }
         .stat-info h4 { font-size: 0.75rem; color: #4d627a; font-weight: 500; }
         .stat-info .number { font-size: 1.4rem; font-weight: 700; color: #0b2b4a; }
-
-        /* TABS */
         .tabs {
             display: flex; flex-wrap: wrap; gap: 0.2rem;
             margin-bottom: 1.8rem; border-bottom: 2px solid #dce5ef; padding-bottom: 0.2rem;
@@ -79,8 +70,6 @@
         .panel { display: none; animation: fade 0.25s ease; }
         .panel.active { display: block; }
         @keyframes fade { 0% { opacity: 0.4; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(0); } }
-
-        /* CARDS */
         .card {
             background: white; border-radius: 28px; padding: 1.5rem 1.8rem 1.8rem;
             box-shadow: 0 6px 20px rgba(0,20,40,0.04); border: 1px solid #e4ecf5;
@@ -107,8 +96,6 @@
         .btn-primary.gray { background: #6b7f97; }
         .btn-primary.gray:hover { background: #55677d; }
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-
-        /* TABLES */
         .table-wrap { overflow-x: auto; border-radius: 16px; }
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         th {
@@ -125,7 +112,6 @@
         .status-badge.pending { background: #fff3d6; color: #a46b1a; }
         .status-badge.rejected { background: #fde8e8; color: #b13a3a; }
         .status-badge.done { background: #e9edf2; color: #4d5c6e; }
-
         .action-icons i {
             margin: 0 3px; cursor: pointer; transition: 0.15s;
             font-size: 0.95rem; padding: 4px; border-radius: 50%;
@@ -143,8 +129,6 @@
         .action-icons i.fa-trash-alt:hover { background: #fde8e8; }
         .action-icons i.fa-edit { color: #2a7de1; }
         .action-icons i.fa-edit:hover { background: #eaf1fb; }
-
-        /* FORMS */
         .form-row {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem; margin-bottom: 1rem;
@@ -160,28 +144,6 @@
             border-color: #2a7de1; box-shadow: 0 0 0 3px rgba(42,125,225,0.15);
         }
         .form-actions { display: flex; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap; }
-
-        /* ITEM GRID */
-        .item-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 1rem; margin-top: 0.5rem;
-        }
-        .item-card {
-            background: #f9fcff; border: 1px solid #e4ecf5; border-radius: 16px;
-            padding: 0.9rem 1rem; transition: 0.15s; position: relative;
-        }
-        .item-card:hover { background: #f2f8ff; border-color: #b8cfe0; }
-        .item-card .header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.3rem; }
-        .item-card .header i { font-size: 1.6rem; color: #3d7eb9; width: 2.2rem; text-align: center; }
-        .item-card .header .nama { font-weight: 600; color: #0b2b4a; font-size: 0.95rem; }
-        .item-card .detail { font-size: 0.8rem; color: #4d6a89; padding: 2px 0; }
-        .item-card .detail .label { color: #6b7f97; }
-        .item-card .item-actions { position: absolute; top: 4px; right: 4px; display: none; }
-        .item-card:hover .item-actions { display: block; }
-        .item-card .item-actions i { font-size: 0.8rem; color: #6b7f97; cursor: pointer; padding: 2px 4px; }
-        .item-card .item-actions i:hover { color: #1a5bb5; }
-
-        /* KALENDER */
         #calendar { max-width: 100%; margin: 0 auto; background: white; border-radius: 20px; padding: 0.5rem; }
         .fc .fc-button-primary { background: #1a5bb5; border-color: #1a5bb5; }
         .fc .fc-button-primary:hover { background: #134a94; border-color: #134a94; }
@@ -189,8 +151,6 @@
         .fc-event { cursor: pointer; }
         .fc-event .fc-event-title { font-size: 0.8rem; }
         .fc-daygrid-event { white-space: normal !important; }
-
-        /* MODAL */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
@@ -217,14 +177,10 @@
             transition: 0.2s;
         }
         .modal-actions .btn-outline:hover { background: #eef4fb; }
-
-        /* ADMIN ONLY */
         .admin-only { display: none !important; }
         body.admin-mode .admin-only { display: inline-flex !important; }
         body.admin-mode td.admin-only { display: table-cell !important; }
         body.admin-mode th.admin-only { display: table-cell !important; }
-
-        /* TOAST */
         .toast {
             position: fixed; bottom: 30px; right: 30px; background: #1a5bb5;
             color: white; padding: 1rem 1.8rem; border-radius: 40px;
@@ -235,8 +191,6 @@
         .toast.success { background: #1f8b4d; }
         .toast.warning { background: #d48c1a; }
         .toast.show { display: block; }
-
-        /* LOADING */
         .loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255,255,255,0.95); display: none;
@@ -261,13 +215,10 @@
             background: linear-gradient(90deg, #2a7de1, #1a5bb5);
             border-radius: 40px; transition: width 0.5s ease;
         }
-
         .footer-note {
             text-align: center; color: #6b7f97; font-size: 0.85rem;
             border-top: 1px solid #dce5ef; padding-top: 1.5rem; margin-top: 1rem;
         }
-
-        /* MASTER DATA */
         .master-badge { font-size: 0.7rem; background: #e9edf2; padding: 0.1rem 0.6rem; border-radius: 40px; color: #4d627a; margin-left: 0.5rem; }
         .master-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
         .master-box { background: #f9fcff; border-radius: 16px; padding: 1rem; border: 1px solid #e4ecf5; }
@@ -276,13 +227,11 @@
         .master-item { padding: 6px 0; border-bottom: 1px solid #eef4f8; font-size: 0.85rem; color: #4d627a; }
         .master-item strong { color: #0b2b4a; }
         .master-item .badge { font-size: 0.65rem; background: #e9edf2; padding: 0.05rem 0.5rem; border-radius: 40px; color: #4d627a; }
-
         .kategori-badge { font-size: 0.65rem; padding: 0.05rem 0.6rem; border-radius: 40px; display: inline-block; }
         .kategori-badge.komputer { background: #dff0d8; color: #1f6d3b; }
         .kategori-badge.furniture { background: #fff3d6; color: #a46b1a; }
         .kategori-badge.elektronik { background: #fde8e8; color: #b13a3a; }
         .kategori-badge.aksesoris { background: #e9edf2; color: #4d5c6e; }
-
         @media (max-width: 680px) {
             body { padding: 0.8rem; }
             .topbar { padding: 0.6rem 1rem; border-radius: 28px; }
@@ -292,13 +241,11 @@
             .modal-box { padding: 1.8rem 1.5rem; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
             .form-row { grid-template-columns: 1fr; }
-            .item-grid { grid-template-columns: 1fr; }
             .master-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- LOADING OVERLAY -->
     <div class="loading-overlay show" id="loadingOverlay">
         <div class="spinner"></div>
         <div class="loading-text">⏳ Memuat LAB ICT SMAN 1 Malang</div>
@@ -309,7 +256,6 @@
     </div>
 
     <div class="container">
-        <!-- TOPBAR -->
         <div class="topbar">
             <div class="logo"><i class="fas fa-microchip"></i> LAB <span>ICT</span> · SMAN 1 Malang</div>
             <div class="user-role">
@@ -319,7 +265,6 @@
             </div>
         </div>
 
-        <!-- STATS -->
         <div class="stats-grid">
             <div class="stat-card"><i class="fas fa-door-open"></i><div class="stat-info"><h4>Ruang Lab</h4><div class="number" id="statRuang">0</div></div></div>
             <div class="stat-card"><i class="fas fa-boxes"></i><div class="stat-info"><h4>Item Inventaris</h4><div class="number" id="statInventaris">0</div></div></div>
@@ -327,7 +272,6 @@
             <div class="stat-card"><i class="fas fa-clock"></i><div class="stat-info"><h4>Menunggu Approve</h4><div class="number" id="pendingCount">0</div></div></div>
         </div>
 
-        <!-- TABS -->
         <div class="tabs">
             <button class="tab-btn active" data-tab="ruang"><i class="fas fa-door-open"></i> Peminjaman Ruang</button>
             <button class="tab-btn" data-tab="pinjam_inventaris"><i class="fas fa-box"></i> Peminjaman Inventaris</button>
@@ -336,7 +280,6 @@
             <button class="tab-btn admin-only" data-tab="users"><i class="fas fa-users-cog"></i> Users</button>
         </div>
 
-        <!-- PANEL 1: PEMINJAMAN RUANG -->
         <div id="ruang" class="panel active">
             <div class="card">
                 <div class="card-header">
@@ -392,7 +335,6 @@
             </div>
         </div>
 
-        <!-- PANEL 2: PEMINJAMAN INVENTARIS -->
         <div id="pinjam_inventaris" class="panel">
             <div class="card">
                 <div class="card-header">
@@ -448,7 +390,6 @@
             </div>
         </div>
 
-        <!-- PANEL 3: KALENDER -->
         <div id="kalender" class="panel">
             <div class="card">
                 <div class="card-header">
@@ -463,7 +404,6 @@
             </div>
         </div>
 
-        <!-- PANEL 4: MASTER DATA -->
         <div id="master" class="panel">
             <div class="card">
                 <div class="card-header">
@@ -492,7 +432,6 @@
             </div>
         </div>
 
-        <!-- PANEL 5: USERS -->
         <div id="users" class="panel">
             <div class="card">
                 <div class="card-header">
@@ -514,7 +453,6 @@
         </div>
     </div>
 
-    <!-- MODAL LOGIN -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box">
             <form id="loginForm" novalidate>
@@ -536,7 +474,6 @@
         </div>
     </div>
 
-    <!-- MODAL CRUD -->
     <div class="modal-overlay" id="crudModal">
         <div class="modal-box">
             <form id="crudForm" novalidate>
@@ -551,30 +488,17 @@
         </div>
     </div>
 
-    <!-- TOAST -->
     <div id="toast" class="toast"></div>
 
-    <!-- ============================================================ -->
-    <!-- JAVASCRIPT -->
-    <!-- ============================================================ -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <script>
     (function() {
         'use strict';
 
-        // ============================================================
-        // KONFIGURASI - GANTI DENGAN URL APPS SCRIPT ANDA
-        // ============================================================
         const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec';
 
-        // ============================================================
-        // API WRAPPER - Menggunakan JSONP
-        // ============================================================
         const api = createApiWrapper(GOOGLE_SHEETS_URL);
 
-        // ============================================================
-        // FORMAT FUNCTIONS
-        // ============================================================
         const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
         function formatTanggal(dateStr) {
@@ -605,15 +529,9 @@
             return timeStr;
         }
 
-        // ============================================================
-        // STATE
-        // ============================================================
         let peminjamanRuang = [], peminjamanInventaris = [], masterRuang = [], masterInventaris = [], users = [];
         let isAdmin = false, currentUser = null, calendarInstance = null, crudMode = '', crudData = null;
 
-        // ============================================================
-        // DOM REFS
-        // ============================================================
         const $ = id => document.getElementById(id);
         const loginModal = $('loginModal'), crudModal = $('crudModal');
         const loginToggleBtn = $('loginToggleBtn'), loginBtnText = $('loginBtnText'), roleDisplay = $('roleDisplay');
@@ -629,9 +547,6 @@
         const masterRuangList = $('masterRuangList'), masterInventarisList = $('masterInventarisList');
         const btnTambahInventarisMaster = $('btnTambahInventarisMaster'), btnTambahRuangMaster = $('btnTambahRuangMaster'), btnTambahUser = $('btnTambahUser');
 
-        // ============================================================
-        // TOAST & LOADING
-        // ============================================================
         function showToast(msg, type = '') {
             toast.textContent = msg;
             toast.className = 'toast show ' + type;
@@ -653,9 +568,6 @@
             if (text) loadingStatus.textContent = text;
         }
 
-        // ============================================================
-        // API CALL VIA JSONP
-        // ============================================================
         async function apiCall(action, params = {}) {
             try {
                 const result = await api.call(action, params);
@@ -666,35 +578,28 @@
             }
         }
 
-        // ============================================================
-        // LOAD ALL DATA - Menggunakan JSONP
-        // ============================================================
+        // ============ FUNGSI UTAMA ============
         async function loadAllData() {
             showLoading('Memuat data...');
             let progress = 0;
             
             try {
-                // Load Ruang
                 updateLoading('Memuat data ruang...', progress += 10);
                 const ruang = await api.getRuang();
                 if (ruang.status === 'success') masterRuang = ruang.data || [];
                 
-                // Load Inventaris
                 updateLoading('Memuat data inventaris...', progress += 10);
                 const inv = await api.getInventaris();
                 if (inv.status === 'success') masterInventaris = inv.data || [];
                 
-                // Load Peminjaman Ruang
                 updateLoading('Memuat peminjaman ruang...', progress += 15);
                 const pr = await api.getPeminjamanRuang();
                 if (pr.status === 'success') peminjamanRuang = pr.data || [];
                 
-                // Load Peminjaman Inventaris
                 updateLoading('Memuat peminjaman inventaris...', progress += 15);
                 const pi = await api.getPeminjamanInventaris();
                 if (pi.status === 'success') peminjamanInventaris = pi.data || [];
                 
-                // Load Users (hanya jika admin)
                 if (isAdmin) {
                     updateLoading('Memuat data users...', progress += 10);
                     const usersData = await api.getUsers();
@@ -702,8 +607,6 @@
                 }
                 
                 updateLoading('Selesai!', 100);
-                
-                // Render semua data
                 renderAll();
                 hideLoading();
                 
@@ -714,9 +617,6 @@
             }
         }
 
-        // ============================================================
-        // RENDER ALL
-        // ============================================================
         function renderAll() {
             updateRuangDropdown();
             updateInventarisDropdown();
@@ -729,9 +629,6 @@
             updateCalendarEvents();
         }
 
-        // ============================================================
-        // GET 20 DATA TERAKHIR
-        // ============================================================
         function getLast20(data, sortField = 'timestamp') {
             if (!data || !data.length) return [];
             const sorted = [...data].sort((a, b) => {
@@ -742,9 +639,6 @@
             return sorted.slice(0, 20);
         }
 
-        // ============================================================
-        // UPDATE DROPDOWNS
-        // ============================================================
         function updateRuangDropdown() {
             ruangSelect.innerHTML = '<option value="">-- Pilih Ruang --</option>';
             if (masterRuang && masterRuang.length) {
@@ -770,9 +664,6 @@
             }
         }
 
-        // ============================================================
-        // RENDER MASTER
-        // ============================================================
         function renderMasterRuang() {
             if (!masterRuang || !masterRuang.length) { 
                 masterRuangList.innerHTML = '<p style="color:#6b7f97;">Belum ada data ruang</p>'; 
@@ -804,9 +695,6 @@
             masterInventarisList.innerHTML = html;
         }
 
-        // ============================================================
-        // RENDER RUANG TABLE
-        // ============================================================
         function renderRuangTable() {
             const last20 = getLast20(peminjamanRuang, 'timestamp');
             if (!last20 || !last20.length) {
@@ -856,9 +744,6 @@
             }
         }
 
-        // ============================================================
-        // RENDER INVENTARIS TABLE
-        // ============================================================
         function renderInventarisTable() {
             const last20 = getLast20(peminjamanInventaris, 'timestamp');
             if (!last20 || !last20.length) {
@@ -903,9 +788,6 @@
             }
         }
 
-        // ============================================================
-        // RENDER USERS
-        // ============================================================
         function renderUsersTable() {
             if (!users || !users.length) { 
                 usersTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#6b7f97;">Belum ada data users</td></tr>`; 
@@ -918,9 +800,6 @@
             usersTableBody.innerHTML = html;
         }
 
-        // ============================================================
-        // UPDATE STATS
-        // ============================================================
         function updateStats() {
             statRuang.textContent = masterRuang.length || 0;
             statInventaris.textContent = masterInventaris.length || 0;
@@ -931,9 +810,6 @@
             pendingCount.textContent = pending;
         }
 
-        // ============================================================
-        // KALENDER
-        // ============================================================
         function updateCalendarEvents() {
             if (!calendarInstance) return;
             const events = [];
@@ -975,9 +851,6 @@
             updateCalendarEvents();
         }
 
-        // ============================================================
-        // HANDLE RUANG ACTIONS
-        // ============================================================
         async function handleRuangAction(action, id) {
             const p = peminjamanRuang.find(x => x.id === id);
             if (!p) return;
@@ -1022,9 +895,6 @@
             }
         }
 
-        // ============================================================
-        // HANDLE INVENTARIS ACTIONS
-        // ============================================================
         async function handleInventarisAction(action, id) {
             const p = peminjamanInventaris.find(x => x.id === id);
             if (!p) return;
@@ -1072,9 +942,6 @@
             }
         }
 
-        // ============================================================
-        // MASTER & USER CRUD
-        // ============================================================
         function editMaster(sheet, id) {
             const data = sheet === 'ruang' ? masterRuang.find(x => x.id === id) : masterInventaris.find(x => x.id === id);
             if (!data) return;
@@ -1102,9 +969,6 @@
             await loadAllData();
         }
 
-        // ============================================================
-        // MODAL CRUD
-        // ============================================================
         function showModal(sheet, data = null) {
             crudMode = sheet;
             crudData = data;
@@ -1175,9 +1039,6 @@
 
         function closeModal() { crudModal.classList.remove('show'); }
 
-        // ============================================================
-        // CRUD FORM SUBMIT
-        // ============================================================
         document.getElementById('crudForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             let data = {}, sheet = '';
@@ -1230,9 +1091,6 @@
             }
         });
 
-        // ============================================================
-        // FORM PENGAJUAN RUANG
-        // ============================================================
         pinjamRuangForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const nama = document.getElementById('peminjamName').value.trim();
@@ -1290,9 +1148,6 @@
             }
         });
 
-        // ============================================================
-        // FORM PENGAJUAN INVENTARIS
-        // ============================================================
         pinjamInventarisForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const nama = document.getElementById('pinjamInvNama').value.trim();
@@ -1344,9 +1199,6 @@
             }
         });
 
-        // ============================================================
-        // LOGIN
-        // ============================================================
         async function handleLogin(username, password) {
             const user = username.trim(), pass = password.trim();
             if (!user || !pass) {
@@ -1391,9 +1243,6 @@
             renderAll();
         }
 
-        // ============================================================
-        // EVENT LISTENERS
-        // ============================================================
         loginToggleBtn.addEventListener('click', function() {
             if (isAdmin) { handleLogout(); } else {
                 loginModal.classList.add('show');
@@ -1428,9 +1277,6 @@
         btnTambahRuangMaster.addEventListener('click', () => showModal('ruang'));
         btnTambahUser.addEventListener('click', () => showModal('users'));
 
-        // ============================================================
-        // TAB
-        // ============================================================
         const tabButtons = document.querySelectorAll('.tab-btn');
         const panels = { 
             ruang: document.getElementById('ruang'), 
@@ -1449,20 +1295,16 @@
         }
         tabButtons.forEach(btn => { btn.addEventListener('click', function() { activateTab(this.dataset.tab); }); });
 
-        // ============================================================
-        // EXPOSE
-        // ============================================================
-        window.editMaster = editMaster;
+        // ============ EXPOSE GLOBAL ============
         window.loadAllData = loadAllData;
+        window.editMaster = editMaster;
         window.deleteMaster = deleteMaster;
         window.editUser = editUser;
         window.deleteUser = deleteUser;
         window.showModal = showModal;
         window.closeModal = closeModal;
 
-        // ============================================================
-        // INIT
-        // ============================================================
+        // ============ INIT ============
         async function init() {
             console.log('🚀 Inisialisasi LAB ICT SMAN 1 Malang (JSONP)...');
             const today = new Date().toISOString().split('T')[0];
