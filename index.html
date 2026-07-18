@@ -90,23 +90,7 @@
         .btn-login.outline:hover { background: #eef4fb; }
         .btn-login.logout { background: #b13a3a; }
         .btn-login.logout:hover { background: #8f2e2e; }
-
-        .btn-laporan {
-            background: #1f8b4d;
-            border: none;
-            color: white;
-            padding: 0.5rem 1.6rem;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            text-decoration: none;
-        }
-        .btn-laporan:hover { background: #16703d; transform: scale(0.97); }
+        .btn-login .badge { font-size: 0.7rem; background: rgba(255,255,255,0.2); padding: 0.05rem 0.5rem; border-radius: 40px; margin-left: 0.3rem; }
 
         /* ===== STATS ===== */
         .stats-grid {
@@ -222,6 +206,7 @@
         .btn-primary.gray { background: #6b7f97; }
         .btn-primary.gray:hover { background: #55677d; }
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-sm { padding: 0.25rem 1rem; font-size: 0.75rem; }
 
         /* ===== TABLES ===== */
         .table-wrap { overflow-x: auto; border-radius: 16px; }
@@ -567,8 +552,6 @@
             border-radius: 40px;
             color: #4d627a;
         }
-
-        /* ===== KATEGORI BADGE ===== */
         .kategori-badge {
             font-size: 0.65rem;
             padding: 0.05rem 0.6rem;
@@ -593,6 +576,17 @@
             .item-grid { grid-template-columns: 1fr; }
             .master-grid { grid-template-columns: 1fr; }
         }
+
+        /* ===== LINK LAPORAN ===== */
+        .link-laporan {
+            color: #2a7de1;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .link-laporan:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -614,7 +608,7 @@
                 LAB <span>ICT</span> · SMAN 1 Malang
             </div>
             <div class="user-role">
-                <a href="laporan.html" class="btn-laporan">
+                <a href="laporan.html" class="link-laporan" style="font-size:0.85rem; margin-right:0.5rem;">
                     <i class="fas fa-file-alt"></i> Laporan
                 </a>
                 <span class="role-badge" id="roleDisplay"><i class="fas fa-user"></i> Pengguna</span>
@@ -844,7 +838,7 @@
         </div>
 
         <!-- ============================================================ -->
-        <!-- PANEL 5: USERS -->
+        <!-- PANEL 5: USERS (Admin Only) -->
         <!-- ============================================================ -->
         <div id="users" class="panel">
             <div class="card">
@@ -876,7 +870,9 @@
         </div>
     </div>
 
-    <!-- ===== MODAL LOGIN ===== -->
+    <!-- ============================================================ -->
+    <!-- MODAL LOGIN -->
+    <!-- ============================================================ -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal-box">
             <form id="loginForm" novalidate>
@@ -898,7 +894,9 @@
         </div>
     </div>
 
-    <!-- ===== MODAL CRUD ===== -->
+    <!-- ============================================================ -->
+    <!-- MODAL CRUD -->
+    <!-- ============================================================ -->
     <div class="modal-overlay" id="crudModal">
         <div class="modal-box">
             <form id="crudForm" novalidate>
@@ -925,53 +923,6 @@
     <script>
         (function() {
             'use strict';
-
-            // ============================================================
-            // FORMAT FUNCTIONS
-            // ============================================================
-            const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober',
-                'November', 'Desember'
-            ];
-
-            function formatTanggal(dateStr) {
-                if (!dateStr) return '-';
-                // Jika format ISO (2026-07-17T17:00:00.000Z)
-                let date = new Date(dateStr);
-                if (isNaN(date.getTime())) {
-                    // Coba split jika format YYYY-MM-DD
-                    const parts = dateStr.split('-');
-                    if (parts.length === 3) {
-                        const y = parseInt(parts[0]);
-                        const m = parseInt(parts[1]) - 1;
-                        const d = parseInt(parts[2]);
-                        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
-                            date = new Date(y, m, d);
-                        }
-                    }
-                }
-                if (isNaN(date.getTime())) return dateStr;
-                const d = date.getDate();
-                const m = BULAN[date.getMonth()];
-                const y = date.getFullYear();
-                return d + ' ' + m + ' ' + y;
-            }
-
-            function formatJam(timeStr) {
-                if (!timeStr) return '-';
-                // Jika sudah format HH:MM
-                if (/^\d{2}:\d{2}$/.test(timeStr)) return timeStr;
-                // Jika format datetime, extract HH:MM
-                const match = timeStr.match(/\d{2}:\d{2}/);
-                if (match) return match[0];
-                // Jika format ISO
-                const date = new Date(timeStr);
-                if (!isNaN(date.getTime())) {
-                    const h = String(date.getHours()).padStart(2, '0');
-                    const m = String(date.getMinutes()).padStart(2, '0');
-                    return h + ':' + m;
-                }
-                return timeStr;
-            }
 
             // ============================================================
             // KONFIGURASI
@@ -1056,25 +1007,48 @@
             }
 
             // ============================================================
-            // API CALL (GET)
+            // API CALLS (SEMUA GET)
             // ============================================================
             async function apiCall(action, params = {}) {
                 try {
                     const urlParams = new URLSearchParams();
                     urlParams.append('action', action);
+                    
+                    // Tambahkan semua parameter
                     Object.keys(params).forEach(key => {
-                        if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
-                            urlParams.append(key, params[key]);
+                        if (params[key] !== null && params[key] !== undefined) {
+                            if (typeof params[key] === 'object') {
+                                urlParams.append(key, JSON.stringify(params[key]));
+                            } else {
+                                urlParams.append(key, params[key]);
+                            }
                         }
                     });
+                    
+                    if (authToken) urlParams.append('auth', authToken);
+                    
                     const url = GOOGLE_SHEETS_URL + '?' + urlParams.toString();
                     const response = await fetch(url);
                     const result = await response.json();
                     return result;
+                    
                 } catch (error) {
                     console.error('API Error:', error);
                     return { status: 'error', message: error.toString() };
                 }
+            }
+
+            // ============================================================
+            // FUNGSI GET 20 DATA TERAKHIR
+            // ============================================================
+            function getLast20(data, sortField = 'timestamp') {
+                if (!data || !data.length) return [];
+                const sorted = [...data].sort((a, b) => {
+                    const aVal = a[sortField] || '';
+                    const bVal = b[sortField] || '';
+                    return bVal.localeCompare(aVal);
+                });
+                return sorted.slice(0, 20);
             }
 
             // ============================================================
@@ -1120,6 +1094,7 @@
                     renderAll();
 
                     updateLoading('Selesai!', 100);
+
                     setTimeout(hideLoading, 500);
 
                 } catch (error) {
@@ -1142,19 +1117,6 @@
                 if (isAdmin) renderUsersTable();
                 updateStats();
                 updateCalendarEvents();
-            }
-
-            // ============================================================
-            // GET 20 DATA TERAKHIR
-            // ============================================================
-            function getLast20(data, sortField = 'timestamp') {
-                if (!data || !data.length) return [];
-                const sorted = [...data].sort((a, b) => {
-                    const aVal = a[sortField] || '';
-                    const bVal = b[sortField] || '';
-                    return bVal.localeCompare(aVal);
-                });
-                return sorted.slice(0, 20);
             }
 
             // ============================================================
@@ -1182,7 +1144,7 @@
                         const opt = document.createElement('option');
                         opt.value = item.nama_item || item.nama || item;
                         opt.textContent = (item.nama_item || item.nama || item) + ' (Tersedia: ' + (item
-                            .stok_tersedia || '0') + ')';
+                        .stok_tersedia || '0') + ')';
                         pinjamInvItem.appendChild(opt);
                     });
                 }
@@ -1196,6 +1158,7 @@
                     masterRuangList.innerHTML = '<p style="color:#6b7f97;">Belum ada data ruang</p>';
                     return;
                 }
+
                 let html = '';
                 masterRuang.forEach(r => {
                     html += `
@@ -1221,6 +1184,7 @@
                     masterInventarisList.innerHTML = '<p style="color:#6b7f97;">Belum ada data inventaris</p>';
                     return;
                 }
+
                 let html = '';
                 masterInventaris.forEach(item => {
                     let statusClass = 'approved';
@@ -1256,7 +1220,7 @@
             // ============================================================
             function renderRuangTable() {
                 const last20 = getLast20(peminjamanRuang, 'timestamp');
-
+                
                 if (!last20 || !last20.length) {
                     ruangTableBody.innerHTML =
                         `<tr><td colspan="6" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman ruang</td></tr>`;
@@ -1285,11 +1249,7 @@
                         statusText = 'Selesai';
                         active--; }
 
-                    // FORMAT TANGGAL & JAM
-                    const tanggal = formatTanggal(p.tanggal);
-                    const jamMulai = formatJam(p.jamMulai);
-                    const jamSelesai = formatJam(p.jamSelesai);
-                    const jam = jamMulai + ' – ' + jamSelesai;
+                    const jam = p.jamMulai + ' – ' + p.jamSelesai;
 
                     let aksiHtml = '';
                     if (isAdmin) {
@@ -1316,7 +1276,7 @@
                         <tr>
                             <td>${p.ruang}</td>
                             <td>${p.peminjam}</td>
-                            <td>${tanggal}</td>
+                            <td>${p.tanggal}</td>
                             <td>${jam}</td>
                             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                             <td class="admin-only">${aksiHtml}</td>
@@ -1343,7 +1303,7 @@
             // ============================================================
             function renderInventarisTable() {
                 const last20 = getLast20(peminjamanInventaris, 'timestamp');
-
+                
                 if (!last20 || !last20.length) {
                     invTableBody.innerHTML =
                         `<tr><td colspan="7" style="text-align:center; color:#6b7f97;">Belum ada data peminjaman inventaris</td></tr>`;
@@ -1367,10 +1327,6 @@
                         statusText = 'Ditolak'; }
                     if (p.status === 'done') { statusClass = 'done';
                         statusText = 'Dikembalikan'; }
-
-                    // FORMAT TANGGAL
-                    const tglPinjam = formatTanggal(p.tanggal_pinjam);
-                    const tglKembali = formatTanggal(p.tanggal_kembali);
 
                     let aksiHtml = '';
                     if (isAdmin) {
@@ -1398,8 +1354,8 @@
                             <td>${p.nama_item}</td>
                             <td>${p.peminjam}</td>
                             <td>${p.jumlah}</td>
-                            <td>${tglPinjam}</td>
-                            <td>${tglKembali}</td>
+                            <td>${p.tanggal_pinjam}</td>
+                            <td>${p.tanggal_kembali || '-'}</td>
                             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                             <td class="admin-only">${aksiHtml}</td>
                         </tr>
@@ -1430,6 +1386,7 @@
                         `<tr><td colspan="4" style="text-align:center; color:#6b7f97;">Belum ada data users</td></tr>`;
                     return;
                 }
+
                 let html = '';
                 users.forEach(u => {
                     html += `
@@ -1475,12 +1432,13 @@
             // ============================================================
             function updateCalendarEvents() {
                 if (!calendarInstance) return;
+
                 const events = [];
 
                 peminjamanRuang.forEach(p => {
                     if (p.status === 'approved' || p.status === 'pending') {
-                        const start = p.tanggal + 'T' + formatJam(p.jamMulai) + ':00';
-                        const end = p.tanggal + 'T' + formatJam(p.jamSelesai) + ':00';
+                        const start = p.tanggal + 'T' + p.jamMulai + ':00';
+                        const end = p.tanggal + 'T' + p.jamSelesai + ':00';
                         const color = p.status === 'approved' ? '#3788d8' : '#f39c12';
                         events.push({
                             title: '🔵 ' + p.ruang + ' - ' + p.peminjam + (p.status === 'pending' ? ' (pending)' :
@@ -1558,7 +1516,7 @@
 
                 switch (action) {
                     case 'approve_ruang':
-                        const result = await apiCall('approve_ruang', { data: JSON.stringify(p) });
+                        const result = await apiCall('approve_ruang', { data: p });
                         if (result.status === 'success') {
                             showToast('✅ Peminjaman ruang ' + p.peminjam + ' disetujui', 'success');
                         } else {
@@ -1568,19 +1526,19 @@
                         break;
                     case 'reject':
                         p.status = 'rejected';
-                        await apiCall('update', { sheet: 'peminjaman_ruang', data: JSON.stringify(p) });
+                        await apiCall('update', { sheet: 'peminjaman_ruang', data: p });
                         showToast('⛔ Peminjaman ' + p.peminjam + ' ditolak', 'error');
                         await loadAllData();
                         break;
                     case 'done':
                         p.status = 'done';
-                        await apiCall('update', { sheet: 'peminjaman_ruang', data: JSON.stringify(p) });
+                        await apiCall('update', { sheet: 'peminjaman_ruang', data: p });
                         showToast('✅ Peminjaman ' + p.peminjam + ' selesai', 'success');
                         await loadAllData();
                         break;
                     case 'undo':
                         p.status = 'pending';
-                        await apiCall('update', { sheet: 'peminjaman_ruang', data: JSON.stringify(p) });
+                        await apiCall('update', { sheet: 'peminjaman_ruang', data: p });
                         showToast('↩️ Dikembalikan ke pending', 'warning');
                         await loadAllData();
                         break;
@@ -1602,7 +1560,7 @@
 
                 switch (action) {
                     case 'approve_inventaris':
-                        const result = await apiCall('approve_inventaris', { data: JSON.stringify(p) });
+                        const result = await apiCall('approve_inventaris', { data: p });
                         if (result.status === 'success') {
                             showToast('✅ Peminjaman inventaris ' + p.peminjam + ' disetujui', 'success');
                         } else {
@@ -1612,12 +1570,12 @@
                         break;
                     case 'reject_inventaris':
                         p.status = 'rejected';
-                        await apiCall('update', { sheet: 'peminjaman_inventaris', data: JSON.stringify(p) });
+                        await apiCall('update', { sheet: 'peminjaman_inventaris', data: p });
                         showToast('⛔ Peminjaman ' + p.peminjam + ' ditolak', 'error');
                         await loadAllData();
                         break;
                     case 'return_inventaris':
-                        const ret = await apiCall('return_inventaris', { data: JSON.stringify(p) });
+                        const ret = await apiCall('return_inventaris', { data: p });
                         if (ret.status === 'success') {
                             showToast('✅ Inventaris dikembalikan', 'success');
                         } else {
@@ -1627,7 +1585,7 @@
                         break;
                     case 'undo_inventaris':
                         p.status = 'pending';
-                        await apiCall('update', { sheet: 'peminjaman_inventaris', data: JSON.stringify(p) });
+                        await apiCall('update', { sheet: 'peminjaman_inventaris', data: p });
                         showToast('↩️ Dikembalikan ke pending', 'warning');
                         await loadAllData();
                         break;
@@ -1659,6 +1617,9 @@
                 await loadAllData();
             }
 
+            // ============================================================
+            // USER CRUD
+            // ============================================================
             function editUser(id) {
                 const data = users.find(x => x.id === id);
                 if (!data) return;
@@ -1752,7 +1713,6 @@
                         <div style="font-size:0.8rem; color:#6b7f97; background:#f9fcff; padding:0.5rem; border-radius:8px;">
                             <i class="fas fa-info-circle"></i> 
                             <strong>stok_tersedia</strong> akan otomatis = total_stok saat pertama kali ditambahkan.
-                            <br>Status pinjam akan otomatis berubah jika stok_tersedia = 0.
                         </div>
                     `;
                 } else if (sheet === 'users') {
@@ -1818,7 +1778,7 @@
                         total_stok: totalStok,
                         kondisi: document.getElementById('f_kondisi').value,
                         lokasi: document.getElementById('f_lokasi').value || 'Lab ICT A',
-                        keterangan: document.getElementById('f_keterangan').value || '',
+                        keterangan: document.getElementById('f_keterangan').value || ''
                     };
                     if (crudData) data.id = crudData.id;
                 } else if (crudMode === 'users') {
@@ -1834,7 +1794,7 @@
 
                 const action = crudData ? 'update' : 'add';
                 showLoading('Menyimpan data...');
-                const result = await apiCall(action, { sheet: sheet, data: JSON.stringify(data) });
+                const result = await apiCall(action, { sheet: sheet, data: data });
                 showLoading(false);
 
                 if (result.status === 'success') {
@@ -1891,7 +1851,7 @@
                 };
 
                 showLoading('Menyimpan pengajuan...');
-                const result = await apiCall('add', { sheet: 'peminjaman_ruang', data: JSON.stringify(newPinjam) });
+                const result = await apiCall('add', { sheet: 'peminjaman_ruang', data: newPinjam });
                 showLoading(false);
 
                 if (result.status === 'success') {
@@ -1945,7 +1905,7 @@
                 };
 
                 showLoading('Menyimpan pengajuan...');
-                const result = await apiCall('add', { sheet: 'peminjaman_inventaris', data: JSON.stringify(newPinjam) });
+                const result = await apiCall('add', { sheet: 'peminjaman_inventaris', data: newPinjam });
                 showLoading(false);
 
                 if (result.status === 'success') {
@@ -1979,7 +1939,7 @@
                         isAdmin = true;
                         document.body.classList.add('admin-mode');
                         roleDisplay.innerHTML = '<i class="fas fa-user-shield"></i> ' + (result.data.nama || result.data
-                            .username);
+                        .username);
                         roleDisplay.classList.add('admin');
                         loginBtnText.textContent = 'Logout';
                         loginToggleBtn.classList.add('logout');
@@ -2126,7 +2086,7 @@
 
                 console.log('✅ Sistem siap.');
                 console.log('🔑 Login: admin/admin123 atau petugas/petugas123');
-                console.log('📊 Sheet: master_ruang, master_inventaris, peminjaman_ruang, peminjaman_inventaris, users');
+                console.log('📊 Sheet: master_ruang, master_inventaris (GABUNGAN), peminjaman_ruang, peminjaman_inventaris, users');
             }
 
             if (document.readyState === 'complete') {
