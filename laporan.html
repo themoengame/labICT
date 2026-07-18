@@ -343,11 +343,14 @@
         
         const url = GOOGLE_SHEETS_URL + '?' + urlParams.toString();
         
-        // Tambahkan batasan redirect manual jika diperlukan, 
-        // namun fetch default di browser modern biasanya langsung mengikuti redirect Apps Script.
+        // Perbaikan utama: Menggunakan mode 'cors' dengan redirect 'follow'
         const response = await fetch(url, {
             method: 'GET',
-            redirect: 'follow' // Memastikan browser mengikuti redirect Google Apps Script
+            mode: 'cors',
+            redirect: 'follow',
+            headers: {
+                'Content-Type': 'text/plain' // Menghindari preflight request OPTIONS
+            }
         });
         
         const result = await response.json();
