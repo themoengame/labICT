@@ -602,43 +602,72 @@
         // ============================================================
         // LOAD ALL DATA
         // ============================================================
-        async function loadAllData() {
-            showLoading('Memuat data...');
-            let progress = 0;
-            
+async function loadAllData() {
+    showLoading('Memuat data...');
+    let progress = 0;
+    
+    try {
+        // Coba load dengan timeout
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Timeout: Server tidak merespons')), 15000);
+        });
+        
+        // Gunakan Promise.race untuk timeout
+        const loadRuang = async () => {
+            updateLoading('Memuat data ruang...', progress += 10);
+            const ruang = await api.getRuang();
+            if (ruang.status === 'success') masterRuang = ruang.data || [];
+        };
+        
+        const loadInventaris = async () => {
+            updateLoading('Memuat data inventaris...', progress += 10);
+            const inv = await api.getInventaris();
+            if (inv.status === 'success') masterInventaris = inv.data || [];
+        };
+        
+        const loadPeminjamanRuang = async () => {
+            updateLoading('Memuat peminjaman ruang...', progress += 15);
+            const pr = await api.getPeminjamanRuang();
+            if (pr.status === 'success') peminjamanRuang = pr.data || [];
+        };
+        
+        const loadPeminjamanInventaris = async () => {
+            updateLoading('Memuat peminjaman inventaris...', progress += 15);
+            const pi = await api.getPeminjamanInventaris();
+            if (pi.status === 'success') peminjamanInventaris = pi.data || [];
+        };
+        
+        // Jalankan semua request paralel dengan timeout
+        await Promise.race([
+            Promise.all([
+                loadRuang(),
+                loadInventaris(),
+                loadPeminjamanRuang(),
+                loadPeminjamanInventaris()
+            ]),
+            timeoutPromise
+        ]);
+        
+        if (isAdmin) {
+            updateLoading('Memuat data users...', progress += 10);
             try {
-                updateLoading('Memuat data ruang...', progress += 10);
-                const ruang = await api.getRuang();
-                if (ruang.status === 'success') masterRuang = ruang.data || [];
-                
-                updateLoading('Memuat data inventaris...', progress += 10);
-                const inv = await api.getInventaris();
-                if (inv.status === 'success') masterInventaris = inv.data || [];
-                
-                updateLoading('Memuat peminjaman ruang...', progress += 15);
-                const pr = await api.getPeminjamanRuang();
-                if (pr.status === 'success') peminjamanRuang = pr.data || [];
-                
-                updateLoading('Memuat peminjaman inventaris...', progress += 15);
-                const pi = await api.getPeminjamanInventaris();
-                if (pi.status === 'success') peminjamanInventaris = pi.data || [];
-                
-                if (isAdmin) {
-                    updateLoading('Memuat data users...', progress += 10);
-                    const usersData = await api.getUsers();
-                    if (usersData.status === 'success') users = usersData.data || [];
-                }
-                
-                updateLoading('Selesai!', 100);
-                renderAll();
-                hideLoading();
-                
-            } catch (error) {
-                console.error('Error loading data:', error);
-                showToast('❌ Gagal memuat data: ' + error.message, 'error');
-                hideLoading();
+                const usersData = await api.getUsers();
+                if (usersData.status === 'success') users = usersData.data || [];
+            } catch (e) {
+                console.warn('Gagal load users:', e);
             }
         }
+        
+        updateLoading('Selesai!', 100);
+        renderAll();
+        hideLoading();
+        
+    } catch (error) {
+        console.error('Error loading data:', error);
+        showToast('❌ Gagal memuat data: ' + error.message, 'error');
+        hideLoading();
+    }
+}
 
         // ============================================================
         // RENDER ALL
