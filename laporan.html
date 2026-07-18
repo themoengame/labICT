@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Laporan LAB ICT SMAN 1 Malang</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <script src="jsonp.js"></script>
     <style>
         /* ============================================================
            STYLE - LAPORAN
@@ -258,6 +259,11 @@
         const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec';
 
         // ============================================================
+        // API WRAPPER - Menggunakan JSONP
+        // ============================================================
+        const api = createApiWrapper(GOOGLE_SHEETS_URL);
+
+        // ============================================================
         // FORMAT FUNCTIONS
         // ============================================================
         const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -329,36 +335,17 @@
         function showLoading(show) { loadingOverlay.classList.toggle('show', show); }
 
         // ============================================================
-        // API CALL (GET)
+        // API CALL VIA JSONP
         // ============================================================
         async function apiCall(action, params = {}) {
-    try {
-        const urlParams = new URLSearchParams();
-        urlParams.append('action', action);
-        Object.keys(params).forEach(key => {
-            if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
-                urlParams.append(key, params[key]);
+            try {
+                const result = await api.call(action, params);
+                return result;
+            } catch (error) {
+                console.error('API Error:', error);
+                return { status: 'error', message: error.toString() };
             }
-        });
-        
-        const url = GOOGLE_SHEETS_URL + '?' + urlParams.toString();
-        
-        // Menggunakan mode: 'cors' dengan redirect 'follow' tanpa custom header yang memicu preflight
-        const response = await fetch(url, {
-            method: 'GET',
-            mode: 'cors',
-            redirect: 'follow'
-        });
-        
-        if (!response.ok) throw new Error('Network response was not ok');
-        
-        const result = await response.json();
-        return result;
-    } catch (error) {
-        console.error('API Error:', error);
-        return { status: 'error', message: error.toString() };
-    }
-}
+        }
 
         // ============================================================
         // LOAD DATA
@@ -366,9 +353,9 @@
         async function loadData() {
             try {
                 showLoading(true);
-                const pr = await apiCall('get_peminjaman_ruang');
+                const pr = await api.getPeminjamanRuang();
                 if (pr.status === 'success') { peminjamanRuang = pr.data || []; }
-                const pi = await apiCall('get_peminjaman_inventaris');
+                const pi = await api.getPeminjamanInventaris();
                 if (pi.status === 'success') { peminjamanInventaris = pi.data || []; }
                 setDefaultDates();
                 filterData();
@@ -455,12 +442,9 @@
             });
             sorted.forEach((p, index) => {
                 let statusClass = 'pending', statusText = 'Menunggu';
-                if (p.status === 'approved') { statusClass = 'approved';
-                    statusText = 'Disetujui'; }
-                if (p.status === 'rejected') { statusClass = 'rejected';
-                    statusText = 'Ditolak'; }
-                if (p.status === 'done') { statusClass = 'done';
-                    statusText = 'Selesai'; }
+                if (p.status === 'approved') { statusClass = 'approved'; statusText = 'Disetujui'; }
+                if (p.status === 'rejected') { statusClass = 'rejected'; statusText = 'Ditolak'; }
+                if (p.status === 'done') { statusClass = 'done'; statusText = 'Selesai'; }
                 const tanggal = formatTanggal(p.tanggal);
                 const jamMulai = formatJam(p.jamMulai);
                 const jamSelesai = formatJam(p.jamSelesai);
@@ -482,12 +466,9 @@
             const sorted = [...filteredInventaris].sort((a, b) => a.tanggal_pinjam.localeCompare(b.tanggal_pinjam));
             sorted.forEach((p, index) => {
                 let statusClass = 'pending', statusText = 'Menunggu';
-                if (p.status === 'approved') { statusClass = 'approved';
-                    statusText = 'Disetujui'; }
-                if (p.status === 'rejected') { statusClass = 'rejected';
-                    statusText = 'Ditolak'; }
-                if (p.status === 'done') { statusClass = 'done';
-                    statusText = 'Dikembalikan'; }
+                if (p.status === 'approved') { statusClass = 'approved'; statusText = 'Disetujui'; }
+                if (p.status === 'rejected') { statusClass = 'rejected'; statusText = 'Ditolak'; }
+                if (p.status === 'done') { statusClass = 'done'; statusText = 'Dikembalikan'; }
                 const tglPinjam = formatTanggal(p.tanggal_pinjam);
                 const tglKembali = formatTanggal(p.tanggal_kembali);
                 html += `<tr><td>${index+1}</td><td>${p.nama_item}</td><td>${p.peminjam}</td><td>${p.jumlah}</td><td>${tglPinjam}</td><td>${tglKembali}</td><td>${p.keperluan || '-'}</td><td><span class="status-badge ${statusClass}">${statusText}</span></td></tr>`;
@@ -547,7 +528,10 @@
         // EXPORT PDF
         // ============================================================
         function exportPDF() {
-            if (filteredRuang.length === 0 && filteredInventaris.length === 0) { showToast('⚠️ Tidak ada data untuk dicetak', 'error'); return; }
+            if (filteredRuang.length === 0 && filteredInventaris.length === 0) { 
+                showToast('⚠️ Tidak ada data untuk dicetak', 'error'); 
+                return; 
+            }
             const start = filterStart.value || '-', end = filterEnd.value || '-';
             const jenis = filterJenis.options[filterJenis.selectedIndex].text;
             const status = filterStatus.options[filterStatus.selectedIndex].text;
@@ -629,7 +613,7 @@
         // INIT
         // ============================================================
         async function init() {
-            console.log('📊 Laporan LAB ICT SMAN 1 Malang');
+            console.log('📊 Laporan LAB ICT SMAN 1 Malang (JSONP)');
             await loadData();
             console.log('✅ Laporan siap.');
         }
