@@ -3,64 +3,75 @@
 // ============================================================
 
 const JSONP = {
-    // ID counter untuk callback
     _callbackId: 0,
-    // Penyimpanan pending requests
     _pending: {},
+    _debug: true, // Set ke false untuk production
     
-    /**
-     * Melakukan request JSONP
-     * @param {string} url - URL endpoint
-     * @param {object} params - Parameter query string
-     * @param {number} timeout - Timeout dalam ms (default: 30000)
-     * @returns {Promise} Promise yang resolve dengan response
-     */
+    log(msg, data) {
+        if (this._debug) {
+            console.log('[JSONP]', msg, data || '');
+        }
+    },
+    
     request(url, params = {}, timeout = 30000) {
         return new Promise((resolve, reject) => {
             const callbackName = 'jsonp_callback_' + (++this._callbackId);
             const script = document.createElement('script');
+            let isResolved = false;
             
-            // Setup timer timeout
+            this.log('Request:', url, params);
+            
             const timer = setTimeout(() => {
-                this._cleanup(callbackName);
-                reject(new Error('Request timeout after ' + timeout + 'ms'));
+                if (!isResolved) {
+                    isResolved = true;
+                    this._cleanup(callbackName);
+                    reject(new Error('Request timeout after ' + timeout + 'ms'));
+                }
             }, timeout);
             
-            // Simpan resolve/reject
             this._pending[callbackName] = {
                 resolve: (data) => {
-                    clearTimeout(timer);
-                    this._cleanup(callbackName);
-                    resolve(data);
+                    if (!isResolved) {
+                        isResolved = true;
+                        clearTimeout(timer);
+                        this._cleanup(callbackName);
+                        this.log('Response success:', data);
+                        resolve(data);
+                    }
                 },
                 reject: (error) => {
-                    clearTimeout(timer);
-                    this._cleanup(callbackName);
-                    reject(error);
+                    if (!isResolved) {
+                        isResolved = true;
+                        clearTimeout(timer);
+                        this._cleanup(callbackName);
+                        this.log('Response error:', error);
+                        reject(error);
+                    }
                 }
             };
             
-            // Buat URL dengan callback
             const urlParams = new URLSearchParams(params);
             urlParams.append('callback', callbackName);
-            
-            // Tambahkan parameter timestamp untuk menghindari cache
             urlParams.append('_t', Date.now());
             
             const fullUrl = url + '?' + urlParams.toString();
+            this.log('Full URL:', fullUrl);
             
-            // Setup callback global
             window[callbackName] = function(data) {
                 if (this._pending[callbackName]) {
                     this._pending[callbackName].resolve(data);
                 }
             }.bind(this);
             
-            // Setup error handling
             script.onerror = function() {
+                this.log('Script load error');
                 if (this._pending[callbackName]) {
-                    this._pending[callbackName].reject(new Error('Network error or script load failed'));
+                    this._pending[callbackName].reject(new Error('Network error or script load failed - CORS atau URL tidak valid'));
                 }
+            }.bind(this);
+            
+            script.onload = function() {
+                this.log('Script loaded successfully');
             }.bind(this);
             
             script.src = fullUrl;
@@ -68,78 +79,42 @@ const JSONP = {
         });
     },
     
-    /**
-     * Membersihkan callback dan script
-     */
     _cleanup(callbackName) {
         delete window[callbackName];
         delete this._pending[callbackName];
-        // Hapus script tag yang mungkin masih ada
-        document.querySelectorAll('script[src*="' + callbackName + '"]').forEach(el => el.remove());
+        document.querySelectorAll('script[src*="' + callbackName + '"]').forEach(el => {
+            try { el.remove(); } catch(e) {}
+        });
     }
 };
 
-// ============================================================
-// WRAPPER API - Menggunakan JSONP
-// ============================================================
-
 function createApiWrapper(baseUrl) {
+    // Cek apakah URL valid
+    if (!baseUrl || !baseUrl.includes('script.google.com')) {
+        console.error('⚠️ URL Apps Script tidak valid!');
+    }
+    
     return {
-        /**
-         * Panggil API dengan JSONP
-         */
         call(action, params = {}) {
             const allParams = { action, ...params };
-            // Jika ada data yang perlu di-stringify
             if (allParams.data && typeof allParams.data === 'object') {
                 allParams.data = JSON.stringify(allParams.data);
             }
             return JSONP.request(baseUrl, allParams);
         },
         
-        // ============ READ OPERATIONS ============
-        getMasters() {
-            return this.call('get_masters');
-        },
-        getRuang() {
-            return this.call('get_ruang');
-        },
-        getInventaris() {
-            return this.call('get_inventaris');
-        },
-        getPeminjamanRuang() {
-            return this.call('get_peminjaman_ruang');
-        },
-        getPeminjamanInventaris() {
-            return this.call('get_peminjaman_inventaris');
-        },
-        getUsers() {
-            return this.call('get_users');
-        },
-        login(username, password) {
-            return this.call('login', { username, password });
-        },
-        
-        // ============ WRITE OPERATIONS ============
-        add(sheet, data) {
-            return this.call('add', { sheet, data });
-        },
-        update(sheet, data) {
-            return this.call('update', { sheet, data });
-        },
-        remove(sheet, id) {
-            return this.call('delete', { sheet, id });
-        },
-        
-        // ============ SPECIAL OPERATIONS ============
-        approveRuang(data) {
-            return this.call('approve_ruang', { data });
-        },
-        approveInventaris(data) {
-            return this.call('approve_inventaris', { data });
-        },
-        returnInventaris(data) {
-            return this.call('return_inventaris', { data });
-        }
+        getMasters() { return this.call('get_masters'); },
+        getRuang() { return this.call('get_ruang'); },
+        getInventaris() { return this.call('get_inventaris'); },
+        getPeminjamanRuang() { return this.call('get_peminjaman_ruang'); },
+        getPeminjamanInventaris() { return this.call('get_peminjaman_inventaris'); },
+        getUsers() { return this.call('get_users'); },
+        login(username, password) { return this.call('login', { username, password }); },
+        add(sheet, data) { return this.call('add', { sheet, data }); },
+        update(sheet, data) { return this.call('update', { sheet, data }); },
+        remove(sheet, id) { return this.call('delete', { sheet, id }); },
+        approveRuang(data) { return this.call('approve_ruang', { data }); },
+        approveInventaris(data) { return this.call('approve_inventaris', { data }); },
+        returnInventaris(data) { return this.call('return_inventaris', { data }); }
     };
 }
