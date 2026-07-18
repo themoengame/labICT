@@ -332,23 +332,31 @@
         // API CALL (GET)
         // ============================================================
         async function apiCall(action, params = {}) {
-            try {
-                const urlParams = new URLSearchParams();
-                urlParams.append('action', action);
-                Object.keys(params).forEach(key => {
-                    if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
-                        urlParams.append(key, params[key]);
-                    }
-                });
-                const url = GOOGLE_SHEETS_URL + '?' + urlParams.toString();
-                const response = await fetch(url);
-                const result = await response.json();
-                return result;
-            } catch (error) {
-                console.error('API Error:', error);
-                return { status: 'error', message: error.toString() };
+    try {
+        const urlParams = new URLSearchParams();
+        urlParams.append('action', action);
+        Object.keys(params).forEach(key => {
+            if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+                urlParams.append(key, params[key]);
             }
-        }
+        });
+        
+        const url = GOOGLE_SHEETS_URL + '?' + urlParams.toString();
+        
+        // Tambahkan batasan redirect manual jika diperlukan, 
+        // namun fetch default di browser modern biasanya langsung mengikuti redirect Apps Script.
+        const response = await fetch(url, {
+            method: 'GET',
+            redirect: 'follow' // Memastikan browser mengikuti redirect Google Apps Script
+        });
+        
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('API Error:', error);
+        return { status: 'error', message: error.toString() };
+    }
+}
 
         // ============================================================
         // LOAD DATA
