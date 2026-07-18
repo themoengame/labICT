@@ -343,15 +343,14 @@
         
         const url = GOOGLE_SHEETS_URL + '?' + urlParams.toString();
         
-        // Perbaikan utama: Menggunakan mode 'cors' dengan redirect 'follow'
+        // Menggunakan mode: 'cors' dengan redirect 'follow' tanpa custom header yang memicu preflight
         const response = await fetch(url, {
             method: 'GET',
             mode: 'cors',
-            redirect: 'follow',
-            headers: {
-                'Content-Type': 'text/plain' // Menghindari preflight request OPTIONS
-            }
+            redirect: 'follow'
         });
+        
+        if (!response.ok) throw new Error('Network response was not ok');
         
         const result = await response.json();
         return result;
