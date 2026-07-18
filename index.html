@@ -45,6 +45,7 @@
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-group { display: flex; flex-direction: column; gap: 4px; }
         .form-group label { font-weight: 600; color: #4a5a6a; font-size: 0.85rem; }
+        .form-group label .required { color: #e74c3c; }
         .form-group input, .form-group select, .form-group textarea {
             padding: 10px 14px;
             border: 1.5px solid #dde4ec;
@@ -66,6 +67,8 @@
         .btn-warning { background: #f39c12; color: white; }
         .btn-warning:hover { background: #d68910; }
         .btn-sm { padding: 4px 14px; font-size: 0.75rem; }
+        .btn-secondary { background: #dde4ec; color: #4a5a6a; }
+        .btn-secondary:hover { background: #c8d1db; }
         
         .form-actions { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
         
@@ -73,7 +76,7 @@
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
         th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #eef2f5; }
-        th { background: #f8fafc; font-weight: 600; color: #4a5a6a; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        th { background: #f8fafc; font-weight: 600; color: #4a5a6a; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
         td { font-size: 0.9rem; }
         .text-center { text-align: center; }
         .text-muted { color: #8a9aa8; }
@@ -124,10 +127,72 @@
         }
         .modal-box h2 { margin-bottom: 16px; }
         .modal-actions { display: flex; gap: 12px; margin-top: 16px; }
-        .loading-text { color: #8a9aa8; text-align: center; padding: 20px; }
+        
+        /* Loading Modal */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .loading-overlay.active { display: flex; }
+        .loading-box {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 50px;
+            text-align: center;
+            min-width: 280px;
+        }
+        .loading-spinner {
+            border: 4px solid #eef2f5;
+            border-top: 4px solid #2c7da0;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-box p { color: #4a5a6a; font-size: 0.95rem; }
+        .loading-box .sub { color: #8a9aa8; font-size: 0.8rem; margin-top: 4px; }
+        .loading-progress { margin-top: 12px; }
+        .loading-progress .bar {
+            height: 4px;
+            background: #eef2f5;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .loading-progress .bar .fill {
+            height: 100%;
+            background: #2c7da0;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s;
+        }
     </style>
 </head>
 <body>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-box">
+        <div class="loading-spinner"></div>
+        <p id="loadingText">⏳ Memuat data...</p>
+        <p class="sub" id="loadingSub">Mohon tunggu sebentar</p>
+        <div class="loading-progress">
+            <div class="bar"><div class="fill" id="loadingProgress"></div></div>
+        </div>
+    </div>
+</div>
+
 <div class="container">
 
     <!-- HEADER -->
@@ -157,7 +222,7 @@
         <form id="peminjamanForm">
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Jenis Peminjaman *</label>
+                    <label>Jenis Peminjaman <span class="required">*</span></label>
                     <select id="jenisPeminjaman" required>
                         <option value="">-- Pilih Jenis --</option>
                         <option value="ruang">🏢 Ruang Lab</option>
@@ -165,33 +230,41 @@
                     </select>
                 </div>
                 <div class="form-group" id="itemContainer">
-                    <label>Pilih Item *</label>
+                    <label>Pilih Item <span class="required">*</span></label>
                     <select id="itemSelect" required><option value="">-- Pilih Item --</option></select>
                 </div>
                 <div class="form-group">
-                    <label>Nama Peminjam *</label>
+                    <label>Nama Peminjam <span class="required">*</span></label>
                     <input type="text" id="namaPeminjam" placeholder="Nama lengkap" required>
                 </div>
                 <div class="form-group" id="jumlahContainer" style="display:none;">
-                    <label>Jumlah *</label>
+                    <label>Jumlah <span class="required">*</span></label>
                     <input type="number" id="jumlah" min="1" value="1">
                 </div>
                 <div class="form-group">
-                    <label>Tanggal Pinjam *</label>
+                    <label>Tanggal Pinjam <span class="required">*</span></label>
                     <input type="date" id="tanggalPinjam" required>
                 </div>
                 <div class="form-group">
                     <label>Tanggal Kembali</label>
                     <input type="date" id="tanggalKembali">
                 </div>
+                <div class="form-group">
+                    <label>Jam Mulai <span class="required">*</span></label>
+                    <input type="time" id="jamMulai" required>
+                </div>
+                <div class="form-group">
+                    <label>Jam Selesai <span class="required">*</span></label>
+                    <input type="time" id="jamSelesai" required>
+                </div>
                 <div class="form-group form-full">
                     <label>Keperluan</label>
-                    <textarea id="keperluan" placeholder="Contoh: Praktikum, Ujian, dll"></textarea>
+                    <textarea id="keperluan" placeholder="Contoh: Praktikum, Ujian, Rapat, dll"></textarea>
                 </div>
             </div>
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">📤 Ajukan Peminjaman</button>
-                <button type="reset" class="btn" style="background:#dde4ec;color:#4a5a6a;">↺ Reset</button>
+                <button type="reset" class="btn btn-secondary">↺ Reset</button>
             </div>
         </form>
     </div>
@@ -209,12 +282,13 @@
                         <th>Peminjam</th>
                         <th>Jumlah</th>
                         <th>Tgl Pinjam</th>
+                        <th>Jam</th>
                         <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="peminjamanTableBody">
-                    <tr><td colspan="8" class="loading-text">⏳ Memuat data...</td></tr>
+                    <tr><td colspan="9" class="text-center text-muted">⏳ Memuat data...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -230,19 +304,40 @@
         <div class="modal-actions">
             <button class="btn btn-success" id="modalApproveBtn">✅ Setujui</button>
             <button class="btn btn-danger" id="modalRejectBtn">❌ Tolak</button>
-            <button class="btn" style="background:#dde4ec;color:#4a5a6a;" onclick="closeModal()">Tutup</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Tutup</button>
         </div>
     </div>
 </div>
 
 <script>
 // ============================================================
-// KONFIGURASI - GANTI DENGAN URL APPS SCRIPT ANDA
+// KONFIGURASI
 // ============================================================
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbywdB9e8cEJesRuDq1tPM3R_4GgVfhi4dvNE-F3HPKE4tfuCq7ltK25iCEkNmGStatmkA/exec";
 
 // ============================================================
-// JSONP HELPER (Built-in, tidak perlu file terpisah)
+// LOADING MODAL
+// ============================================================
+function showLoading(text = '⏳ Memuat data...', sub = 'Mohon tunggu sebentar', progress = 0) {
+    const overlay = document.getElementById('loadingOverlay');
+    document.getElementById('loadingText').textContent = text;
+    document.getElementById('loadingSub').textContent = sub;
+    document.getElementById('loadingProgress').style.width = progress + '%';
+    overlay.classList.add('active');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('active');
+}
+
+function updateLoading(text, sub, progress) {
+    document.getElementById('loadingText').textContent = text;
+    document.getElementById('loadingSub').textContent = sub;
+    document.getElementById('loadingProgress').style.width = progress + '%';
+}
+
+// ============================================================
+// JSONP HELPER (Built-in)
 // ============================================================
 function jsonpRequest(url, params = {}, timeout = 30000) {
     return new Promise((resolve, reject) => {
@@ -267,7 +362,7 @@ function jsonpRequest(url, params = {}, timeout = 30000) {
         
         script.onerror = function() {
             cleanup();
-            reject(new Error('Network error atau script gagal dimuat'));
+            reject(new Error('Network error'));
         };
         
         const urlParams = new URLSearchParams(params);
@@ -280,14 +375,13 @@ function jsonpRequest(url, params = {}, timeout = 30000) {
 }
 
 // ============================================================
-// API WRAPPER - SEMUA REQUEST KE APPS SCRIPT
+// API WRAPPER
 // ============================================================
 const API = {
     call(action, params = {}) {
         return jsonpRequest(SCRIPT_URL, { action, ...params });
     },
     
-    // ===== READ =====
     getRuang() { return this.call('get_ruang'); },
     getInventaris() { return this.call('get_inventaris'); },
     getPeminjamanRuang() { return this.call('get_peminjaman_ruang'); },
@@ -295,11 +389,9 @@ const API = {
     getAllPeminjaman() { return this.call('get_all_peminjaman'); },
     getStats() { return this.call('get_stats'); },
     
-    // ===== WRITE - PEMINJAMAN =====
     addPeminjamanRuang(data) { return this.call('add_peminjaman_ruang', { data: JSON.stringify(data) }); },
     addPeminjamanInventaris(data) { return this.call('add_peminjaman_inventaris', { data: JSON.stringify(data) }); },
     
-    // ===== WRITE - ADMIN =====
     approveRuang(id) { return this.call('approve_ruang', { id }); },
     rejectRuang(id) { return this.call('reject_ruang', { id }); },
     approveInventaris(id) { return this.call('approve_inventaris', { id }); },
@@ -341,6 +433,11 @@ function formatDate(dateStr) {
     } catch { return '-'; }
 }
 
+function formatTime(timeStr) {
+    if (!timeStr) return '-';
+    return timeStr.substring(0, 5);
+}
+
 function getStatusBadge(status) {
     const map = {
         'pending': ['status-pending', '⏳ Menunggu'],
@@ -361,11 +458,14 @@ function showNotification(message, type = 'info') {
 }
 
 // ============================================================
-// LOAD DATA DARI DATABASE (APPS SCRIPT)
+// LOAD DATA DARI DATABASE (DENGAN LOADING PROGRESS)
 // ============================================================
 async function loadAllData() {
+    showLoading('⏳ Memuat data...', 'Menghubungi server...', 10);
+    
     try {
-        // 1. Load stats
+        // Step 1: Load stats
+        updateLoading('📊 Memuat statistik...', 'Mengambil data statistik', 25);
         const stats = await API.getStats();
         if (stats.status === 'success') {
             document.getElementById('statRuang').textContent = stats.data.totalRuang || 0;
@@ -374,7 +474,8 @@ async function loadAllData() {
             document.getElementById('statMenunggu').textContent = stats.data.menungguApprove || 0;
         }
         
-        // 2. Load semua peminjaman
+        // Step 2: Load peminjaman
+        updateLoading('📋 Memuat daftar peminjaman...', 'Mengambil data peminjaman', 50);
         const peminjaman = await API.getAllPeminjaman();
         if (peminjaman.status === 'success') {
             allData.peminjaman = peminjaman.data || [];
@@ -382,23 +483,33 @@ async function loadAllData() {
             document.getElementById('totalPeminjamanBadge').textContent = allData.peminjaman.length;
         }
         
-        // 3. Load ruang & inventaris untuk dropdown
-        const [ruang, inventaris] = await Promise.all([
-            API.getRuang(),
-            API.getInventaris()
-        ]);
+        // Step 3: Load ruang
+        updateLoading('🏢 Memuat data ruang...', 'Mengambil data master ruang', 70);
+        const ruang = await API.getRuang();
         if (ruang.status === 'success') {
             allData.ruang = ruang.data || [];
             updateItemDropdown('ruang');
         }
+        
+        // Step 4: Load inventaris
+        updateLoading('📦 Memuat data inventaris...', 'Mengambil data master inventaris', 85);
+        const inventaris = await API.getInventaris();
         if (inventaris.status === 'success') {
             allData.inventaris = inventaris.data || [];
             updateItemDropdown('inventaris');
         }
         
+        // Selesai
+        updateLoading('✅ Selesai!', 'Semua data berhasil dimuat', 100);
+        setTimeout(hideLoading, 500);
+        
     } catch (error) {
         console.error('Error loading data:', error);
-        showNotification('Gagal memuat data: ' + error.message, 'error');
+        updateLoading('❌ Gagal memuat data', error.message, 100);
+        setTimeout(() => {
+            hideLoading();
+            showNotification('Gagal memuat data: ' + error.message, 'error');
+        }, 1500);
     }
 }
 
@@ -410,29 +521,30 @@ function renderPeminjaman() {
     const data = allData.peminjaman;
     
     if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">Belum ada data peminjaman</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted">Belum ada data peminjaman</td></tr>';
         return;
     }
     
     let html = '';
-    // Tampilkan 20 terakhir
     const displayData = data.slice(0, 20);
     displayData.forEach((item, index) => {
-        const isPending = item.Status === 'pending';
-        const itemName = item.NamaRuang || item.NamaItem || '-';
-        const jumlah = item.Jumlah || '-';
+        const isPending = item.status === 'pending';
+        const itemName = item.nama_ruang || item.nama_item || '-';
+        const jumlah = item.jumlah || '-';
+        const jam = item.jam_mulai && item.jam_selesai ? `${formatTime(item.jam_mulai)} - ${formatTime(item.jam_selesai)}` : '-';
         
         html += `<tr>
             <td>${index + 1}</td>
             <td>${item.type === 'Ruang' ? '🏢' : '📦'} ${item.type || '-'}</td>
             <td>${escapeHtml(itemName)}</td>
-            <td>${escapeHtml(item.Peminjam || '-')}</td>
+            <td>${escapeHtml(item.peminjam || '-')}</td>
             <td>${jumlah}</td>
-            <td>${formatDate(item.TanggalPinjam)}</td>
-            <td>${getStatusBadge(item.Status)}</td>
+            <td>${formatDate(item.tanggal_pinjam)}</td>
+            <td>${jam}</td>
+            <td>${getStatusBadge(item.status)}</td>
             <td>
-                ${isAdmin && isPending ? `<button class="btn btn-success btn-sm" onclick="openAdminModal(${item.ID}, '${item.type}')">⚙️</button>` : ''}
-                ${item.Status === 'approved' && item.type === 'Inventaris' ? `<button class="btn btn-warning btn-sm" onclick="returnItem(${item.ID})">↩️</button>` : ''}
+                ${isAdmin && isPending ? `<button class="btn btn-success btn-sm" onclick="openAdminModal(${item.id}, '${item.type}')">⚙️</button>` : ''}
+                ${item.status === 'approved' && item.type === 'Inventaris' ? `<button class="btn btn-warning btn-sm" onclick="returnItem(${item.id})">↩️</button>` : ''}
             </td>
         </tr>`;
     });
@@ -450,10 +562,14 @@ function updateItemDropdown(type) {
     select.innerHTML = `<option value="">-- Pilih ${label} --</option>`;
     if (data && data.length > 0) {
         data.forEach(item => {
-            const text = type === 'ruang' 
-                ? `${item.Nama} (Kapasitas: ${item.Kapasitas || '-'})` 
-                : `${item.Nama} (Stok: ${item.Stok || 0})`;
-            select.innerHTML += `<option value="${item.ID}">${escapeHtml(text)}</option>`;
+            let text;
+            if (type === 'ruang') {
+                text = `${item.nama_ruang} (${item.kode || '-'} | Kapasitas: ${item.kapasitas || '-'})`;
+            } else {
+                const status = item.status_pinjam || 'Tidak Tersedia';
+                text = `${item.nama_item} (${item.kategori || '-'} | Stok: ${item.stok_tersedia || 0} | ${status})`;
+            }
+            select.innerHTML += `<option value="${item.id}">${escapeHtml(text)}</option>`;
         });
     } else {
         select.innerHTML += `<option value="">Tidak ada data</option>`;
@@ -480,8 +596,10 @@ document.getElementById('jenisPeminjaman').addEventListener('change', function()
     }
 });
 
-// Set default date
+// Set default date dan time
 document.getElementById('tanggalPinjam').valueAsDate = new Date();
+document.getElementById('jamMulai').value = '08:00';
+document.getElementById('jamSelesai').value = '12:00';
 
 document.getElementById('peminjamanForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -491,48 +609,66 @@ document.getElementById('peminjamanForm').addEventListener('submit', async funct
     const peminjam = document.getElementById('namaPeminjam').value.trim();
     const tanggalPinjam = document.getElementById('tanggalPinjam').value;
     const tanggalKembali = document.getElementById('tanggalKembali').value;
+    const jamMulai = document.getElementById('jamMulai').value;
+    const jamSelesai = document.getElementById('jamSelesai').value;
     const keperluan = document.getElementById('keperluan').value.trim();
     const jumlah = parseInt(document.getElementById('jumlah').value) || 1;
     
-    if (!jenis || !itemId || !peminjam || !tanggalPinjam) {
+    // Validasi
+    if (!jenis || !itemId || !peminjam || !tanggalPinjam || !jamMulai || !jamSelesai) {
         showNotification('Harap lengkapi semua field yang wajib', 'error');
         return;
     }
+    
+    if (jamMulai >= jamSelesai) {
+        showNotification('Jam selesai harus lebih dari jam mulai', 'error');
+        return;
+    }
+    
+    showLoading('⏳ Menyimpan data...', 'Mengirimkan pengajuan peminjaman', 50);
     
     try {
         let result;
         if (jenis === 'ruang') {
             result = await API.addPeminjamanRuang({
-                IDRuang: parseInt(itemId),
-                Peminjam: peminjam,
-                TanggalPinjam: tanggalPinjam,
-                TanggalKembali: tanggalKembali || tanggalPinjam,
-                Keperluan: keperluan
+                id_ruang: parseInt(itemId),
+                peminjam: peminjam,
+                tanggal_pinjam: tanggalPinjam,
+                jam_mulai: jamMulai,
+                jam_selesai: jamSelesai,
+                tanggal_kembali: tanggalKembali || tanggalPinjam,
+                keperluan: keperluan
             });
         } else {
             result = await API.addPeminjamanInventaris({
-                IDItem: parseInt(itemId),
-                Peminjam: peminjam,
-                Jumlah: jumlah,
-                TanggalPinjam: tanggalPinjam,
-                TanggalKembali: tanggalKembali || '',
-                Keperluan: keperluan
+                id_item: parseInt(itemId),
+                peminjam: peminjam,
+                jumlah: jumlah,
+                tanggal_pinjam: tanggalPinjam,
+                jam_mulai: jamMulai,
+                jam_selesai: jamSelesai,
+                tanggal_kembali: tanggalKembali || '',
+                keperluan: keperluan
             });
         }
+        
+        hideLoading();
         
         if (result.status === 'success') {
             showNotification('✅ ' + result.message, 'success');
             this.reset();
             document.getElementById('tanggalPinjam').valueAsDate = new Date();
+            document.getElementById('jamMulai').value = '08:00';
+            document.getElementById('jamSelesai').value = '12:00';
             document.getElementById('jumlah').value = 1;
             document.getElementById('jenisPeminjaman').value = '';
             document.getElementById('itemSelect').innerHTML = '<option value="">-- Pilih Item --</option>';
-            // Reload data
             await loadAllData();
         } else {
             showNotification('❌ ' + result.message, 'error');
         }
     } catch (error) {
+        hideLoading();
         showNotification('❌ Gagal mengajukan: ' + error.message, 'error');
     }
 });
@@ -560,6 +696,8 @@ document.getElementById('modalApproveBtn').addEventListener('click', async funct
     const { id, type } = modalTarget;
     if (!id) return;
     
+    showLoading('⏳ Memproses...', 'Menyetujui peminjaman', 50);
+    
     try {
         let result;
         if (type === 'Ruang') {
@@ -568,6 +706,7 @@ document.getElementById('modalApproveBtn').addEventListener('click', async funct
             result = await API.approveInventaris(id);
         }
         
+        hideLoading();
         if (result.status === 'success') {
             showNotification('✅ ' + result.message, 'success');
             closeModal();
@@ -576,6 +715,7 @@ document.getElementById('modalApproveBtn').addEventListener('click', async funct
             showNotification('❌ ' + result.message, 'error');
         }
     } catch (error) {
+        hideLoading();
         showNotification('❌ Error: ' + error.message, 'error');
     }
 });
@@ -586,6 +726,8 @@ document.getElementById('modalRejectBtn').addEventListener('click', async functi
     
     if (!confirm('Yakin ingin menolak peminjaman ini?')) return;
     
+    showLoading('⏳ Memproses...', 'Menolak peminjaman', 50);
+    
     try {
         let result;
         if (type === 'Ruang') {
@@ -594,6 +736,7 @@ document.getElementById('modalRejectBtn').addEventListener('click', async functi
             result = await API.rejectInventaris(id);
         }
         
+        hideLoading();
         if (result.status === 'success') {
             showNotification('✅ ' + result.message, 'success');
             closeModal();
@@ -602,16 +745,20 @@ document.getElementById('modalRejectBtn').addEventListener('click', async functi
             showNotification('❌ ' + result.message, 'error');
         }
     } catch (error) {
+        hideLoading();
         showNotification('❌ Error: ' + error.message, 'error');
     }
 });
 
-// Fungsi Return Item (khusus inventaris)
+// Fungsi Return Item
 async function returnItem(id) {
     if (!confirm('Konfirmasi pengembalian inventaris?')) return;
     
+    showLoading('⏳ Memproses...', 'Mengembalikan inventaris', 50);
+    
     try {
         const result = await API.returnInventaris(id);
+        hideLoading();
         if (result.status === 'success') {
             showNotification('✅ ' + result.message, 'success');
             await loadAllData();
@@ -619,6 +766,7 @@ async function returnItem(id) {
             showNotification('❌ ' + result.message, 'error');
         }
     } catch (error) {
+        hideLoading();
         showNotification('❌ Error: ' + error.message, 'error');
     }
 }
@@ -660,7 +808,7 @@ function logout() {
 }
 
 // ============================================================
-// INIT - LOAD DATA SAAT PERTAMA KALI
+// INIT
 // ============================================================
 checkLoginStatus();
 loadAllData();
